@@ -72,6 +72,7 @@ echo $domain->status; // e.g. ACTIVE
 ## Working With DTOs
 
 - Every handler returns concrete DTOs (no arrays).
+- Request bodies are always expressed via dedicated Request DTOs, eliminating generic arrays and ensuring type safety.
 - Nested structures are strongly typed (e.g., names, addresses, price objects).
 - Lists return `Vexura\Model\PaginatedResponse<T>` with `$total` and `$results`.
 
@@ -126,12 +127,17 @@ $auth = $op->domain()->getAuthCode(123); // AuthCode DTO
 DNS
 
 ```php
+use Vexura\Model\DnsCreateZoneRequest;
+use Vexura\Model\DomainName;
+
 $zones = $op->domain()->dns()->listZones(limit: 10); // PaginatedResponse<Zone>
-$ok = $op->domain()->dns()->createZone([
-    'domain' => ['name' => 'example','extension' => 'com'],
-    'type' => 'master',
-    'records' => []
-]); // DnsActionResponse (success)
+
+$domainName  = (new DomainName())->fromArray(['name' => 'example', 'extension' => 'com']);
+$zoneRequest = new DnsCreateZoneRequest($domainName);
+$zoneRequest->type = 'master';
+// $zoneRequest->records = [...]; // Opcional
+
+$ok = $op->domain()->dns()->createZone($zoneRequest); // DnsActionResponse (success)
 ```
 
 SSL
@@ -160,9 +166,13 @@ $order = $op->ssl()->createOrder($create);
 $orders = $op->ssl()->listOrders(limit: 10, status: 'active');
 
 // Approve domain transfer and handle ActionResponse
-$req = new Vexura\Model\DomainApproveTransferRequest();
-$req->approve = 1;
-$resp = $op->domain()->approveTransfer(123, $req);
+use Vexura\Model\DomainApproveTransferRequest;
+
+$approveRequest = new DomainApproveTransferRequest();
+$approveRequest->approve = 1; // ou 0 para rejeitar
+
+// Supondo que o ID do domínio seja 123
+$resp = $op->domain()->approveTransfer(123, $approveRequest);
 if ($resp->success) {
     // ok
 }
