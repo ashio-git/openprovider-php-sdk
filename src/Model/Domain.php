@@ -35,6 +35,7 @@ class Domain
     public ?bool $is_locked = null;
     public ?bool $is_premium = null;
     public ?bool $is_private_whois_enabled = null;
+    public ?bool $is_private_whois_allowed = null;
     public ?bool $is_spamexperts_enabled = null;
     public ?string $last_changed = null;
     /** @var Nameserver[]|null */
@@ -48,7 +49,10 @@ class Domain
     public ?string $quarantine_expiration_date = null;
     public ?string $renewal_date = null;
     public ?string $reseller_handle = null;
+    public ?int $reseller_id = null;
+    public ?DomainRegistryStatuses $registry_statuses = null;
     public ?string $status = null;
+    public ?DomainWhoisPrivacyData $whois_privacy_data = null;
     public ?string $tech_handle = null;
     public ?bool $trade_allowed = null;
     public ?string $type = null;
@@ -105,6 +109,7 @@ class Domain
         $this->is_locked = $data['is_locked'] ?? null;
         $this->is_premium = $data['is_premium'] ?? null;
         $this->is_private_whois_enabled = $data['is_private_whois_enabled'] ?? null;
+        $this->is_private_whois_allowed = $data['is_private_whois_allowed'] ?? null;
         $this->is_spamexperts_enabled = $data['is_spamexperts_enabled'] ?? null;
         $this->last_changed = $data['last_changed'] ?? null;
         if (isset($data['name_servers'])) {
@@ -123,7 +128,14 @@ class Domain
         $this->quarantine_expiration_date = $data['quarantine_expiration_date'] ?? null;
         $this->renewal_date = $data['renewal_date'] ?? null;
         $this->reseller_handle = $data['reseller_handle'] ?? null;
+        $this->reseller_id = $data['reseller_id'] ?? null;
+        if (isset($data['registry_statuses'])) {
+            $this->registry_statuses = (new DomainRegistryStatuses())->fromArray($data['registry_statuses']);
+        }
         $this->status = $data['status'] ?? null;
+        if (isset($data['whois_privacy_data'])) {
+            $this->whois_privacy_data = (new DomainWhoisPrivacyData())->fromArray($data['whois_privacy_data']);
+        }
         $this->tech_handle = $data['tech_handle'] ?? null;
         $this->trade_allowed = $data['trade_allowed'] ?? null;
         $this->type = $data['type'] ?? null;

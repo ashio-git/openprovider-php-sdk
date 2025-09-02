@@ -16,6 +16,7 @@ use Vexura\Model\DeleteDomainResponse;
 use Vexura\Model\Domain as DomainModel;
 use Vexura\Model\Price;
 use Vexura\Model\RenewDomainResponse;
+use Vexura\Model\RenewDomainRequest;
 use Vexura\Model\RestoreDomainResponse;
 use Vexura\Model\SuggestNameDomainResult;
 use Vexura\Model\Tld;
@@ -215,7 +216,7 @@ class Domain
     /**
      * Renew a domain.
      * @param int $id The ID of the domain to renew.
-     * @param array $data The renewal data.
+     * @param RenewDomainRequest $request The renewal data.
      * @return RenewDomainResponse
      * @throws ApiException
      * @throws AuthenticationException
@@ -223,9 +224,9 @@ class Domain
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function renewDomain(int $id, array $data): RenewDomainResponse
+    public function renewDomain(int $id, RenewDomainRequest $request): RenewDomainResponse
     {
-        $response = $this->API->post("domains/{$id}/renew", $data);
+        $response = $this->API->post("domains/{$id}/renew", $request->toArray());
         return (new RenewDomainResponse())->fromArray($response['data']);
     }
 
