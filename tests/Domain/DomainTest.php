@@ -61,7 +61,9 @@ class DomainTest extends TestCase
                 ]
             ]);
         $domain = new Domain($mockApi);
-        $resp = $domain->resetAuthCode(1, ['auth_code_type' => 'internal']);
+        $req = new \Vexura\Model\DomainResetAuthCodeRequest();
+        $req->authCodeType = 'internal';
+        $resp = $domain->resetAuthCode(1, $req);
         $this->assertInstanceOf(\Vexura\Model\AuthCode::class, $resp);
         $this->assertSame('67890', $resp->auth_code);
         $this->assertTrue($resp->success);

@@ -5,6 +5,8 @@ namespace Vexura\Domain;
 use GuzzleHttp\Exception\GuzzleException;
 use Vexura\Model\EasyDmarcOrder;
 use Vexura\Model\PaginatedResponse;
+use Vexura\Model\EasyDmarcCreateRequest;
+use Vexura\Model\EasyDmarcRetryRequest;
 use Vexura\OpenProvider;
 
 class EasyDMARC
@@ -29,13 +31,13 @@ class EasyDMARC
 
     /**
      * Create EasyDMARC order.
-     * @param array $data
+     * @param EasyDmarcCreateRequest $request
      * @return EasyDmarcOrder
      * @throws GuzzleException
      */
-    public function createEasyDmarc(array $data): EasyDmarcOrder
+    public function createEasyDmarc(EasyDmarcCreateRequest $request): EasyDmarcOrder
     {
-        $response = $this->API->post('easydmarcs', $data);
+        $response = $this->API->post('easydmarcs', $request->toArray());
         return (new EasyDmarcOrder())->fromArray($response['data'] ?? []);
     }
 
@@ -76,13 +78,13 @@ class EasyDMARC
     /**
      * Retry EasyDMARC order action.
      * @param int $id
-     * @param array $data
+     * @param EasyDmarcRetryRequest $request
      * @return EasyDmarcOrder
      * @throws GuzzleException
      */
-    public function retryEasyDmarc(int $id, array $data): EasyDmarcOrder
+    public function retryEasyDmarc(int $id, EasyDmarcRetryRequest $request): EasyDmarcOrder
     {
-        $response = $this->API->post("easydmarcs/{$id}/retry", $data);
+        $response = $this->API->post("easydmarcs/{$id}/retry", $request->toArray());
         return (new EasyDmarcOrder())->fromArray($response['data'] ?? []);
     }
 

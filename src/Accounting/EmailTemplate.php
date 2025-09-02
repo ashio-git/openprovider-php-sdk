@@ -5,6 +5,8 @@ namespace Vexura\Accounting;
 use GuzzleHttp\Exception\GuzzleException;
 use Vexura\Model\EmailTemplate as EmailTemplateModel;
 use Vexura\Model\PaginatedResponse;
+use Vexura\Model\EmailTemplateCreateRequest;
+use Vexura\Model\EmailTemplateUpdateRequest;
 use Vexura\OpenProvider;
 
 class EmailTemplate
@@ -57,26 +59,26 @@ class EmailTemplate
 
     /**
      * Create email template.
-     * @param array $data
+     * @param EmailTemplateCreateRequest $request
      * @return int The created email template id.
      * @throws GuzzleException
      */
-    public function createEmail(array $data): int
+    public function createEmail(EmailTemplateCreateRequest $request): int
     {
-        $response = $this->API->post('emails', $data);
+        $response = $this->API->post('emails', $request->toArray());
         return (int)($response['data']['id'] ?? 0);
     }
 
     /**
      * Update email template.
      * @param int $id
-     * @param array $data
+     * @param EmailTemplateUpdateRequest $request
      * @return bool
      * @throws GuzzleException
      */
-    public function updateEmail(int $id, array $data): bool
+    public function updateEmail(int $id, EmailTemplateUpdateRequest $request): bool
     {
-        $response = $this->API->put("emails/{$id}", $data);
+        $response = $this->API->put("emails/{$id}", $request->toArray());
         return (bool)($response['data']['success'] ?? false);
     }
 

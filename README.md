@@ -160,7 +160,9 @@ $order = $op->ssl()->createOrder($create);
 $orders = $op->ssl()->listOrders(limit: 10, status: 'active');
 
 // Approve domain transfer and handle ActionResponse
-$resp = $op->domain()->approveTransfer(123, ['confirm' => true]);
+$req = new Vexura\Model\DomainApproveTransferRequest();
+$req->approve = 1;
+$resp = $op->domain()->approveTransfer(123, $req);
 if ($resp->success) {
     // ok
 }
