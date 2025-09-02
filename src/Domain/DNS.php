@@ -13,6 +13,8 @@ use Vexura\Model\Nameserver;
 use Vexura\Model\NameserverGroup;
 use Vexura\Model\Zone as ZoneModel;
 use Vexura\Model\DnsRecord as DnsRecordModel;
+use Vexura\Model\DnsCreateZoneRequest;
+use Vexura\Model\PaginatedResponse;
 
 class DNS
 {
@@ -154,14 +156,16 @@ class DNS
      * @param int $limit
      * @param int $offset
      * @param string|null $nsGroupPattern
-     * @return array
+     * @return PaginatedResponse
+     * @phpstan-return PaginatedResponse<NameserverGroup>
+     * @psalm-return PaginatedResponse<NameserverGroup>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function listNameserverGroups(int $limit = 100, int $offset = 0, ?string $nsGroupPattern = null): array
+    public function listNameserverGroups(int $limit = 100, int $offset = 0, ?string $nsGroupPattern = null): PaginatedResponse
     {
         $params = array_filter([
             'limit' => $limit,
@@ -176,10 +180,7 @@ class DNS
                 $groups[] = (new NameserverGroup())->fromArray($groupData);
             }
         }
-        return [
-            'total' => $response['data']['total'] ?? 0,
-            'results' => $groups,
-        ];
+        return new PaginatedResponse((int)($response['data']['total'] ?? 0), $groups);
     }
 
     /**
@@ -367,7 +368,7 @@ class DNS
 
     /**
      * Create a new DNS zone.
-     * @param array $data
+     * @param DnsCreateZoneRequest $request
      * @return \Vexura\Model\DnsActionResponse
      * @throws ApiException
      * @throws AuthenticationException
@@ -375,12 +376,9 @@ class DNS
      * @throws NotFoundException
      * @throws ValidationException
      */
-    /**
-     * @return \Vexura\Model\DnsActionResponse
-     */
-    public function createZone(array $data): \Vexura\Model\DnsActionResponse
+    public function createZone(DnsCreateZoneRequest $request): \Vexura\Model\DnsActionResponse
     {
-        $response = $this->API->post('dns/zones', $data);
+        $response = $this->API->post('dns/zones', $request->toArray());
         return (new \Vexura\Model\DnsActionResponse())->fromArray($response['data'] ?? []);
     }
 

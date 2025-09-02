@@ -33,6 +33,10 @@ class SslOrder
     public ?SslOrderOptions $options = null;
     /** @var SslOrderAdditionalData[]|null */
     public ?array $additional_data = null;
+    public ?string $vendorOrderId = null;
+    public ?string $validationMethod = null;
+    public ?string $administrativeHandle = null;
+    public ?string $vendorReferenceId = null;
 
     /**
      * SslOrder constructor.
@@ -55,6 +59,18 @@ class SslOrder
             if (property_exists($this, $key)) {
                 $this->{$key} = $value;
             }
+        }
+        if (isset($data['vendor_order_id'])) {
+            $this->vendorOrderId = $data['vendor_order_id'];
+        }
+        if (isset($data['validation_method'])) {
+            $this->validationMethod = $data['validation_method'];
+        }
+        if (isset($data['administrative_handle'])) {
+            $this->administrativeHandle = $data['administrative_handle'];
+        }
+        if (isset($data['vendor_reference_id'])) {
+            $this->vendorReferenceId = $data['vendor_reference_id'];
         }
         if (isset($data['domain_validation_methods'])) {
             $this->domain_validation_methods = array_map(static fn($row) => (new SslOrderDomainValidationMethods())->fromArray($row), $data['domain_validation_methods']);

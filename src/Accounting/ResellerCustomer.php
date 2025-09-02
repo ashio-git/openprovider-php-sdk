@@ -11,6 +11,9 @@ use Vexura\OpenProvider;
 use Vexura\Model\Contact;
 use Vexura\Model\Customer as CustomerModel;
 use Vexura\Model\Reseller as ResellerModel;
+use Vexura\Model\Tag;
+use Vexura\Model\DomainEmailVerification;
+use Vexura\Model\PaginatedResponse;
 
 class ResellerCustomer
 {
@@ -272,7 +275,9 @@ class ResellerCustomer
      * @param string|null $response_to
      * @param int $limit
      * @param int $offset
-     * @return array{total: int, results: array<int, DomainEmailVerification>}
+     * @return PaginatedResponse
+     * @phpstan-return PaginatedResponse<DomainEmailVerification>
+     * @psalm-return PaginatedResponse<DomainEmailVerification>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -291,7 +296,7 @@ class ResellerCustomer
         ?string $response_to = null,
         int $limit = 100,
         int $offset = 0
-    ): array {
+    ): PaginatedResponse {
         $params = array_filter(compact(
             'domain_id', 'domain', 'email', 'handle', 'status', 'description',
             'is_suspended', 'response_type', 'response_to', 'limit', 'offset'
@@ -304,10 +309,7 @@ class ResellerCustomer
                 $verifications[] = (new DomainEmailVerification())->fromArray($verificationData);
             }
         }
-        return [
-            'total' => $response['data']['total'] ?? 0,
-            'results' => $verifications,
-        ];
+        return new PaginatedResponse((int)($response['data']['total'] ?? 0), $verifications);
     }
 
     /**
@@ -429,14 +431,16 @@ class ResellerCustomer
      *
      * @param string|null $key
      * @param string|null $value
-     * @return array{total: int, results: array<int, Tag>}
+     * @return PaginatedResponse
+     * @phpstan-return PaginatedResponse<Tag>
+     * @psalm-return PaginatedResponse<Tag>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function listTags(?string $key = null, ?string $value = null): array
+    public function listTags(?string $key = null, ?string $value = null): PaginatedResponse
     {
         $params = array_filter(compact('key', 'value'));
         $response = $this->API->get('tags', $params);
@@ -446,10 +450,7 @@ class ResellerCustomer
                 $tags[] = (new Tag())->fromArray($tagData);
             }
         }
-        return [
-            'total' => $response['data']['total'] ?? 0,
-            'results' => $tags,
-        ];
+        return new PaginatedResponse((int)($response['data']['total'] ?? 0), $tags);
     }
 
     /**

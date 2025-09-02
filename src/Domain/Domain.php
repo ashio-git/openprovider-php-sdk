@@ -22,6 +22,10 @@ use Vexura\Model\SuggestNameDomainResult;
 use Vexura\Model\Tld;
 use Vexura\Model\TradeDomainResponse;
 use Vexura\Model\TransferDomainResponse;
+use Vexura\Model\DomainTransferRequest;
+use Vexura\Model\DomainTradeRequest;
+use Vexura\Model\DomainSuggestNameRequest;
+use Vexura\Model\DomainRestoreRequest;
 
 class Domain
 {
@@ -233,7 +237,7 @@ class Domain
     /**
      * Restore a domain from quarantine.
      * @param int $id The ID of the domain to restore.
-     * @param array $data The restore data.
+     * @param DomainRestoreRequest $request
      * @return RestoreDomainResponse
      * @throws ApiException
      * @throws AuthenticationException
@@ -241,9 +245,9 @@ class Domain
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function restoreDomain(int $id, array $data): RestoreDomainResponse
+    public function restoreDomain(int $id, DomainRestoreRequest $request): RestoreDomainResponse
     {
-        $response = $this->API->post("domains/{$id}/restore", $data);
+        $response = $this->API->post("domains/{$id}/restore", $request->toArray());
         return (new RestoreDomainResponse())->fromArray($response['data']);
     }
 
@@ -266,7 +270,7 @@ class Domain
 
     /**
      * Request a domain transfer.
-     * @param array $data The transfer data.
+     * @param DomainTransferRequest $request
      * @return TransferDomainResponse
      * @throws ApiException
      * @throws AuthenticationException
@@ -274,15 +278,15 @@ class Domain
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function transferDomain(array $data): TransferDomainResponse
+    public function transferDomain(DomainTransferRequest $request): TransferDomainResponse
     {
-        $response = $this->API->post("domains/transfer", $data);
+        $response = $this->API->post("domains/transfer", $request->toArray());
         return (new TransferDomainResponse())->fromArray($response['data']);
     }
 
     /**
      * Request a domain trade (change of ownership).
-     * @param array $data The trade data.
+     * @param DomainTradeRequest $request
      * @return TradeDomainResponse
      * @throws ApiException
      * @throws AuthenticationException
@@ -290,15 +294,15 @@ class Domain
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function tradeDomain(array $data): TradeDomainResponse
+    public function tradeDomain(DomainTradeRequest $request): TradeDomainResponse
     {
-        $response = $this->API->post("domains/trade", $data);
+        $response = $this->API->post("domains/trade", $request->toArray());
         return (new TradeDomainResponse())->fromArray($response['data']);
     }
 
     /**
      * Suggest alternative domain names.
-     * @param array $data The suggestion criteria.
+     * @param DomainSuggestNameRequest $request
      * @return SuggestNameDomainResult[]
      * @throws ApiException
      * @throws AuthenticationException
@@ -306,9 +310,9 @@ class Domain
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function suggestName(array $data): array
+    public function suggestName(DomainSuggestNameRequest $request): array
     {
-        $response = $this->API->post("domains/suggest-name", $data);
+        $response = $this->API->post("domains/suggest-name", $request->toArray());
         $results = [];
         if (isset($response['data']['results'])) {
             foreach ($response['data']['results'] as $result) {

@@ -11,6 +11,7 @@ use Vexura\Domain\SpamExpert;
 use Vexura\Exception\NotFoundException;
 use Vexura\Exception\ValidationException;
 use Vexura\Model\SpamExpertDomain;
+use Vexura\Model\SpamExpertCreateDomainRequest;
 use Vexura\OpenProvider;
 
 class SpamExpertTest extends TestCase
@@ -56,7 +57,7 @@ class SpamExpertTest extends TestCase
         $api = new OpenProvider('u','p',$client);
         $handler = new SpamExpert($api);
         $this->expectException(ValidationException::class);
-        $handler->createDomain(['domain_name' => '']);
+        $handler->createDomain(new SpamExpertCreateDomainRequest(''));
     }
 
     public function testGetDomainNotFound(): void
