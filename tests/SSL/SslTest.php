@@ -1,19 +1,19 @@
 <?php
 
-namespace Vexura\Tests\SSL;
+namespace Ashio\Tests\SSL;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use Vexura\Exception\ValidationException;
-use Vexura\Model\CsrCreateResponse;
-use Vexura\Model\CsrDecodeResponse;
-use Vexura\Model\PaginatedResponse;
-use Vexura\Model\SslActionResponse;
-use Vexura\OpenProvider;
-use Vexura\SSL\SSL;
+use Ashio\Exception\ValidationException;
+use Ashio\Model\CsrCreateResponse;
+use Ashio\Model\CsrDecodeResponse;
+use Ashio\Model\PaginatedResponse;
+use Ashio\Model\SslActionResponse;
+use Ashio\OpenProvider;
+use Ashio\SSL\SSL;
 
 class SslTest extends TestCase
 {
@@ -43,11 +43,11 @@ class SslTest extends TestCase
         $api = new OpenProvider('u','p',$client);
         $ssl = new SSL($api);
 
-        $create = $ssl->createCsr(new \Vexura\Model\CsrCreateRequest('example.com'));
+        $create = $ssl->createCsr(new \Ashio\Model\CsrCreateRequest('example.com'));
         $this->assertInstanceOf(CsrCreateResponse::class, $create);
         $this->assertSame('openssl req', $create->command);
 
-        $decode = $ssl->decodeCsr(new \Vexura\Model\CsrDecodeRequest('---CSR---'));
+        $decode = $ssl->decodeCsr(new \Ashio\Model\CsrDecodeRequest('---CSR---'));
         $this->assertInstanceOf(CsrDecodeResponse::class, $decode);
         $this->assertSame(1, $decode->domain_names_count);
         $this->assertSame('example.com', $decode->subject->common_name);
@@ -61,7 +61,7 @@ class SslTest extends TestCase
         ]);
         $api = new OpenProvider('u','p',$client);
         $ssl = new SSL($api);
-        $req = new \Vexura\Model\SslOrderUpdateRequest();
+        $req = new \Ashio\Model\SslOrderUpdateRequest();
         $req->autorenew = 'off';
         $resp = $ssl->updateOrder(123, $req);
         $this->assertInstanceOf(SslActionResponse::class, $resp);
@@ -77,10 +77,10 @@ class SslTest extends TestCase
         ]);
         $api = new OpenProvider('u','p',$client);
         $ssl = new SSL($api);
-        $req = new \Vexura\Model\SslOrderCreateRequest(1, 'CSR', ['example.com'], 12);
+        $req = new \Ashio\Model\SslOrderCreateRequest(1, 'CSR', ['example.com'], 12);
         $req->approver_email = 'admin@example.com';
         $order = $ssl->createOrder($req);
-        $this->assertInstanceOf(\Vexura\Model\SslOrder::class, $order);
+        $this->assertInstanceOf(\Ashio\Model\SslOrder::class, $order);
         $this->assertSame(1, $order->product_id);
     }
 
@@ -107,7 +107,7 @@ class SslTest extends TestCase
         $api = new OpenProvider('u','p',$client);
         $ssl = new SSL($api);
         $this->expectException(ValidationException::class);
-        $ssl->createCsr(new \Vexura\Model\CsrCreateRequest('example.com'));
+        $ssl->createCsr(new \Ashio\Model\CsrCreateRequest('example.com'));
     }
 
     public function testGetProductUnauthorized401(): void
@@ -118,7 +118,7 @@ class SslTest extends TestCase
         ]);
         $api = new OpenProvider('u','p',$client);
         $ssl = new SSL($api);
-        $this->expectException(\Vexura\Exception\AuthenticationException::class);
+        $this->expectException(\Ashio\Exception\AuthenticationException::class);
         $ssl->getProduct(1);
     }
 }

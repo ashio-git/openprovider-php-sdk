@@ -1,13 +1,13 @@
 <?php
 
-namespace Vexura\Domain;
+namespace Ashio\Domain;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Vexura\Model\SpamExpertDomain;
-use Vexura\Model\SpamExpertCreateDomainRequest;
-use Vexura\Model\SpamExpertUpdateDomainRequest;
-use Vexura\Model\SpamExpertGenerateLoginUrlRequest;
-use Vexura\OpenProvider;
+use Ashio\Model\SpamExpertDomain;
+use Ashio\Model\SpamExpertCreateDomainRequest;
+use Ashio\Model\SpamExpertUpdateDomainRequest;
+use Ashio\Model\SpamExpertGenerateLoginUrlRequest;
+use Ashio\OpenProvider;
 
 class SpamExpert
 {

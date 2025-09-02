@@ -1,6 +1,6 @@
 <?php
 
-namespace Vexura\Exception;
+namespace Ashio\Exception;
 
 class ValidationException extends OpenproviderException
 {

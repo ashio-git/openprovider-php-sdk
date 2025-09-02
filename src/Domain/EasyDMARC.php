@@ -1,13 +1,13 @@
 <?php
 
-namespace Vexura\Domain;
+namespace Ashio\Domain;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Vexura\Model\EasyDmarcOrder;
-use Vexura\Model\PaginatedResponse;
-use Vexura\Model\EasyDmarcCreateRequest;
-use Vexura\Model\EasyDmarcRetryRequest;
-use Vexura\OpenProvider;
+use Ashio\Model\EasyDmarcOrder;
+use Ashio\Model\PaginatedResponse;
+use Ashio\Model\EasyDmarcCreateRequest;
+use Ashio\Model\EasyDmarcRetryRequest;
+use Ashio\OpenProvider;
 
 class EasyDMARC
 {

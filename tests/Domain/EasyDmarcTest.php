@@ -1,18 +1,18 @@
 <?php
 
-namespace Vexura\Tests\Domain;
+namespace Ashio\Tests\Domain;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use Vexura\Domain\EasyDMARC;
-use Vexura\Exception\NotFoundException;
-use Vexura\Exception\ValidationException;
-use Vexura\Model\EasyDmarcOrder;
-use Vexura\Model\PaginatedResponse;
-use Vexura\OpenProvider;
+use Ashio\Domain\EasyDMARC;
+use Ashio\Exception\NotFoundException;
+use Ashio\Exception\ValidationException;
+use Ashio\Model\EasyDmarcOrder;
+use Ashio\Model\PaginatedResponse;
+use Ashio\OpenProvider;
 
 class EasyDmarcTest extends TestCase
 {
@@ -65,8 +65,8 @@ class EasyDmarcTest extends TestCase
         $api = new OpenProvider('u','p',$client);
         $handler = new EasyDMARC($api);
         $this->expectException(ValidationException::class);
-        $domain = new \Vexura\Model\DomainName();
-        $req = new \Vexura\Model\EasyDmarcCreateRequest($domain, '');
+        $domain = new \Ashio\Model\DomainName();
+        $req = new \Ashio\Model\EasyDmarcCreateRequest($domain, '');
         $handler->createEasyDmarc($req);
     }
 

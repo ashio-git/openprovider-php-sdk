@@ -1,11 +1,11 @@
 <?php
 
-namespace Vexura\Tests\Accounting;
+namespace Ashio\Tests\Accounting;
 
 use PHPUnit\Framework\TestCase;
-use Vexura\OpenProvider;
-use Vexura\Accounting\ResellerCustomer;
-use Vexura\Model\Reseller as ResellerModel;
+use Ashio\OpenProvider;
+use Ashio\Accounting\ResellerCustomer;
+use Ashio\Model\Reseller as ResellerModel;
 
 class ResellerCustomerTest extends TestCase
 {

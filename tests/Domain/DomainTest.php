@@ -1,10 +1,10 @@
 <?php
 
-namespace Vexura\Tests\Domain;
+namespace Ashio\Tests\Domain;
 
 use PHPUnit\Framework\TestCase;
-use Vexura\OpenProvider;
-use Vexura\Domain\Domain;
+use Ashio\OpenProvider;
+use Ashio\Domain\Domain;
 
 class DomainTest extends TestCase
 {
@@ -26,7 +26,7 @@ class DomainTest extends TestCase
 
         $this->assertIsArray($results);
         $this->assertCount(2, $results);
-        $this->assertInstanceOf(\Vexura\Model\CheckDomainResult::class, $results[0]);
+        $this->assertInstanceOf(\Ashio\Model\CheckDomainResult::class, $results[0]);
         $this->assertEquals('free', $results[0]->status);
         $this->assertEquals('active', $results[1]->status);
     }
@@ -44,7 +44,7 @@ class DomainTest extends TestCase
             ]);
         $domain = new Domain($mockApi);
         $resp = $domain->getAuthCode(1);
-        $this->assertInstanceOf(\Vexura\Model\AuthCode::class, $resp);
+        $this->assertInstanceOf(\Ashio\Model\AuthCode::class, $resp);
         $this->assertSame('12345', $resp->auth_code);
         $this->assertTrue($resp->success);
     }
@@ -61,10 +61,10 @@ class DomainTest extends TestCase
                 ]
             ]);
         $domain = new Domain($mockApi);
-        $req = new \Vexura\Model\DomainResetAuthCodeRequest();
+        $req = new \Ashio\Model\DomainResetAuthCodeRequest();
         $req->authCodeType = 'internal';
         $resp = $domain->resetAuthCode(1, $req);
-        $this->assertInstanceOf(\Vexura\Model\AuthCode::class, $resp);
+        $this->assertInstanceOf(\Ashio\Model\AuthCode::class, $resp);
         $this->assertSame('67890', $resp->auth_code);
         $this->assertTrue($resp->success);
     }
@@ -80,7 +80,7 @@ class DomainTest extends TestCase
         ]);
         $op = new OpenProvider('u','p',$client);
         $domain = new Domain($op);
-        $this->expectException(\Vexura\Exception\AuthenticationException::class);
+        $this->expectException(\Ashio\Exception\AuthenticationException::class);
         $domain->getDomain(1);
     }
 
@@ -100,13 +100,13 @@ class DomainTest extends TestCase
             ]);
         $domain = new Domain($mockApi);
         $dto = $domain->getDomain(1);
-        $this->assertInstanceOf(\Vexura\Model\Domain::class, $dto);
-        $this->assertInstanceOf(\Vexura\Model\DomainName::class, $dto->domain);
+        $this->assertInstanceOf(\Ashio\Model\Domain::class, $dto);
+        $this->assertInstanceOf(\Ashio\Model\DomainName::class, $dto->domain);
         $this->assertSame('example', $dto->domain->name);
-        $this->assertInstanceOf(\Vexura\Model\DomainOwner::class, $dto->owner);
-        $this->assertInstanceOf(\Vexura\Model\Nameserver::class, $dto->name_servers[0]);
-        $this->assertInstanceOf(\Vexura\Model\DomainDnssecKey::class, $dto->dnssec_keys[0]);
-        $this->assertInstanceOf(\Vexura\Model\DomainAbuseDetails::class, $dto->abuse_details);
+        $this->assertInstanceOf(\Ashio\Model\DomainOwner::class, $dto->owner);
+        $this->assertInstanceOf(\Ashio\Model\Nameserver::class, $dto->name_servers[0]);
+        $this->assertInstanceOf(\Ashio\Model\DomainDnssecKey::class, $dto->dnssec_keys[0]);
+        $this->assertInstanceOf(\Ashio\Model\DomainAbuseDetails::class, $dto->abuse_details);
     }
 
     public function testAdditionalDataSpecs(): void
@@ -121,7 +121,7 @@ class DomainTest extends TestCase
         $domain = new Domain($mockApi);
         $specs = $domain->getAdditionalData(['domain.extension' => 'eu']);
         $this->assertIsArray($specs);
-        $this->assertInstanceOf(\Vexura\Model\AdditionalDataSpecification::class, $specs[0]);
+        $this->assertInstanceOf(\Ashio\Model\AdditionalDataSpecification::class, $specs[0]);
     }
 
     public function testCustomerAdditionalDataSpecs(): void
@@ -136,7 +136,7 @@ class DomainTest extends TestCase
         $domain = new Domain($mockApi);
         $specs = $domain->getCustomerAdditionalData(['domain.extension' => 'eu']);
         $this->assertIsArray($specs);
-        $this->assertInstanceOf(\Vexura\Model\AdditionalDataSpecification::class, $specs[0]);
+        $this->assertInstanceOf(\Ashio\Model\AdditionalDataSpecification::class, $specs[0]);
     }
 
     public function testCreateDomainRequestPayload(): void
@@ -157,7 +157,7 @@ class DomainTest extends TestCase
             ->willReturn(['data' => ['id' => 10]]);
 
         $domain = new Domain($mockApi);
-        $req = new \Vexura\Model\DomainCreateRequest('HANDLE1', (new \Vexura\Model\DomainName())->fromArray(['name' => 'example','extension' => 'com']), 1);
+        $req = new \Ashio\Model\DomainCreateRequest('HANDLE1', (new \Ashio\Model\DomainName())->fromArray(['name' => 'example','extension' => 'com']), 1);
         $domain->createDomain($req);
     }
 
@@ -176,7 +176,7 @@ class DomainTest extends TestCase
             ->willReturn(['data' => ['id' => 10]]);
 
         $domain = new Domain($mockApi);
-        $req = new \Vexura\Model\DomainUpdateRequest();
+        $req = new \Ashio\Model\DomainUpdateRequest();
         $req->autorenew = 'off';
         $domain->updateDomain(10, $req);
     }

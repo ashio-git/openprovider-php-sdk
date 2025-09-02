@@ -1,11 +1,11 @@
 <?php
 
-namespace Vexura\Tests\Accounting;
+namespace Ashio\Tests\Accounting;
 
 use PHPUnit\Framework\TestCase;
-use Vexura\Accounting\Account;
-use Vexura\Model\AccountBalance;
-use Vexura\OpenProvider;
+use Ashio\Accounting\Account;
+use Ashio\Model\AccountBalance;
+use Ashio\OpenProvider;
 
 class AccountTest extends TestCase
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Vexura\Accounting;
+namespace Ashio\Accounting;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Vexura\Model\EmailTemplate as EmailTemplateModel;
-use Vexura\Model\PaginatedResponse;
-use Vexura\Model\EmailTemplateCreateRequest;
-use Vexura\Model\EmailTemplateUpdateRequest;
-use Vexura\OpenProvider;
+use Ashio\Model\EmailTemplate as EmailTemplateModel;
+use Ashio\Model\PaginatedResponse;
+use Ashio\Model\EmailTemplateCreateRequest;
+use Ashio\Model\EmailTemplateUpdateRequest;
+use Ashio\OpenProvider;
 
 class EmailTemplate
 {

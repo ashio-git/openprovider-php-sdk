@@ -1,22 +1,22 @@
 <?php
 
-namespace Vexura\Domain;
+namespace Ashio\Domain;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Vexura\Exception\ApiException;
-use Vexura\Exception\AuthenticationException;
-use Vexura\Exception\NotFoundException;
-use Vexura\Exception\ValidationException;
-use Vexura\OpenProvider;
-use Vexura\Model\DnsTemplate;
-use Vexura\Model\DnsCreateTemplateRequest;
-use Vexura\Model\DnsUpdateZoneRequest;
-use Vexura\Model\Nameserver;
-use Vexura\Model\NameserverGroup;
-use Vexura\Model\Zone as ZoneModel;
-use Vexura\Model\DnsRecord as DnsRecordModel;
-use Vexura\Model\DnsCreateZoneRequest;
-use Vexura\Model\PaginatedResponse;
+use Ashio\Exception\ApiException;
+use Ashio\Exception\AuthenticationException;
+use Ashio\Exception\NotFoundException;
+use Ashio\Exception\ValidationException;
+use Ashio\OpenProvider;
+use Ashio\Model\DnsTemplate;
+use Ashio\Model\DnsCreateTemplateRequest;
+use Ashio\Model\DnsUpdateZoneRequest;
+use Ashio\Model\Nameserver;
+use Ashio\Model\NameserverGroup;
+use Ashio\Model\Zone as ZoneModel;
+use Ashio\Model\DnsRecord as DnsRecordModel;
+use Ashio\Model\DnsCreateZoneRequest;
+use Ashio\Model\PaginatedResponse;
 
 class DNS
 {
@@ -53,7 +53,7 @@ class DNS
      * @param string|null $pattern
      * @param string $order
      * @param string $order_by
-     * @return \Vexura\Model\PaginatedResponse
+     * @return \Ashio\Model\PaginatedResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -61,11 +61,11 @@ class DNS
      * @throws ValidationException
      */
     /**
-     * @return \Vexura\Model\PaginatedResponse
-     * @phpstan-return \Vexura\Model\PaginatedResponse<Nameserver>
-     * @psalm-return \Vexura\Model\PaginatedResponse<Nameserver>
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<Nameserver>
+     * @psalm-return \Ashio\Model\PaginatedResponse<Nameserver>
      */
-    public function listNameservers(int $limit = 100, int $offset = 0, ?string $name = null, ?string $ip = null, ?string $ip6 = null, ?string $pattern = null, string $order = 'asc', string $order_by = 'name'): \Vexura\Model\PaginatedResponse
+    public function listNameservers(int $limit = 100, int $offset = 0, ?string $name = null, ?string $ip = null, ?string $ip6 = null, ?string $pattern = null, string $order = 'asc', string $order_by = 'name'): \Ashio\Model\PaginatedResponse
     {
         $params = array_filter([
             'limit' => $limit,
@@ -85,7 +85,7 @@ class DNS
                 $nameservers[] = (new Nameserver())->fromArray($nameserverData);
             }
         }
-        return new \Vexura\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $nameservers);
+        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $nameservers);
     }
 
     /**
@@ -263,11 +263,11 @@ class DNS
      * @throws ValidationException
      */
     /**
-     * @return \Vexura\Model\PaginatedResponse
-     * @phpstan-return \Vexura\Model\PaginatedResponse<DnsTemplate>
-     * @psalm-return \Vexura\Model\PaginatedResponse<DnsTemplate>
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<DnsTemplate>
+     * @psalm-return \Ashio\Model\PaginatedResponse<DnsTemplate>
      */
-    public function listTemplates(int $limit = 100, int $offset = 0, ?string $namePattern = null): \Vexura\Model\PaginatedResponse
+    public function listTemplates(int $limit = 100, int $offset = 0, ?string $namePattern = null): \Ashio\Model\PaginatedResponse
     {
         $params = array_filter([
             'limit' => $limit,
@@ -282,13 +282,13 @@ class DNS
                 $templates[] = (new DnsTemplate())->fromArray($templateData);
             }
         }
-        return new \Vexura\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $templates);
+        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $templates);
     }
 
     /**
      * Create a new DNS template.
      * @param DnsCreateTemplateRequest $request
-     * @return \Vexura\Model\DnsTemplate
+     * @return \Ashio\Model\DnsTemplate
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -327,10 +327,10 @@ class DNS
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function deleteTemplate(int $id): \Vexura\Model\ActionResponse
+    public function deleteTemplate(int $id): \Ashio\Model\ActionResponse
     {
         $response = $this->API->delete("dns/templates/{$id}");
-        return (new \Vexura\Model\ActionResponse())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\ActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
@@ -338,7 +338,7 @@ class DNS
      * @param int $limit
      * @param int $offset
      * @param string|null $namePattern
-     * @return \Vexura\Model\PaginatedResponse
+     * @return \Ashio\Model\PaginatedResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -346,11 +346,11 @@ class DNS
      * @throws ValidationException
      */
     /**
-     * @return \Vexura\Model\PaginatedResponse
-     * @phpstan-return \Vexura\Model\PaginatedResponse<ZoneModel>
-     * @psalm-return \Vexura\Model\PaginatedResponse<ZoneModel>
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<ZoneModel>
+     * @psalm-return \Ashio\Model\PaginatedResponse<ZoneModel>
      */
-    public function listZones(int $limit = 100, int $offset = 0, ?string $namePattern = null): \Vexura\Model\PaginatedResponse
+    public function listZones(int $limit = 100, int $offset = 0, ?string $namePattern = null): \Ashio\Model\PaginatedResponse
     {
         $params = array_filter([
             'limit' => $limit,
@@ -365,23 +365,23 @@ class DNS
                 $zones[] = new ZoneModel($zoneData);
             }
         }
-        return new \Vexura\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $zones);
+        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $zones);
     }
 
     /**
      * Create a new DNS zone.
      * @param DnsCreateZoneRequest $request
-     * @return \Vexura\Model\DnsActionResponse
+     * @return \Ashio\Model\DnsActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function createZone(DnsCreateZoneRequest $request): \Vexura\Model\DnsActionResponse
+    public function createZone(DnsCreateZoneRequest $request): \Ashio\Model\DnsActionResponse
     {
         $response = $this->API->post('dns/zones', $request->toArray());
-        return (new \Vexura\Model\DnsActionResponse())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\DnsActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
@@ -405,7 +405,7 @@ class DNS
      * Update an existing DNS zone.
      * @param string $name
      * @param DnsUpdateZoneRequest $request
-     * @return \Vexura\Model\DnsActionResponse
+     * @return \Ashio\Model\DnsActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -413,19 +413,19 @@ class DNS
      * @throws ValidationException
      */
     /**
-     * @return \Vexura\Model\DnsActionResponse
+     * @return \Ashio\Model\DnsActionResponse
      */
-    public function updateZone(string $name, DnsUpdateZoneRequest $request): \Vexura\Model\DnsActionResponse
+    public function updateZone(string $name, DnsUpdateZoneRequest $request): \Ashio\Model\DnsActionResponse
     {
         $response = $this->API->put("dns/zones/{$name}", $request->toArray());
-        return (new \Vexura\Model\DnsActionResponse())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\DnsActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * Delete a DNS zone.
      * @param string $name
      * @param array $params
-     * @return \Vexura\Model\DnsActionResponse
+     * @return \Ashio\Model\DnsActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -433,12 +433,12 @@ class DNS
      * @throws ValidationException
      */
     /**
-     * @return \Vexura\Model\DnsActionResponse
+     * @return \Ashio\Model\DnsActionResponse
      */
-    public function deleteZone(string $name, array $params = []): \Vexura\Model\DnsActionResponse
+    public function deleteZone(string $name, array $params = []): \Ashio\Model\DnsActionResponse
     {
         $response = $this->API->delete("dns/zones/{$name}", $params);
-        return (new \Vexura\Model\DnsActionResponse())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\DnsActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
@@ -453,11 +453,11 @@ class DNS
      * @throws ValidationException
      */
     /**
-     * @return \Vexura\Model\PaginatedResponse
-     * @phpstan-return \Vexura\Model\PaginatedResponse<DnsRecordModel>
-     * @psalm-return \Vexura\Model\PaginatedResponse<DnsRecordModel>
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<DnsRecordModel>
+     * @psalm-return \Ashio\Model\PaginatedResponse<DnsRecordModel>
      */
-    public function listZoneRecords(string $name, array $params = []): \Vexura\Model\PaginatedResponse
+    public function listZoneRecords(string $name, array $params = []): \Ashio\Model\PaginatedResponse
     {
         $response = $this->API->get("dns/zones/{$name}/records", $params);
         $records = [];
@@ -466,6 +466,6 @@ class DNS
                 $records[] = new DnsRecordModel($recordData);
             }
         }
-        return new \Vexura\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $records);
+        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $records);
     }
 }

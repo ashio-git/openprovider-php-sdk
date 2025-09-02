@@ -1,35 +1,35 @@
 <?php
 
-namespace Vexura\Domain;
+namespace Ashio\Domain;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Vexura\Exception\ApiException;
-use Vexura\Exception\AuthenticationException;
-use Vexura\Exception\NotFoundException;
-use Vexura\Exception\ValidationException;
-use Vexura\License\License;
-use Vexura\OpenProvider;
-use Vexura\Model\AdditionalDataSpecification;
-use Vexura\Model\AuthCode;
-use Vexura\Model\CheckDomainResult;
-use Vexura\Model\DeleteDomainResponse;
-use Vexura\Model\Domain as DomainModel;
-use Vexura\Model\Price;
-use Vexura\Model\RenewDomainResponse;
-use Vexura\Model\RenewDomainRequest;
-use Vexura\Model\RestoreDomainResponse;
-use Vexura\Model\SuggestNameDomainResult;
-use Vexura\Model\Tld;
-use Vexura\Model\TradeDomainResponse;
-use Vexura\Model\TransferDomainResponse;
-use Vexura\Model\DomainTransferRequest;
-use Vexura\Model\DomainTradeRequest;
-use Vexura\Model\DomainSuggestNameRequest;
-use Vexura\Model\DomainRestoreRequest;
-use Vexura\Model\DomainApproveTransferRequest;
-use Vexura\Model\DomainSendFoa1Request;
-use Vexura\Model\DomainTryAgainLastOperationRequest;
-use Vexura\Model\DomainResetAuthCodeRequest;
+use Ashio\Exception\ApiException;
+use Ashio\Exception\AuthenticationException;
+use Ashio\Exception\NotFoundException;
+use Ashio\Exception\ValidationException;
+use Ashio\License\License;
+use Ashio\OpenProvider;
+use Ashio\Model\AdditionalDataSpecification;
+use Ashio\Model\AuthCode;
+use Ashio\Model\CheckDomainResult;
+use Ashio\Model\DeleteDomainResponse;
+use Ashio\Model\Domain as DomainModel;
+use Ashio\Model\Price;
+use Ashio\Model\RenewDomainResponse;
+use Ashio\Model\RenewDomainRequest;
+use Ashio\Model\RestoreDomainResponse;
+use Ashio\Model\SuggestNameDomainResult;
+use Ashio\Model\Tld;
+use Ashio\Model\TradeDomainResponse;
+use Ashio\Model\TransferDomainResponse;
+use Ashio\Model\DomainTransferRequest;
+use Ashio\Model\DomainTradeRequest;
+use Ashio\Model\DomainSuggestNameRequest;
+use Ashio\Model\DomainRestoreRequest;
+use Ashio\Model\DomainApproveTransferRequest;
+use Ashio\Model\DomainSendFoa1Request;
+use Ashio\Model\DomainTryAgainLastOperationRequest;
+use Ashio\Model\DomainResetAuthCodeRequest;
 
 class Domain
 {
@@ -140,9 +140,9 @@ class Domain
 
     /**
      * List all domains with optional filters.
-     * @return \Vexura\Model\PaginatedResponse
-     * @phpstan-return \Vexura\Model\PaginatedResponse<DomainModel>
-     * @psalm-return \Vexura\Model\PaginatedResponse<DomainModel>
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<DomainModel>
+     * @psalm-return \Ashio\Model\PaginatedResponse<DomainModel>
      */
     public function listDomains(
         int $limit = 100,
@@ -152,7 +152,7 @@ class Domain
         ?string $domainNamePattern = null,
         ?bool $withHistory = null,
         ?bool $withAdditionalData = null
-    ): \Vexura\Model\PaginatedResponse {
+    ): \Ashio\Model\PaginatedResponse {
         $params = array_filter([
             'limit' => $limit,
             'offset' => $offset,
@@ -168,7 +168,7 @@ class Domain
         foreach ($response['data']['results'] ?? [] as $domainData) {
             $domains[] = new DomainModel($domainData);
         }
-        return new \Vexura\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $domains);
+        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $domains);
     }
 
     /**
@@ -181,7 +181,7 @@ class Domain
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function createDomain(\Vexura\Model\DomainCreateRequest $request): DomainModel
+    public function createDomain(\Ashio\Model\DomainCreateRequest $request): DomainModel
     {
         $response = $this->API->post('domains', $request->toArray());
         return (new DomainModel())->fromArray($response['data']);
@@ -198,7 +198,7 @@ class Domain
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function updateDomain(int $id, \Vexura\Model\DomainUpdateRequest $request): DomainModel
+    public function updateDomain(int $id, \Ashio\Model\DomainUpdateRequest $request): DomainModel
     {
         $response = $this->API->put("domains/{$id}", $request->toArray());
         return (new DomainModel())->fromArray($response['data']);
@@ -259,17 +259,17 @@ class Domain
      * Approve a domain transfer.
      * @param int $id The ID of the domain transfer to approve.
      * @param DomainApproveTransferRequest $request The approval data.
-     * @return \Vexura\Model\ActionResponse
+     * @return \Ashio\Model\ActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function approveTransfer(int $id, DomainApproveTransferRequest $request): \Vexura\Model\ActionResponse
+    public function approveTransfer(int $id, DomainApproveTransferRequest $request): \Ashio\Model\ActionResponse
     {
         $response = $this->API->post("domains/{$id}/transfer/approve", $request->toArray());
-        return (new \Vexura\Model\ActionResponse())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\ActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
@@ -330,23 +330,23 @@ class Domain
      * Send the Form of Authorization (FOA) for a domain transfer.
      * @param int $id The ID of the domain.
      * @param DomainSendFoa1Request $request The FOA data.
-     * @return \Vexura\Model\ActionResponse
+     * @return \Ashio\Model\ActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function sendFoa1(int $id, DomainSendFoa1Request $request): \Vexura\Model\ActionResponse
+    public function sendFoa1(int $id, DomainSendFoa1Request $request): \Ashio\Model\ActionResponse
     {
         $response = $this->API->post("domains/{$id}/transfer/send-foa1", $request->toArray());
-        return (new \Vexura\Model\ActionResponse())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\ActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * Get the authorization code for a domain.
      * @param int $id The ID of the domain.
-     * @return \Vexura\Model\AuthCode
+     * @return \Ashio\Model\AuthCode
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -355,29 +355,29 @@ class Domain
      */
     /**
      * Get authorization code for a domain
-     * @return \Vexura\Model\AuthCode
+     * @return \Ashio\Model\AuthCode
      */
-    public function getAuthCode(int $id): \Vexura\Model\AuthCode
+    public function getAuthCode(int $id): \Ashio\Model\AuthCode
     {
         $response = $this->API->get("domains/{$id}/authcode");
-        return (new \Vexura\Model\AuthCode())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\AuthCode())->fromArray($response['data'] ?? []);
     }
 
     /**
      * Reset authorization code for a domain
      * @param int $id The ID of the domain.
      * @param DomainResetAuthCodeRequest $request The reset data.
-     * @return \Vexura\Model\AuthCode
+     * @return \Ashio\Model\AuthCode
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function resetAuthCode(int $id, DomainResetAuthCodeRequest $request): \Vexura\Model\AuthCode
+    public function resetAuthCode(int $id, DomainResetAuthCodeRequest $request): \Ashio\Model\AuthCode
     {
         $response = $this->API->post("domains/{$id}/authcode/reset", $request->toArray());
-        return (new \Vexura\Model\AuthCode())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\AuthCode())->fromArray($response['data'] ?? []);
     }
 
     /**
@@ -400,7 +400,7 @@ class Domain
     /**
      * Get additional data required for a specific TLD.
      * @param array $params The parameters to get additional data.
-     * @return \Vexura\Model\AdditionalDataSpecification[]
+     * @return \Ashio\Model\AdditionalDataSpecification[]
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -412,7 +412,7 @@ class Domain
         $response = $this->API->get('domains/additional-data', $params);
         $specs = [];
         foreach (($response['data'] ?? []) as $row) {
-            $specs[] = (new \Vexura\Model\AdditionalDataSpecification())->fromArray($row);
+            $specs[] = (new \Ashio\Model\AdditionalDataSpecification())->fromArray($row);
         }
         return $specs;
     }
@@ -420,7 +420,7 @@ class Domain
     /**
      * Get additional data required for a specific customer.
      * @param array $params The parameters to get customer additional data.
-     * @return \Vexura\Model\AdditionalDataSpecification[]
+     * @return \Ashio\Model\AdditionalDataSpecification[]
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -432,7 +432,7 @@ class Domain
         $response = $this->API->get('domains/additional-data/customers', $params);
         $specs = [];
         foreach (($response['data'] ?? []) as $row) {
-            $specs[] = (new \Vexura\Model\AdditionalDataSpecification())->fromArray($row);
+            $specs[] = (new \Ashio\Model\AdditionalDataSpecification())->fromArray($row);
         }
         return $specs;
     }
@@ -440,7 +440,7 @@ class Domain
     /**
      * List all TLDs.
      * @param array $params Optional parameters to filter the list of TLDs.
-     * @return \Vexura\Model\PaginatedResponse
+     * @return \Ashio\Model\PaginatedResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -449,11 +449,11 @@ class Domain
      */
     /**
      * List TLDs.
-     * @return \Vexura\Model\PaginatedResponse
-     * @phpstan-return \Vexura\Model\PaginatedResponse<Tld>
-     * @psalm-return \Vexura\Model\PaginatedResponse<Tld>
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<Tld>
+     * @psalm-return \Ashio\Model\PaginatedResponse<Tld>
      */
-    public function listTlds(int $limit = 100, int $offset = 0, ?string $namePattern = null, bool $withPrice = false, bool $withDescription = false): \Vexura\Model\PaginatedResponse
+    public function listTlds(int $limit = 100, int $offset = 0, ?string $namePattern = null, bool $withPrice = false, bool $withDescription = false): \Ashio\Model\PaginatedResponse
     {
         $params = array_filter([
             'limit' => $limit,
@@ -468,7 +468,7 @@ class Domain
         foreach ($response['data']['results'] ?? [] as $tldData) {
             $tlds[] = new Tld($tldData);
         }
-        return new \Vexura\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $tlds);
+        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $tlds);
     }
 
     /**

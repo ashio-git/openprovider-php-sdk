@@ -1,11 +1,11 @@
 <?php
 
-namespace Vexura\Tests\Domain;
+namespace Ashio\Tests\Domain;
 
 use PHPUnit\Framework\TestCase;
-use Vexura\OpenProvider;
-use Vexura\Domain\Domain;
-use Vexura\Model\Tld;
+use Ashio\OpenProvider;
+use Ashio\Domain\Domain;
+use Ashio\Model\Tld;
 
 class TldTest extends TestCase
 {
@@ -45,7 +45,7 @@ class TldTest extends TestCase
         $domain = new Domain($mockApi);
         $result = $domain->listTlds();
 
-        $this->assertInstanceOf(\Vexura\Model\PaginatedResponse::class, $result);
+        $this->assertInstanceOf(\Ashio\Model\PaginatedResponse::class, $result);
         $this->assertEquals(2, $result->total);
         $this->assertCount(2, $result->results);
         $this->assertInstanceOf(Tld::class, $result->results[0]);

@@ -1,19 +1,19 @@
 <?php
 
-namespace Vexura\Accounting;
+namespace Ashio\Accounting;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Vexura\Exception\ApiException;
-use Vexura\Exception\AuthenticationException;
-use Vexura\Exception\NotFoundException;
-use Vexura\Exception\ValidationException;
-use Vexura\OpenProvider;
-use Vexura\Model\Contact;
-use Vexura\Model\Customer as CustomerModel;
-use Vexura\Model\Reseller as ResellerModel;
-use Vexura\Model\Tag;
-use Vexura\Model\DomainEmailVerification;
-use Vexura\Model\PaginatedResponse;
+use Ashio\Exception\ApiException;
+use Ashio\Exception\AuthenticationException;
+use Ashio\Exception\NotFoundException;
+use Ashio\Exception\ValidationException;
+use Ashio\OpenProvider;
+use Ashio\Model\Contact;
+use Ashio\Model\Customer as CustomerModel;
+use Ashio\Model\Reseller as ResellerModel;
+use Ashio\Model\Tag;
+use Ashio\Model\DomainEmailVerification;
+use Ashio\Model\PaginatedResponse;
 
 class ResellerCustomer
 {
@@ -39,11 +39,11 @@ class ResellerCustomer
      * @throws ValidationException
      */
     /**
-     * @return \Vexura\Model\PaginatedResponse
-     * @phpstan-return \Vexura\Model\PaginatedResponse<Contact>
-     * @psalm-return \Vexura\Model\PaginatedResponse<Contact>
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<Contact>
+     * @psalm-return \Ashio\Model\PaginatedResponse<Contact>
      */
-    public function listContacts(int $limit = 100, int $offset = 0, ?string $emailPattern = null, ?string $lastNamePattern = null, ?string $companyNamePattern = null): \Vexura\Model\PaginatedResponse
+    public function listContacts(int $limit = 100, int $offset = 0, ?string $emailPattern = null, ?string $lastNamePattern = null, ?string $companyNamePattern = null): \Ashio\Model\PaginatedResponse
     {
         $params = [
             'limit' => $limit,
@@ -69,7 +69,7 @@ class ResellerCustomer
                 $contacts[] = (new Contact())->fromArray($contactData);
             }
         }
-        return new \Vexura\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $contacts);
+        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $contacts);
     }
 
     /**
@@ -178,7 +178,7 @@ class ResellerCustomer
         ?bool $withAdditionalData = null,
         ?string $type = null,
         ?array $columns = null
-    ): \Vexura\Model\PaginatedResponse {
+    ): \Ashio\Model\PaginatedResponse {
         $params = array_filter(compact(
             'resellerId', 'limit', 'offset', 'order', 'orderBy', 'emailPattern',
             'companyNamePattern', 'lastNamePattern', 'firstNamePattern', 'commentPattern',
@@ -192,7 +192,7 @@ class ResellerCustomer
                 $customers[] = (new CustomerModel())->fromArray($customerData);
             }
         }
-        return new \Vexura\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $customers);
+        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $customers);
     }
 
     /**

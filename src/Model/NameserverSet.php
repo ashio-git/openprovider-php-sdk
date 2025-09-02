@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Vexura\Model;
+namespace Ashio\Model;
 
 class NameserverSet
 {
