@@ -9,6 +9,7 @@ use Vexura\Exception\NotFoundException;
 use Vexura\Exception\ValidationException;
 use Vexura\OpenProvider;
 use Vexura\Model\License as LicenseModel;
+use Vexura\Model\LicenseResetHwidRequest;
 
 class License
 {
@@ -60,7 +61,7 @@ class License
      * Reset the Hardware ID (HWID) for a license.
      * @param string $product
      * @param int $keyId
-     * @param array $data
+     * @param LicenseResetHwidRequest $request
      * @return \Vexura\Model\ActionResponse
      * @throws ApiException
      * @throws AuthenticationException
@@ -72,9 +73,9 @@ class License
      * Reset the Hardware ID (HWID) for a license.
      * @return bool
      */
-    public function resetHwid(string $product, int $keyId, array $data): \Vexura\Model\ActionResponse
+    public function resetHwid(string $product, int $keyId, LicenseResetHwidRequest $request): \Vexura\Model\ActionResponse
     {
-        $response = $this->API->post("licenses/hwids/reset/{$product}/{$keyId}", $data);
+        $response = $this->API->post("licenses/hwids/reset/{$product}/{$keyId}", $request->toArray());
         return (new \Vexura\Model\ActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -166,18 +167,13 @@ class License
 
     /**
      * Create a new Plesk license.
-     * @param array $data
-     * @return bool
+     * @param \Vexura\Model\CreatePleskLicenseRequest $request
+     * @return LicenseModel
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * Create a new Plesk license.
-     * @param LicenseModel $license
-     * @return LicenseModel
      */
     public function createPleskLicense(\Vexura\Model\CreatePleskLicenseRequest $request): LicenseModel
     {
@@ -224,19 +220,13 @@ class License
     /**
      * Update an existing Plesk license.
      * @param int $keyId
-     * @param array $data
-     * @return \Vexura\Model\LicenseKey
+     * @param \Vexura\Model\UpdatePleskLicenseRequest $request
+     * @return bool
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * Update an existing Plesk license.
-     * @param int $keyId
-     * @param LicenseModel $license
-     * @return bool
      */
     public function updatePleskLicense(int $keyId, \Vexura\Model\UpdatePleskLicenseRequest $request): bool
     {

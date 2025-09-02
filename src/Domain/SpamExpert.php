@@ -5,6 +5,8 @@ namespace Vexura\Domain;
 use GuzzleHttp\Exception\GuzzleException;
 use Vexura\Model\SpamExpertDomain;
 use Vexura\Model\SpamExpertCreateDomainRequest;
+use Vexura\Model\SpamExpertUpdateDomainRequest;
+use Vexura\Model\SpamExpertGenerateLoginUrlRequest;
 use Vexura\OpenProvider;
 
 class SpamExpert
@@ -48,13 +50,13 @@ class SpamExpert
     /**
      * Update SpamExpert domain
      * @param string $domainName
-     * @param array $data
+     * @param SpamExpertUpdateDomainRequest $request
      * @return bool
      * @throws GuzzleException
      */
-    public function updateDomain(string $domainName, array $data): bool
+    public function updateDomain(string $domainName, SpamExpertUpdateDomainRequest $request): bool
     {
-        $response = $this->API->put("spam-expert/domains/{$domainName}", $data);
+        $response = $this->API->put("spam-expert/domains/{$domainName}", $request->toArray());
         return (bool)($response['data']['success'] ?? false);
     }
 
@@ -77,13 +79,13 @@ class SpamExpert
 
     /**
      * Generate SpamExpert login URL
-     * @param array $data
+     * @param SpamExpertGenerateLoginUrlRequest $request
      * @return string
      * @throws GuzzleException
      */
-    public function generateLoginUrl(array $data): string
+    public function generateLoginUrl(SpamExpertGenerateLoginUrlRequest $request): string
     {
-        $response = $this->API->post("spam-expert/generate-login-url", $data);
+        $response = $this->API->post("spam-expert/generate-login-url", $request->toArray());
         return (string)($response['data']['url'] ?? '');
     }
 }

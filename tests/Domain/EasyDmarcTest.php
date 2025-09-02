@@ -65,7 +65,9 @@ class EasyDmarcTest extends TestCase
         $api = new OpenProvider('u','p',$client);
         $handler = new EasyDMARC($api);
         $this->expectException(ValidationException::class);
-        $handler->createEasyDmarc(['domain' => '']);
+        $domain = new \Vexura\Model\DomainName();
+        $req = new \Vexura\Model\EasyDmarcCreateRequest($domain, '');
+        $handler->createEasyDmarc($req);
     }
 
     public function testGetSsoNotFound(): void

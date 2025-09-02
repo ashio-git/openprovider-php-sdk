@@ -87,7 +87,9 @@ class EmailTemplateTest extends TestCase
         $handler = new EmailTemplateHandler($api);
 
         $this->expectException(NotFoundException::class);
-        $handler->updateEmail(9999, ['name' => 'X']);
+        $req = new \Vexura\Model\EmailTemplateUpdateRequest();
+        $req->name = 'X';
+        $handler->updateEmail(9999, $req);
     }
 }
 

@@ -9,6 +9,8 @@ use Vexura\Exception\NotFoundException;
 use Vexura\Exception\ValidationException;
 use Vexura\OpenProvider;
 use Vexura\Model\DnsTemplate;
+use Vexura\Model\DnsCreateTemplateRequest;
+use Vexura\Model\DnsUpdateZoneRequest;
 use Vexura\Model\Nameserver;
 use Vexura\Model\NameserverGroup;
 use Vexura\Model\Zone as ZoneModel;
@@ -285,7 +287,7 @@ class DNS
 
     /**
      * Create a new DNS template.
-     * @param array $data
+     * @param DnsCreateTemplateRequest $request
      * @return \Vexura\Model\DnsTemplate
      * @throws ApiException
      * @throws AuthenticationException
@@ -293,9 +295,9 @@ class DNS
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function createTemplate(array $data): DnsTemplate
+    public function createTemplate(DnsCreateTemplateRequest $request): DnsTemplate
     {
-        $response = $this->API->post('dns/templates', $data);
+        $response = $this->API->post('dns/templates', $request->toArray());
         return $this->getTemplate($response['data']['id']);
     }
 
@@ -402,7 +404,7 @@ class DNS
     /**
      * Update an existing DNS zone.
      * @param string $name
-     * @param array $data
+     * @param DnsUpdateZoneRequest $request
      * @return \Vexura\Model\DnsActionResponse
      * @throws ApiException
      * @throws AuthenticationException
@@ -413,9 +415,9 @@ class DNS
     /**
      * @return \Vexura\Model\DnsActionResponse
      */
-    public function updateZone(string $name, array $data): \Vexura\Model\DnsActionResponse
+    public function updateZone(string $name, DnsUpdateZoneRequest $request): \Vexura\Model\DnsActionResponse
     {
-        $response = $this->API->put("dns/zones/{$name}", $data);
+        $response = $this->API->put("dns/zones/{$name}", $request->toArray());
         return (new \Vexura\Model\DnsActionResponse())->fromArray($response['data'] ?? []);
     }
 

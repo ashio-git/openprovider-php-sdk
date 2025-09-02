@@ -26,6 +26,10 @@ use Vexura\Model\DomainTransferRequest;
 use Vexura\Model\DomainTradeRequest;
 use Vexura\Model\DomainSuggestNameRequest;
 use Vexura\Model\DomainRestoreRequest;
+use Vexura\Model\DomainApproveTransferRequest;
+use Vexura\Model\DomainSendFoa1Request;
+use Vexura\Model\DomainTryAgainLastOperationRequest;
+use Vexura\Model\DomainResetAuthCodeRequest;
 
 class Domain
 {
@@ -169,7 +173,7 @@ class Domain
 
     /**
      * Create a new domain.
-     * @param array $data The data for the new domain.
+     * @param DomainCreateRequest $request The data for the new domain.
      * @return DomainModel
      * @throws ApiException
      * @throws AuthenticationException
@@ -186,7 +190,7 @@ class Domain
     /**
      * Update an existing domain.
      * @param int $id The ID of the domain to update.
-     * @param array $data The data to update.
+     * @param DomainUpdateRequest $request The data to update.
      * @return DomainModel
      * @throws ApiException
      * @throws AuthenticationException
@@ -254,17 +258,17 @@ class Domain
     /**
      * Approve a domain transfer.
      * @param int $id The ID of the domain transfer to approve.
-     * @param array $data The approval data.
-     * @return bool
+     * @param DomainApproveTransferRequest $request The approval data.
+     * @return \Vexura\Model\ActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function approveTransfer(int $id, array $data): \Vexura\Model\ActionResponse
+    public function approveTransfer(int $id, DomainApproveTransferRequest $request): \Vexura\Model\ActionResponse
     {
-        $response = $this->API->post("domains/{$id}/transfer/approve", $data);
+        $response = $this->API->post("domains/{$id}/transfer/approve", $request->toArray());
         return (new \Vexura\Model\ActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -325,17 +329,17 @@ class Domain
     /**
      * Send the Form of Authorization (FOA) for a domain transfer.
      * @param int $id The ID of the domain.
-     * @param array $data The FOA data.
-     * @return bool
+     * @param DomainSendFoa1Request $request The FOA data.
+     * @return \Vexura\Model\ActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function sendFoa1(int $id, array $data): \Vexura\Model\ActionResponse
+    public function sendFoa1(int $id, DomainSendFoa1Request $request): \Vexura\Model\ActionResponse
     {
-        $response = $this->API->post("domains/{$id}/transfer/send-foa1", $data);
+        $response = $this->API->post("domains/{$id}/transfer/send-foa1", $request->toArray());
         return (new \Vexura\Model\ActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -360,9 +364,9 @@ class Domain
     }
 
     /**
-     * Reset the authorization code for a domain.
+     * Reset authorization code for a domain
      * @param int $id The ID of the domain.
-     * @param array $data The reset data.
+     * @param DomainResetAuthCodeRequest $request The reset data.
      * @return \Vexura\Model\AuthCode
      * @throws ApiException
      * @throws AuthenticationException
@@ -370,20 +374,16 @@ class Domain
      * @throws NotFoundException
      * @throws ValidationException
      */
-    /**
-     * Reset authorization code for a domain
-     * @return \Vexura\Model\AuthCode
-     */
-    public function resetAuthCode(int $id, array $data): \Vexura\Model\AuthCode
+    public function resetAuthCode(int $id, DomainResetAuthCodeRequest $request): \Vexura\Model\AuthCode
     {
-        $response = $this->API->post("domains/{$id}/authcode/reset", $data);
+        $response = $this->API->post("domains/{$id}/authcode/reset", $request->toArray());
         return (new \Vexura\Model\AuthCode())->fromArray($response['data'] ?? []);
     }
 
     /**
      * Retry the last failed operation for a domain.
      * @param int $id The ID of the domain.
-     * @param array $data The retry data.
+     * @param DomainTryAgainLastOperationRequest $request The retry data.
      * @return bool
      * @throws ApiException
      * @throws AuthenticationException
@@ -391,9 +391,9 @@ class Domain
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function tryAgainLastOperation(int $id, array $data): bool
+    public function tryAgainLastOperation(int $id, DomainTryAgainLastOperationRequest $request): bool
     {
-        $response = $this->API->post("domains/{$id}/last-operation/restart", $data);
+        $response = $this->API->post("domains/{$id}/last-operation/restart", $request->toArray());
         return (bool)($response['data']['success'] ?? false);
     }
 
