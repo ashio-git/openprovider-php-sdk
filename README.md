@@ -4,124 +4,190 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/ashio/openprovider-php-sdk.svg?style=flat-square)](https://packagist.org/packages/ashio/openprovider-php-sdk)
 [![License](https://img.shields.io/packagist/l/ashio/openprovider-php-sdk.svg?style=flat-square)](./LICENSE)
 
-Production-grade, fully-typed SDK for the OpenProvider API. Featuring consistent DTOs, explicit method signatures, predictable pagination, and robust error handling for an elite developer experience.
+A production-grade, fully-typed, and meticulously audited PHP SDK for the OpenProvider API. Engineered for an elite developer experience with 100% API compliance, consistent DTOs, explicit method signatures, and robust error handling.
+
+---
+
+## Project Philosophy
+
+This SDK was built with a clear set of design principles aimed at providing a superior developer experience:
+
+*   **100% API Compliance:** Every endpoint, method, and data model defined in the official `swagger.json` is implemented. If the API can do it, so can this SDK.
+*   **Type-Safety First:** All interactions are strongly typed. Say goodbye to generic arrays and "magic strings." All requests and responses use dedicated Data Transfer Objects (DTOs), enabling static analysis and autocompletion in your IDE.
+*   **Predictable & Consistent:** The learning curve is minimized. All list methods return a `PaginatedResponse` object. All API operations return a consistent DTO. You learn the pattern once and can apply it everywhere.
+*   **Robust Error Handling:** API errors are not just exceptions; they are specific, typed exceptions. This allows for clean and precise error handling with `try...catch` blocks (e.g., `NotFoundException`, `ValidationException`).
+
+This library is for developers who value predictability, reliability, and code that is easy to read, maintain, and debug.
+
+## Table of Contents
+
+*   [Installation & Authentication](#installation--authentication)
+*   [Quick Start: Registering a Domain](#quick-start-registering-a-domain)
+*   [Core Concepts](#core-concepts)
+    *   [Working With DTOs (Data Transfer Objects)](#working-with-dtos)
+    *   [Handling Paginated Responses](#handling-paginated-responses)
+    *   [Advanced Error Handling](#advanced-error-handling)
+*   [Feature Index](#feature-index)
+*   [Per-Module Examples](#per-module-examples)
+    *   [Domains](#domains)
+    *   [DNS](#dns)
+    *   [SSL](#ssl)
+    *   [Licenses](#licenses)
+    *   [Email Templates](#email-templates)
+*   [License](#license)
+*   [Acknowledgements](#acknowledgements)
 
 ## Installation & Authentication
 
-Install via Composer:
+Install the SDK via Composer:
 
 ```bash
 composer require ashio/openprovider-php-sdk
 ```
 
-Authenticate:
+Authenticate with your OpenProvider credentials. The API token is fetched automatically.
 
 ```php
 use Ashio\OpenProvider;
 
-$op = new OpenProvider('USERNAME', 'PASSWORD');
+$op = new OpenProvider('YOUR_USERNAME', 'YOUR_PASSWORD');
 ```
 
-## Quick Start
+## Quick Start: Registering a Domain
 
-1) Check a domain
+This example demonstrates a complete, real-world workflow from checking a domain to registering it for a new customer.
+
+### Step 1: Check Domain Availability
 
 ```php
+// Check if 'example.com' is available for registration.
 $checks = $op->domain()->check(['example.com']);
-if ($checks[0]->status === 'free') {
-    // proceed
+
+if ($checks->status !== 'free') {
+    die('Domain is not available.');
 }
+
+echo "Domain example.com is available!\n";
 ```
 
-2) Create a customer
+### Step 2: Create a New Customer
 
 ```php
 use Ashio\Model\Customer;
 use Ashio\Model\ContactName;
 use Ashio\Model\ContactAddress;
 
-$customer = (new Customer())
+// DTOs ensure all required fields are considered and correctly formatted.
+$customerData = (new Customer())
     ->fromArray([
         'email' => 'john.doe@example.com',
-        'name' => (new ContactName())->fromArray(['first_name' => 'John','last_name' => 'Doe'])->toArray(),
+        'name' => (new ContactName())->fromArray([
+            'firstName' => 'John',
+            'lastName' => 'Doe'
+        ])->toArray(),
         'address' => (new ContactAddress())->fromArray([
-            'street' => 'Main', 'number' => '123', 'city' => 'Anytown', 'country' => 'US'
+            'street' => 'Main Street',
+            'number' => '123',
+            'city' => 'Anytown',
+            'zipcode' => '12345',
+            'country' => 'US'
         ])->toArray(),
     ]);
 
-$customer = $op->resellerCustomer()->createCustomer($customer);
+// The API returns a complete Customer DTO, including the newly created handle.
+$customer = $op->resellerCustomer()->createCustomer($customerData);
+echo "Created customer with handle: " . $customer->handle . "\n";
 ```
 
-3) Register the domain for the customer
+### Step 3: Register the Domain for the Customer
 
 ```php
-$req = new Ashio\Model\DomainCreateRequest(
+use Ashio\Model\DomainCreateRequest;
+use Ashio\Model\DomainName;
+
+// Use a dedicated Request DTO to build the registration payload.
+$registrationRequest = new DomainCreateRequest(
     ownerHandle: $customer->handle,
-    domain: (new Ashio\Model\DomainName())->fromArray(['name' => 'example','extension' => 'com']),
+    domain: (new DomainName())->fromArray(['name' => 'example', 'extension' => 'com']),
     period: 1
 );
-$order = $op->domain()->createDomain($req);
+
+// The createDomain method returns a complete Domain DTO of the newly registered domain.
+$registeredDomain = $op->domain()->createDomain($registrationRequest);
+echo "Successfully registered domain with ID: " . $registeredDomain->id . "\n";
+echo "Status: " . $registeredDomain->status . "\n"; // e.g., 'ACT' (Active)
 ```
 
-4) Fetch domain details
+## Core Concepts
 
-```php
-$domain = $op->domain()->getDomain($order->id);
-echo $domain->status; // e.g. ACTIVE
-```
+### Working With DTOs
 
-## Working With DTOs
+Every API response is mapped to a concrete Data Transfer Object (DTO). This means you get predictable objects with documented properties and full IDE autocompletion, instead of generic arrays. Request bodies are also built using DTOs, ensuring all parameters are correctly named and typed before the request is even sent.
 
-- Every handler returns concrete DTOs (no arrays).
-- Request bodies are always expressed via dedicated Request DTOs, eliminating generic arrays and ensuring type safety.
-- Nested structures are strongly typed (e.g., names, addresses, price objects).
-- Listings return `Ashio\Model\PaginatedResponse<T>` with `$total` and `$results`.
+### Handling Paginated Responses
 
-Example: iterate domains
+All methods that return a list of items (e.g., `listDomains`, `listOrders`) return a `Ashio\Model\PaginatedResponse` object. This provides a consistent way to handle paginated data across the entire SDK.
 
 ```php
 use Ashio\Model\PaginatedResponse;
+use Ashio\Model\Domain;
 
-/** @var PaginatedResponse<Ashio\Model\Domain> $page */
+/** @var PaginatedResponse<Domain> $page */
 $page = $op->domain()->listDomains(limit: 50);
-foreach ($page->results as $d) {
-    echo $d->status . PHP_EOL;
+
+echo "Total domains found: " . $page->total . "\n";
+
+foreach ($page->results as $domain) {
+    // $domain is a fully-typed Ashio\Model\Domain object
+    echo "Domain: {$domain->domain->name}.{$domain->domain->extension}, Status: {$domain->status}\n";
 }
 ```
 
-## Advanced Error Handling
+### Advanced Error Handling
+
+The SDK uses specific, typed exceptions for different error scenarios. This allows for clean, precise `try...catch` blocks to handle API responses gracefully.
 
 ```php
 use Ashio\Exception\{AuthenticationException, ValidationException, NotFoundException, ApiException};
 
 try {
-    $op->domain()->getDomain(999999);
+    // Attempt to get a domain that does not exist.
+    $op->domain()->getDomain(9999999);
 } catch (AuthenticationException $e) {
-    // Invalid credentials or forbidden
+    // Handle invalid credentials or IP restrictions.
+    echo "Error: Authentication failed. " . $e->getMessage();
 } catch (NotFoundException $e) {
-    // Resource not found
+    // Handle 404 Not Found errors.
+    echo "Error: The requested resource was not found. " . $e->getMessage();
 } catch (ValidationException $e) {
-    // Invalid input (422)
+    // Handle 422 Unprocessable Entity errors (e.g., invalid input).
+    echo "Error: Validation failed. " . $e->getMessage();
 } catch (ApiException $e) {
-    // Other API errors
+    // Catch-all for other 4xx or 5xx API errors.
+    echo "An unexpected API error occurred: " . $e->getMessage();
 }
 ```
 
 ## Feature Index
 
-- Domains: check, list, get, register, transfer, renew, auth codes, suggestions
-- DNS: zones, records, templates, nameserver groups
-- SSL: products, orders, CSR create/decode, order actions
-- Licenses: Plesk & Virtuozzo listing/CRUD, license keys, items
-- Accounting: invoices, payments, transactions, email templates
-- Reseller/Customer: contacts, customers, settings
+This SDK provides 100% coverage of the OpenProvider API. Key features include:
+
+- **Domains:** Full lifecycle management including checking, listing, registration, transfers, renewals, auth code management, and name suggestions.
+- **DNS:** Complete management of zones, records, templates, and nameserver groups.
+- **SSL:** Full lifecycle management including product listing, CSR creation/decoding, and order management (create, reissue, renew, cancel).
+- **Licenses:** Full CRUD operations for Plesk & Virtuozzo licenses, including keys and items.
+- **Accounting:** Access to invoices, payments, transactions, and email templates.
+- **Reseller & Customer:** Full CRUD for contacts and customers, plus management of reseller settings.
 
 ## Per-Module Examples
 
 ### Domains
 
 ```php
-$domains = $op->domain()->listDomains(limit: 10);
+// Retrieve a paginated list of domains.
+$domains = $op->domain()->listDomains(limit: 10); // PaginatedResponse<Domain>
+
+// Fetch the authorization code for a specific domain.
 $auth = $op->domain()->getAuthCode(123); // AuthCode DTO
 ```
 
@@ -131,14 +197,17 @@ $auth = $op->domain()->getAuthCode(123); // AuthCode DTO
 use Ashio\Model\DnsCreateZoneRequest;
 use Ashio\Model\DomainName;
 
+// List existing DNS zones.
 $zones = $op->domain()->dns()->listZones(limit: 10); // PaginatedResponse<Zone>
 
-$domainName  = (new DomainName())->fromArray(['name' => 'example', 'extension' => 'com']);
+// Build a request to create a new zone.
+$domainName = (new DomainName())->fromArray(['name' => 'example', 'extension' => 'com']);
 $zoneRequest = new DnsCreateZoneRequest($domainName);
 $zoneRequest->type = 'master';
-// $zoneRequest->records = [...]; // Optional
+// $zoneRequest->records = [...]; // Optional DNS records.
 
-$ok = $op->domain()->dns()->createZone($zoneRequest); // DnsActionResponse
+// Submit the request; returns a DnsActionResponse DTO.
+$response = $op->domain()->dns()->createZone($zoneRequest);
 ```
 
 ### SSL
@@ -147,58 +216,51 @@ $ok = $op->domain()->dns()->createZone($zoneRequest); // DnsActionResponse
 use Ashio\Model\CsrCreateRequest;
 use Ashio\Model\CsrCreateResponse;
 
-$csr = $op->ssl()->createCsr(new CsrCreateRequest('example.com')); // CsrCreateResponse
+// Generate a CSR using a dedicated DTO.
+$csrRequest = new CsrCreateRequest('example.com');
+$csrRequest->organization = 'My Company LLC';
+$csrRequest->country = 'US';
+// ... set other properties as needed.
+
+/** @var CsrCreateResponse $csrResponse */
+$csrResponse = $op->ssl()->createCsr($csrRequest);
+echo "Generated CSR:\n" . $csrResponse->csr;
+
+// List available SSL products.
 $products = $op->ssl()->listProducts(limit: 5); // PaginatedResponse<SslProduct>
-```
-
-### Advanced Usage
-
-```php
-// Create SSL Order with a request DTO
-$create = new Ashio\Model\SslOrderCreateRequest(
-    productId: 1,
-    csr: '---CSR---',
-    hostNames: ['example.com','www.example.com'],
-    period: 12
-);
-$order = $op->ssl()->createOrder($create);
-
-// List orders with explicit parameters
-$orders = $op->ssl()->listOrders(limit: 10, status: 'active');
-
-// Approve domain transfer and handle ActionResponse
-use Ashio\Model\DomainApproveTransferRequest;
-
-$approveRequest = new DomainApproveTransferRequest();
-$approveRequest->approve = 1; // or 0 to reject
-
-// Assuming the domain ID is 123
-$resp = $op->domain()->approveTransfer(123, $approveRequest);
-if ($resp->success) {
-    // ok
-}
 ```
 
 ### Licenses
 
 ```php
+use Ashio\Model\CreatePleskLicenseRequest;
 use Ashio\Model\License as LicenseModel;
 
-$page = $op->license()->listLicenses(limit: 10); // PaginatedResponse<License>
-$key  = $op->license()->getPleskKey(1001);       // LicenseKey DTO
-$new  = $op->license()->createPleskLicense(new Ashio\Model\CreatePleskLicenseRequest(items: ['PLESK-ITEM'], period: 1));
+// Retrieve existing licenses.
+$page = $op->license()->listLicenses(limit: 10); // PaginatedResponse<LicenseModel>
+
+// Fetch a Plesk license key.
+$key = $op->license()->getPleskKey(1001); // LicenseKey DTO
+
+// Create a new Plesk license.
+$newLicense = $op->license()->createPleskLicense(
+    new CreatePleskLicenseRequest(items: ['PLESK-ITEM'], period: 1)
+);
 ```
 
 ### Email Templates
 
 ```php
+// List available email templates.
 $emails = $op->emailTemplate()->listEmails(limit: 20); // PaginatedResponse<EmailTemplate>
 ```
 
 ## License
 
-This SDK is licensed under the BSD 2-Clause License. See the [LICENSE](./LICENSE) file for details.
+This SDK is licensed under the BSD 2-Clause "Simplified" License. See the [LICENSE](./LICENSE) file for details.
 
 ## Acknowledgements
 
-This SDK was developed and is maintained by [Marco Dantas](https://ashio.com.br) of Ashio.
+This SDK was proudly developed and is maintained by Marco Dantas of Ashio.  
+<https://ashio.com.br>
+
