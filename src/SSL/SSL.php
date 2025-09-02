@@ -41,7 +41,8 @@ class SSL
 
     /**
      * Create a new Certificate Signing Request (CSR).
-     * @param array $body
+     *
+     * @param \Vexura\Model\CsrCreateRequest $request
      * @return \Vexura\Model\CsrCreateResponse
      * @throws ApiException
      * @throws AuthenticationException
@@ -49,15 +50,16 @@ class SSL
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function createCsr(array $body): CsrCreateResponse
+    public function createCsr(\Vexura\Model\CsrCreateRequest $request): CsrCreateResponse
     {
-        $response = $this->API->post('ssl/csr', $body);
+        $response = $this->API->post('ssl/csr', $request->toArray());
         return (new CsrCreateResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * Decode a Certificate Signing Request (CSR).
-     * @param array $body
+     *
+     * @param \Vexura\Model\CsrDecodeRequest $request
      * @return \Vexura\Model\CsrDecodeResponse
      * @throws ApiException
      * @throws AuthenticationException
@@ -65,9 +67,9 @@ class SSL
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function decodeCsr(array $body): CsrDecodeResponse
+    public function decodeCsr(\Vexura\Model\CsrDecodeRequest $request): CsrDecodeResponse
     {
-        $response = $this->API->post('ssl/csr/decode', $body);
+        $response = $this->API->post('ssl/csr/decode', $request->toArray());
         return (new CsrDecodeResponse())->fromArray($response['data'] ?? []);
     }
 

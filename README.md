@@ -137,9 +137,10 @@ $ok = $op->domain()->dns()->createZone([
 SSL
 
 ```php
+use Vexura\Model\CsrCreateRequest;
 use Vexura\Model\CsrCreateResponse;
 
-$csr = $op->ssl()->createCsr(['common_name' => 'example.com']); // CsrCreateResponse
+$csr = $op->ssl()->createCsr(new CsrCreateRequest('example.com')); // CsrCreateResponse
 $products = $op->ssl()->listProducts(limit: 5); // PaginatedResponse<SslProduct>
 ```
 
