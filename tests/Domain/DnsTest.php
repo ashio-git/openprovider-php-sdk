@@ -7,6 +7,8 @@ use Vexura\OpenProvider;
 use Vexura\Domain\DNS;
 use Vexura\Model\Zone as ZoneModel;
 use Vexura\Model\DnsRecord as DnsRecordModel;
+use Vexura\Model\DnsCreateZoneRequest;
+use Vexura\Model\DomainName;
 
 class DnsTest extends TestCase
 {
@@ -102,7 +104,11 @@ class DnsTest extends TestCase
             ]);
 
         $dns = new DNS($mockApi);
-        $resp = $dns->createZone(['domain' => ['name' => 'example', 'extension' => 'com'], 'type' => 'master', 'records' => []]);
+        $domain = (new DomainName())->fromArray(['name' => 'example', 'extension' => 'com']);
+        $request = new DnsCreateZoneRequest($domain);
+        $request->type = 'master';
+        $request->records = [];
+        $resp = $dns->createZone($request);
         $this->assertInstanceOf(\Vexura\Model\DnsActionResponse::class, $resp);
         $this->assertTrue($resp->success);
     }

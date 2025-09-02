@@ -20,4 +20,15 @@ class SpamExpertDestination
         $this->port = $data['port'] ?? null;
         return $this;
     }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function toArray(): array
+    {
+        return array_filter([
+            'hostname' => $this->hostname,
+            'port' => $this->port,
+        ], static fn($v) => $v !== null);
+    }
 }

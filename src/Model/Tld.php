@@ -29,26 +29,45 @@ class Tld
     public ?array $supported_application_mode = null;
     /** @var TldIdnScript[]|null */
     public ?array $supported_idn_scripts = null;
+    public ?int $quarantinePeriod = null;
+    public ?bool $tradeAvailable = null;
+    public ?bool $transferAvailable = null;
+    /** @var TldLevelPrice[]|null */
+    public ?array $levelPrices = null;
 
     public function __construct(array $data = [])
     {
         foreach ($data as $key => $value) {
-            if (property_exists($this, $key)) {
-                if (is_array($value)) {
-                    if ($key === 'prices') {
-                        $this->{$key} = new TldPrices($value);
-                    } elseif ($key === 'description') {
-                        $this->{$key} = new TldDescription($value);
-                    } elseif ($key === 'supported_application_mode') {
-                        $this->{$key} = array_map(static fn($row) => (new TldApplicationMode())->fromArray($row), $value);
-                    } elseif ($key === 'supported_idn_scripts') {
-                        $this->{$key} = array_map(static fn($row) => (new TldIdnScript())->fromArray($row), $value);
-                    } else {
+            switch ($key) {
+                case 'prices':
+                    $this->prices = new TldPrices($value);
+                    break;
+                case 'description':
+                    $this->description = new TldDescription($value);
+                    break;
+                case 'supported_application_mode':
+                    $this->supported_application_mode = array_map(static fn($row) => (new TldApplicationMode())->fromArray($row), $value);
+                    break;
+                case 'supported_idn_scripts':
+                    $this->supported_idn_scripts = array_map(static fn($row) => (new TldIdnScript())->fromArray($row), $value);
+                    break;
+                case 'level_prices':
+                    $this->levelPrices = array_map(static fn($row) => (new TldLevelPrice())->fromArray($row), $value);
+                    break;
+                case 'quarantine_period':
+                    $this->quarantinePeriod = $value;
+                    break;
+                case 'trade_available':
+                    $this->tradeAvailable = $value;
+                    break;
+                case 'transfer_available':
+                    $this->transferAvailable = $value;
+                    break;
+                default:
+                    if (property_exists($this, $key)) {
                         $this->{$key} = $value;
                     }
-                } else {
-                    $this->{$key} = $value;
-                }
+                    break;
             }
         }
     }

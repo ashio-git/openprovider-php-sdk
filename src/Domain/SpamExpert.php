@@ -4,6 +4,7 @@ namespace Vexura\Domain;
 
 use GuzzleHttp\Exception\GuzzleException;
 use Vexura\Model\SpamExpertDomain;
+use Vexura\Model\SpamExpertCreateDomainRequest;
 use Vexura\OpenProvider;
 
 class SpamExpert
@@ -16,13 +17,13 @@ class SpamExpert
 
     /**
      * Create SpamExpert domain
-     * @param array $data
+     * @param SpamExpertCreateDomainRequest $request
      * @return bool
      * @throws GuzzleException
      */
-    public function createDomain(array $data): bool
+    public function createDomain(SpamExpertCreateDomainRequest $request): bool
     {
-        $response = $this->API->post('spam-expert/domains', $data);
+        $response = $this->API->post('spam-expert/domains', $request->toArray());
         return (bool)($response['data']['success'] ?? false);
     }
 

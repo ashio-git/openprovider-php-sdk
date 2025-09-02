@@ -26,4 +26,16 @@ class SpamExpertProducts
         $this->archiving = $data['archiving'] ?? null;
         return $this;
     }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function toArray(): array
+    {
+        return array_filter([
+            'incoming' => $this->incoming,
+            'outgoing' => $this->outgoing,
+            'archiving' => $this->archiving,
+        ], static fn($v) => $v !== null);
+    }
 }
