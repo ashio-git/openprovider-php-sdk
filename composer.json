@@ -1,0 +1,21 @@
+{
+    "name": "vexura/openprovider-sdk-client",
+    "description": "A full-featured implementation of the openprovider API",
+    "license": "BSD-2-Clause",
+    "type": "library",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=7.2",
+        "guzzlehttp/guzzle": "^7.8.1",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vexura\\": "src/"
+        }
+    }
+}
