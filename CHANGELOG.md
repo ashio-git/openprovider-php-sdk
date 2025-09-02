@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0] - 2025-09-02
 
 ### Changed
-- **BREAKING:** The entire project namespace has been refactored from `Vexura` to `Ashio` for branding consistency. All `use` statements must be updated.
+- **BREAKING:** The entire project namespace has been refactored to `Ashio` for branding consistency. All `use` statements must be updated.
 - **BREAKING:** Complete refactoring of method signatures for all `POST` and `PUT` operations. Methods that previously accepted generic `array`s now require specific, strongly-typed Request DTOs (e.g., `DomainTransferRequest`, `DnsCreateZoneRequest`), ensuring type-safety and predictability.
 - **BREAKING:** Standardized all listing methods to consistently return an `Ashio\Model\PaginatedResponse<T>` object. Access to results is now universally through the `$results` property.
 
