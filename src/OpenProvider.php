@@ -1,20 +1,20 @@
 <?php
 
-namespace Vexura;
+namespace Ashio;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
-use Vexura\Accounting\Billing;
-use Vexura\Accounting\EmailTemplate;
-use Vexura\Accounting\ResellerCustomer;
-use Vexura\Domain\Domain;
-use Vexura\Exception\AuthenticationException;
-use Vexura\Exception\ApiException;
-use Vexura\Exception\NotFoundException;
-use Vexura\Exception\ValidationException;
-use Vexura\License\License;
-use Vexura\SSL\SSL;
+use Ashio\Accounting\Billing;
+use Ashio\Accounting\EmailTemplate;
+use Ashio\Accounting\ResellerCustomer;
+use Ashio\Domain\Domain;
+use Ashio\Exception\AuthenticationException;
+use Ashio\Exception\ApiException;
+use Ashio\Exception\NotFoundException;
+use Ashio\Exception\ValidationException;
+use Ashio\License\License;
+use Ashio\SSL\SSL;
 
 class OpenProvider
 {

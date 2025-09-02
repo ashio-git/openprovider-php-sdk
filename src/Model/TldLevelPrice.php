@@ -1,6 +1,6 @@
 <?php
 
-namespace Vexura\Model;
+namespace Ashio\Model;
 
 class TldLevelPrice
 {

@@ -1,5 +1,5 @@
 {
-    "name": "vexura/openprovider-sdk-client",
+    "name": "ashio/openprovider-php-sdk",
     "description": "A full-featured implementation of the openprovider API",
     "license": "BSD-2-Clause",
     "type": "library",
@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Vexura\\": "src/"
+            "Ashio\\": "src/"
         }
     }
 }

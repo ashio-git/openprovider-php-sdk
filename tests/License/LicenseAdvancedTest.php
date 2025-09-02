@@ -1,20 +1,20 @@
 <?php
 
-namespace Vexura\Tests\License;
+namespace Ashio\Tests\License;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use Vexura\Exception\NotFoundException;
-use Vexura\Exception\ValidationException;
-use Vexura\Model\License as LicenseModel;
-use Vexura\Model\LicenseItem as LicenseItemModel;
-use Vexura\Model\LicenseKey as LicenseKeyModel;
-use Vexura\Model\PaginatedResponse;
-use Vexura\OpenProvider;
-use Vexura\License\License;
+use Ashio\Exception\NotFoundException;
+use Ashio\Exception\ValidationException;
+use Ashio\Model\License as LicenseModel;
+use Ashio\Model\LicenseItem as LicenseItemModel;
+use Ashio\Model\LicenseKey as LicenseKeyModel;
+use Ashio\Model\PaginatedResponse;
+use Ashio\OpenProvider;
+use Ashio\License\License;
 
 class LicenseAdvancedTest extends TestCase
 {
@@ -55,7 +55,7 @@ class LicenseAdvancedTest extends TestCase
         ]);
         $api = new OpenProvider('u','p',$client);
         $lic = new License($api);
-        $created = $lic->createPleskLicense(new \Vexura\Model\CreatePleskLicenseRequest(items: ['ITEM1'], period: 1, title: 'My License'));
+        $created = $lic->createPleskLicense(new \Ashio\Model\CreatePleskLicenseRequest(items: ['ITEM1'], period: 1, title: 'My License'));
         $this->assertInstanceOf(LicenseModel::class, $created);
         $this->assertSame(100, $created->key_id);
 
@@ -73,7 +73,7 @@ class LicenseAdvancedTest extends TestCase
         $api = new OpenProvider('u','p',$client);
         $lic = new License($api);
         $this->expectException(NotFoundException::class);
-        $lic->updatePleskLicense(999, new \Vexura\Model\UpdatePleskLicenseRequest());
+        $lic->updatePleskLicense(999, new \Ashio\Model\UpdatePleskLicenseRequest());
     }
 
     public function testCreateVirtuozzoValidationError(): void
@@ -85,7 +85,7 @@ class LicenseAdvancedTest extends TestCase
         $api = new OpenProvider('u','p',$client);
         $lic = new License($api);
         $this->expectException(ValidationException::class);
-        $lic->createVirtuozzoLicense(new \Vexura\Model\CreateVirtuozzoLicenseRequest(items: ['ITEM']));
+        $lic->createVirtuozzoLicense(new \Ashio\Model\CreateVirtuozzoLicenseRequest(items: ['ITEM']));
     }
 
     public function testGetPleskLicenseUnauthorized401(): void
@@ -96,7 +96,7 @@ class LicenseAdvancedTest extends TestCase
         ]);
         $api = new OpenProvider('u','p',$client);
         $lic = new License($api);
-        $this->expectException(\Vexura\Exception\AuthenticationException::class);
+        $this->expectException(\Ashio\Exception\AuthenticationException::class);
         $lic->getPleskLicense(1);
     }
 }

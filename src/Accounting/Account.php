@@ -1,10 +1,10 @@
 <?php
 
-namespace Vexura\Accounting;
+namespace Ashio\Accounting;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Vexura\Model\AccountBalance;
-use Vexura\OpenProvider;
+use Ashio\Model\AccountBalance;
+use Ashio\OpenProvider;
 
 class Account
 {

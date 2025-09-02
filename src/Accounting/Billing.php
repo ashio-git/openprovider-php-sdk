@@ -1,16 +1,16 @@
 <?php
 
-namespace Vexura\Accounting;
+namespace Ashio\Accounting;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Vexura\Exception\ApiException;
-use Vexura\Exception\AuthenticationException;
-use Vexura\Exception\NotFoundException;
-use Vexura\Exception\ValidationException;
-use Vexura\OpenProvider;
-use Vexura\Model\Invoice as InvoiceModel;
-use Vexura\Model\Payment as PaymentModel;
-use Vexura\Model\Transaction as TransactionModel;
+use Ashio\Exception\ApiException;
+use Ashio\Exception\AuthenticationException;
+use Ashio\Exception\NotFoundException;
+use Ashio\Exception\ValidationException;
+use Ashio\OpenProvider;
+use Ashio\Model\Invoice as InvoiceModel;
+use Ashio\Model\Payment as PaymentModel;
+use Ashio\Model\Transaction as TransactionModel;
 
 class Billing
 {
@@ -36,11 +36,11 @@ class Billing
      * @throws ValidationException
      */
     /**
-     * @return \Vexura\Model\PaginatedResponse
-     * @phpstan-return \Vexura\Model\PaginatedResponse<InvoiceModel>
-     * @psalm-return \Vexura\Model\PaginatedResponse<InvoiceModel>
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<InvoiceModel>
+     * @psalm-return \Ashio\Model\PaginatedResponse<InvoiceModel>
      */
-    public function listInvoices(int $limit = 100, int $offset = 0, ?string $order = null, ?string $startCreationDate = null, ?string $endCreationDate = null): \Vexura\Model\PaginatedResponse
+    public function listInvoices(int $limit = 100, int $offset = 0, ?string $order = null, ?string $startCreationDate = null, ?string $endCreationDate = null): \Ashio\Model\PaginatedResponse
     {
         $params = array_filter([
             'limit' => $limit,
@@ -57,7 +57,7 @@ class Billing
                 $invoices[] = new InvoiceModel($invoiceData);
             }
         }
-        return new \Vexura\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $invoices);
+        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $invoices);
     }
 
     /**
@@ -74,11 +74,11 @@ class Billing
      * @throws ValidationException
      */
     /**
-     * @return \Vexura\Model\PaginatedResponse
-     * @phpstan-return \Vexura\Model\PaginatedResponse<PaymentModel>
-     * @psalm-return \Vexura\Model\PaginatedResponse<PaymentModel>
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<PaymentModel>
+     * @psalm-return \Ashio\Model\PaginatedResponse<PaymentModel>
      */
-    public function listPayments(int $limit = 100, int $offset = 0, ?string $order = null, ?string $status = null): \Vexura\Model\PaginatedResponse
+    public function listPayments(int $limit = 100, int $offset = 0, ?string $order = null, ?string $status = null): \Ashio\Model\PaginatedResponse
     {
         $params = array_filter([
             'limit' => $limit,
@@ -94,7 +94,7 @@ class Billing
                 $payments[] = new PaymentModel($paymentData);
             }
         }
-        return new \Vexura\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $payments);
+        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $payments);
     }
 
     /**
@@ -110,11 +110,11 @@ class Billing
      * @throws ValidationException
      */
     /**
-     * @return \Vexura\Model\PaginatedResponse
-     * @phpstan-return \Vexura\Model\PaginatedResponse<TransactionModel>
-     * @psalm-return \Vexura\Model\PaginatedResponse<TransactionModel>
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<TransactionModel>
+     * @psalm-return \Ashio\Model\PaginatedResponse<TransactionModel>
      */
-    public function listTransactions(int $limit = 100, int $offset = 0, ?string $order = null): \Vexura\Model\PaginatedResponse
+    public function listTransactions(int $limit = 100, int $offset = 0, ?string $order = null): \Ashio\Model\PaginatedResponse
     {
         $params = array_filter([
             'limit' => $limit,
@@ -129,6 +129,6 @@ class Billing
                 $transactions[] = new TransactionModel($transactionData);
             }
         }
-        return new \Vexura\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $transactions);
+        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $transactions);
     }
 }

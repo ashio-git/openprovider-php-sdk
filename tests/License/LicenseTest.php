@@ -1,11 +1,11 @@
 <?php
 
-namespace Vexura\Tests\License;
+namespace Ashio\Tests\License;
 
 use PHPUnit\Framework\TestCase;
-use Vexura\OpenProvider;
-use Vexura\License\License;
-use Vexura\Model\License as LicenseModel;
+use Ashio\OpenProvider;
+use Ashio\License\License;
+use Ashio\Model\License as LicenseModel;
 
 class LicenseTest extends TestCase
 {
@@ -45,7 +45,7 @@ class LicenseTest extends TestCase
         $license = new License($mockApi);
         $result = $license->listLicenses();
 
-        $this->assertInstanceOf(\Vexura\Model\PaginatedResponse::class, $result);
+        $this->assertInstanceOf(\Ashio\Model\PaginatedResponse::class, $result);
         $this->assertEquals(2, $result->total);
         $this->assertCount(2, $result->results);
         $this->assertInstanceOf(LicenseModel::class, $result->results[0]);

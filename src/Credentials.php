@@ -1,6 +1,6 @@
 <?php
 
-namespace Vexura;
+namespace Ashio;
 
 class Credentials
 {

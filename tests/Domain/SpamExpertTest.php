@@ -1,18 +1,18 @@
 <?php
 
-namespace Vexura\Tests\Domain;
+namespace Ashio\Tests\Domain;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use Vexura\Domain\SpamExpert;
-use Vexura\Exception\NotFoundException;
-use Vexura\Exception\ValidationException;
-use Vexura\Model\SpamExpertDomain;
-use Vexura\Model\SpamExpertCreateDomainRequest;
-use Vexura\OpenProvider;
+use Ashio\Domain\SpamExpert;
+use Ashio\Exception\NotFoundException;
+use Ashio\Exception\ValidationException;
+use Ashio\Model\SpamExpertDomain;
+use Ashio\Model\SpamExpertCreateDomainRequest;
+use Ashio\OpenProvider;
 
 class SpamExpertTest extends TestCase
 {

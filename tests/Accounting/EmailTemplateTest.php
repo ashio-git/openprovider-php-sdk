@@ -1,18 +1,18 @@
 <?php
 
-namespace Vexura\Tests\Accounting;
+namespace Ashio\Tests\Accounting;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use Vexura\Accounting\EmailTemplate as EmailTemplateHandler;
-use Vexura\Exception\NotFoundException;
-use Vexura\Exception\ValidationException;
-use Vexura\Model\EmailTemplate as EmailTemplateModel;
-use Vexura\Model\PaginatedResponse;
-use Vexura\OpenProvider;
+use Ashio\Accounting\EmailTemplate as EmailTemplateHandler;
+use Ashio\Exception\NotFoundException;
+use Ashio\Exception\ValidationException;
+use Ashio\Model\EmailTemplate as EmailTemplateModel;
+use Ashio\Model\PaginatedResponse;
+use Ashio\OpenProvider;
 
 class EmailTemplateTest extends TestCase
 {
@@ -87,7 +87,7 @@ class EmailTemplateTest extends TestCase
         $handler = new EmailTemplateHandler($api);
 
         $this->expectException(NotFoundException::class);
-        $req = new \Vexura\Model\EmailTemplateUpdateRequest();
+        $req = new \Ashio\Model\EmailTemplateUpdateRequest();
         $req->name = 'X';
         $handler->updateEmail(9999, $req);
     }

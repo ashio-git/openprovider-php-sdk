@@ -1,27 +1,28 @@
-# OpenProvider PHP SDK
+# Ashio OpenProvider PHP SDK
 
-[![Latest Version](https://img.shields.io/packagist/v/vexura/openprovider-sdk-client?label=version)](https://packagist.org/packages/vexura/openprovider-sdk-client/)
-[![Composer Downloads](https://img.shields.io/packagist/dm/vexura/openprovider-sdk-client.svg?label=Composer%20Downloads)](https://packagist.org/packages/vexura/openprovider-sdk-client)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/ashio/openprovider-php-sdk.svg?style=flat-square)](https://packagist.org/packages/ashio/openprovider-php-sdk)
+[![Total Downloads](https://img.shields.io/packagist/dt/ashio/openprovider-php-sdk.svg?style=flat-square)](https://packagist.org/packages/ashio/openprovider-php-sdk)
+[![License](https://img.shields.io/packagist/l/ashio/openprovider-php-sdk.svg?style=flat-square)](./LICENSE)
 
-Production‑grade, fully‑typed SDK for OpenProvider. Consistent DTOs, explicit method signatures, predictable pagination, and robust error handling for an elite developer experience.
+Production-grade, fully-typed SDK for the OpenProvider API. Featuring consistent DTOs, explicit method signatures, predictable pagination, and robust error handling for an elite developer experience.
 
-## Installation & Auth
+## Installation & Authentication
 
 Install via Composer:
 
 ```bash
-composer require vexura/openprovider-sdk-client
+composer require ashio/openprovider-php-sdk
 ```
 
 Authenticate:
 
 ```php
-use Vexura\OpenProvider;
+use Ashio\OpenProvider;
 
 $op = new OpenProvider('USERNAME', 'PASSWORD');
 ```
 
-## Quick Start (End‑to‑End)
+## Quick Start
 
 1) Check a domain
 
@@ -32,12 +33,12 @@ if ($checks[0]->status === 'free') {
 }
 ```
 
-2) Create a customer (DTO)
+2) Create a customer
 
 ```php
-use Vexura\Model\Customer;
-use Vexura\Model\ContactName;
-use Vexura\Model\ContactAddress;
+use Ashio\Model\Customer;
+use Ashio\Model\ContactName;
+use Ashio\Model\ContactAddress;
 
 $customer = (new Customer())
     ->fromArray([
@@ -51,18 +52,18 @@ $customer = (new Customer())
 $customer = $op->resellerCustomer()->createCustomer($customer);
 ```
 
-3) Register the domain for the customer (DTO request)
+3) Register the domain for the customer
 
 ```php
-$req = new Vexura\Model\DomainCreateRequest(
+$req = new Ashio\Model\DomainCreateRequest(
     ownerHandle: $customer->handle,
-    domain: (new Vexura\Model\DomainName())->fromArray(['name' => 'example','extension' => 'com']),
+    domain: (new Ashio\Model\DomainName())->fromArray(['name' => 'example','extension' => 'com']),
     period: 1
 );
 $order = $op->domain()->createDomain($req);
 ```
 
-4) Fetch domain details (DTO) and read properties
+4) Fetch domain details
 
 ```php
 $domain = $op->domain()->getDomain($order->id);
@@ -74,14 +75,14 @@ echo $domain->status; // e.g. ACTIVE
 - Every handler returns concrete DTOs (no arrays).
 - Request bodies are always expressed via dedicated Request DTOs, eliminating generic arrays and ensuring type safety.
 - Nested structures are strongly typed (e.g., names, addresses, price objects).
-- Lists return `Vexura\Model\PaginatedResponse<T>` with `$total` and `$results`.
+- Listings return `Ashio\Model\PaginatedResponse<T>` with `$total` and `$results`.
 
 Example: iterate domains
 
 ```php
-use Vexura\Model\PaginatedResponse;
+use Ashio\Model\PaginatedResponse;
 
-/** @var PaginatedResponse<Vexura\Model\Domain> $page */
+/** @var PaginatedResponse<Ashio\Model\Domain> $page */
 $page = $op->domain()->listDomains(limit: 50);
 foreach ($page->results as $d) {
     echo $d->status . PHP_EOL;
@@ -91,7 +92,7 @@ foreach ($page->results as $d) {
 ## Advanced Error Handling
 
 ```php
-use Vexura\Exception\{AuthenticationException, ValidationException, NotFoundException, ApiException};
+use Ashio\Exception\{AuthenticationException, ValidationException, NotFoundException, ApiException};
 
 try {
     $op->domain()->getDomain(999999);
@@ -115,46 +116,46 @@ try {
 - Accounting: invoices, payments, transactions, email templates
 - Reseller/Customer: contacts, customers, settings
 
-## Per‑Module Examples
+## Per-Module Examples
 
-Domains
+### Domains
 
 ```php
 $domains = $op->domain()->listDomains(limit: 10);
 $auth = $op->domain()->getAuthCode(123); // AuthCode DTO
 ```
 
-DNS
+### DNS
 
 ```php
-use Vexura\Model\DnsCreateZoneRequest;
-use Vexura\Model\DomainName;
+use Ashio\Model\DnsCreateZoneRequest;
+use Ashio\Model\DomainName;
 
 $zones = $op->domain()->dns()->listZones(limit: 10); // PaginatedResponse<Zone>
 
 $domainName  = (new DomainName())->fromArray(['name' => 'example', 'extension' => 'com']);
 $zoneRequest = new DnsCreateZoneRequest($domainName);
 $zoneRequest->type = 'master';
-// $zoneRequest->records = [...]; // Opcional
+// $zoneRequest->records = [...]; // Optional
 
-$ok = $op->domain()->dns()->createZone($zoneRequest); // DnsActionResponse (success)
+$ok = $op->domain()->dns()->createZone($zoneRequest); // DnsActionResponse
 ```
 
-SSL
+### SSL
 
 ```php
-use Vexura\Model\CsrCreateRequest;
-use Vexura\Model\CsrCreateResponse;
+use Ashio\Model\CsrCreateRequest;
+use Ashio\Model\CsrCreateResponse;
 
 $csr = $op->ssl()->createCsr(new CsrCreateRequest('example.com')); // CsrCreateResponse
 $products = $op->ssl()->listProducts(limit: 5); // PaginatedResponse<SslProduct>
 ```
 
-Advanced Usage
+### Advanced Usage
 
 ```php
 // Create SSL Order with a request DTO
-$create = new Vexura\Model\SslOrderCreateRequest(
+$create = new Ashio\Model\SslOrderCreateRequest(
     productId: 1,
     csr: '---CSR---',
     hostNames: ['example.com','www.example.com'],
@@ -166,34 +167,38 @@ $order = $op->ssl()->createOrder($create);
 $orders = $op->ssl()->listOrders(limit: 10, status: 'active');
 
 // Approve domain transfer and handle ActionResponse
-use Vexura\Model\DomainApproveTransferRequest;
+use Ashio\Model\DomainApproveTransferRequest;
 
 $approveRequest = new DomainApproveTransferRequest();
-$approveRequest->approve = 1; // ou 0 para rejeitar
+$approveRequest->approve = 1; // or 0 to reject
 
-// Supondo que o ID do domínio seja 123
+// Assuming the domain ID is 123
 $resp = $op->domain()->approveTransfer(123, $approveRequest);
 if ($resp->success) {
     // ok
 }
 ```
 
-Licenses
+### Licenses
 
 ```php
-use Vexura\Model\License as LicenseModel;
+use Ashio\Model\License as LicenseModel;
 
 $page = $op->license()->listLicenses(limit: 10); // PaginatedResponse<License>
 $key  = $op->license()->getPleskKey(1001);       // LicenseKey DTO
- $new  = $op->license()->createPleskLicense(new Vexura\Model\CreatePleskLicenseRequest(items: ['PLESK-ITEM'], period: 1));
+$new  = $op->license()->createPleskLicense(new Ashio\Model\CreatePleskLicenseRequest(items: ['PLESK-ITEM'], period: 1));
 ```
 
-Email Templates
+### Email Templates
 
 ```php
 $emails = $op->emailTemplate()->listEmails(limit: 20); // PaginatedResponse<EmailTemplate>
 ```
 
-## Summary
+## License
 
-This SDK is designed to be predictable, explicit, and safe by default. Strong DTOs, explicit method signatures, and uniform pagination enable a frictionless developer experience suitable for high‑scale production systems.
+This SDK is licensed under the BSD 2-Clause License. See the [LICENSE](./LICENSE) file for details.
+
+## Acknowledgements
+
+This SDK was developed and is maintained by [Marco Dantas](https://ashio.com.br) of Ashio.

@@ -1,18 +1,18 @@
 <?php
 
-namespace Vexura\SSL;
+namespace Ashio\SSL;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Vexura\Exception\ApiException;
-use Vexura\Exception\AuthenticationException;
-use Vexura\Exception\NotFoundException;
-use Vexura\Exception\ValidationException;
-use Vexura\Model\CsrCreateResponse;
-use Vexura\Model\CsrDecodeResponse;
-use Vexura\Model\PaginatedResponse;
-use Vexura\OpenProvider;
-use Vexura\Model\SslOrder as SslOrderModel;
-use Vexura\Model\SslProduct as SslProductModel;
+use Ashio\Exception\ApiException;
+use Ashio\Exception\AuthenticationException;
+use Ashio\Exception\NotFoundException;
+use Ashio\Exception\ValidationException;
+use Ashio\Model\CsrCreateResponse;
+use Ashio\Model\CsrDecodeResponse;
+use Ashio\Model\PaginatedResponse;
+use Ashio\OpenProvider;
+use Ashio\Model\SslOrder as SslOrderModel;
+use Ashio\Model\SslProduct as SslProductModel;
 
 class SSL
 {
@@ -42,15 +42,15 @@ class SSL
     /**
      * Create a new Certificate Signing Request (CSR).
      *
-     * @param \Vexura\Model\CsrCreateRequest $request
-     * @return \Vexura\Model\CsrCreateResponse
+     * @param \Ashio\Model\CsrCreateRequest $request
+     * @return \Ashio\Model\CsrCreateResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function createCsr(\Vexura\Model\CsrCreateRequest $request): CsrCreateResponse
+    public function createCsr(\Ashio\Model\CsrCreateRequest $request): CsrCreateResponse
     {
         $response = $this->API->post('ssl/csr', $request->toArray());
         return (new CsrCreateResponse())->fromArray($response['data'] ?? []);
@@ -59,15 +59,15 @@ class SSL
     /**
      * Decode a Certificate Signing Request (CSR).
      *
-     * @param \Vexura\Model\CsrDecodeRequest $request
-     * @return \Vexura\Model\CsrDecodeResponse
+     * @param \Ashio\Model\CsrDecodeRequest $request
+     * @return \Ashio\Model\CsrDecodeResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function decodeCsr(\Vexura\Model\CsrDecodeRequest $request): CsrDecodeResponse
+    public function decodeCsr(\Ashio\Model\CsrDecodeRequest $request): CsrDecodeResponse
     {
         $response = $this->API->post('ssl/csr/decode', $request->toArray());
         return (new CsrDecodeResponse())->fromArray($response['data'] ?? []);
@@ -76,7 +76,7 @@ class SSL
     /**
      * List all SSL orders with optional filters.
      * @param array $queryParams Optional parameters to filter the list of orders.
-     * @return \Vexura\Model\PaginatedResponse
+     * @return \Ashio\Model\PaginatedResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -110,14 +110,14 @@ class SSL
     /**
      * Create a new SSL order.
      * @param array $body The data for the new order.
-     * @return \Vexura\Model\SslOrder
+     * @return \Ashio\Model\SslOrder
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function createOrder(\Vexura\Model\SslOrderCreateRequest $request): SslOrderModel
+    public function createOrder(\Ashio\Model\SslOrderCreateRequest $request): SslOrderModel
     {
         $response = $this->API->post('ssl/orders', $request->toArray());
         return new SslOrderModel($response['data'] ?? []);
@@ -143,7 +143,7 @@ class SSL
      * Update an existing SSL order.
      * @param int $id The ID of the SSL order to update.
      * @param array $body The data to update.
-     * @return \Vexura\Model\SslActionResponse
+     * @return \Ashio\Model\SslActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -154,19 +154,19 @@ class SSL
      * Update an existing SSL order.
      * @param int $id
      * @param array $body
-     * @return \Vexura\Model\SslActionResponse
+     * @return \Ashio\Model\SslActionResponse
      */
-    public function updateOrder(int $id, \Vexura\Model\SslOrderUpdateRequest $request): \Vexura\Model\SslActionResponse
+    public function updateOrder(int $id, \Ashio\Model\SslOrderUpdateRequest $request): \Ashio\Model\SslActionResponse
     {
         $response = $this->API->put("ssl/orders/{$id}", $request->toArray());
-        return (new \Vexura\Model\SslActionResponse())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\SslActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * Update the approver email address for an SSL order.
      * @param int $id The ID of the SSL order.
      * @param array $body The data for the email update.
-     * @return \Vexura\Model\SslActionResponse
+     * @return \Ashio\Model\SslActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -175,19 +175,19 @@ class SSL
      */
     /**
      * Update approver email address.
-     * @return \Vexura\Model\SslActionResponse
+     * @return \Ashio\Model\SslActionResponse
      */
-    public function updateApproverEmailAddress(int $id, \Vexura\Model\ApproverEmailUpdateRequest $request): \Vexura\Model\SslActionResponse
+    public function updateApproverEmailAddress(int $id, \Ashio\Model\ApproverEmailUpdateRequest $request): \Ashio\Model\SslActionResponse
     {
         $response = $this->API->put("ssl/orders/{$id}/approver-email", $request->toArray());
-        return (new \Vexura\Model\SslActionResponse())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\SslActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * Resend the approver email for an SSL order.
      * @param int $id The ID of the SSL order.
      * @param array $body The request body.
-     * @return \Vexura\Model\SslActionResponse
+     * @return \Ashio\Model\SslActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -196,19 +196,19 @@ class SSL
      */
     /**
      * Resend approver email.
-     * @return \Vexura\Model\SslActionResponse
+     * @return \Ashio\Model\SslActionResponse
      */
-    public function resendApproverEmail(int $id, \Vexura\Model\SslOrderResendApproverEmailRequest $request): \Vexura\Model\SslActionResponse
+    public function resendApproverEmail(int $id, \Ashio\Model\SslOrderResendApproverEmailRequest $request): \Ashio\Model\SslActionResponse
     {
         $response = $this->API->post("ssl/orders/{$id}/approver-email/resend", $request->toArray());
-        return (new \Vexura\Model\SslActionResponse())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\SslActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * Cancel an SSL order.
      * @param int $id The ID of the SSL order to cancel.
      * @param array $body The cancellation data.
-     * @return \Vexura\Model\SslActionResponse
+     * @return \Ashio\Model\SslActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -217,19 +217,19 @@ class SSL
      */
     /**
      * Cancel SSL order.
-     * @return \Vexura\Model\SslActionResponse
+     * @return \Ashio\Model\SslActionResponse
      */
-    public function cancelOrder(int $id, \Vexura\Model\SslOrderCancelRequest $request): \Vexura\Model\SslActionResponse
+    public function cancelOrder(int $id, \Ashio\Model\SslOrderCancelRequest $request): \Ashio\Model\SslActionResponse
     {
         $response = $this->API->post("ssl/orders/{$id}/cancel", $request->toArray());
-        return (new \Vexura\Model\SslActionResponse())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\SslActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * Create a one-time password (OTP) token for an SSL order.
      * @param int $id The ID of the SSL order.
      * @param array $body The request body.
-     * @return \Vexura\Model\SslActionResponse
+     * @return \Ashio\Model\SslActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -238,19 +238,19 @@ class SSL
      */
     /**
      * Create OTP token for order.
-     * @return \Vexura\Model\SslActionResponse
+     * @return \Ashio\Model\SslActionResponse
      */
-    public function createOtpToken(int $id, \Vexura\Model\SslOrderOtpTokenRequest $request): \Vexura\Model\SslActionResponse
+    public function createOtpToken(int $id, \Ashio\Model\SslOrderOtpTokenRequest $request): \Ashio\Model\SslActionResponse
     {
         $response = $this->API->post("ssl/orders/{$id}/otp-tokens", $request->toArray());
-        return (new \Vexura\Model\SslActionResponse())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\SslActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * Reissue an SSL order.
      * @param int $id The ID of the SSL order to reissue.
      * @param array $body The reissue data.
-     * @return \Vexura\Model\SslActionResponse
+     * @return \Ashio\Model\SslActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -259,19 +259,19 @@ class SSL
      */
     /**
      * Reissue SSL order.
-     * @return \Vexura\Model\SslActionResponse
+     * @return \Ashio\Model\SslActionResponse
      */
-    public function reissueOrder(int $id, \Vexura\Model\SslOrderReissueRequest $request): \Vexura\Model\SslActionResponse
+    public function reissueOrder(int $id, \Ashio\Model\SslOrderReissueRequest $request): \Ashio\Model\SslActionResponse
     {
         $response = $this->API->post("ssl/orders/{$id}/reissue", $request->toArray());
-        return (new \Vexura\Model\SslActionResponse())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\SslActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * Renew an SSL order.
      * @param int $id The ID of the SSL order to renew.
      * @param array $body The renewal data.
-     * @return \Vexura\Model\SslActionResponse
+     * @return \Ashio\Model\SslActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -280,18 +280,18 @@ class SSL
      */
     /**
      * Renew SSL order.
-     * @return \Vexura\Model\SslActionResponse
+     * @return \Ashio\Model\SslActionResponse
      */
-    public function renewOrder(int $id, \Vexura\Model\SslOrderRenewRequest $request): \Vexura\Model\SslActionResponse
+    public function renewOrder(int $id, \Ashio\Model\SslOrderRenewRequest $request): \Ashio\Model\SslActionResponse
     {
         $response = $this->API->post("ssl/orders/{$id}/renew", $request->toArray());
-        return (new \Vexura\Model\SslActionResponse())->fromArray($response['data'] ?? []);
+        return (new \Ashio\Model\SslActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * List all SSL products with optional filters.
      * @param array $queryParams Optional parameters to filter the list of products.
-     * @return \Vexura\Model\PaginatedResponse
+     * @return \Ashio\Model\PaginatedResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -324,7 +324,7 @@ class SSL
     /**
      * Get a specific SSL product by its ID.
      * @param int $id The ID of the SSL product.
-     * @return \Vexura\Model\SslProduct
+     * @return \Ashio\Model\SslProduct
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException

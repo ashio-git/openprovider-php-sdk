@@ -8,16 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0] - 2025-09-02
 
 ### Changed
-- **BREAKING:** Refatoração completa das assinaturas de método para todas as operações `POST` e `PUT`. Todos os métodos que anteriormente aceitavam `array` genéricos agora exigem DTOs de Requisição específicos e fortemente tipados (ex: `DomainTransferRequest`, `DnsCreateZoneRequest`), garantindo segurança de tipos e previsibilidade.
-- **BREAKING:** Padronização de todos os métodos de listagem para retornar consistentemente um objeto `Vexura\Model\PaginatedResponse<T>`. O acesso aos resultados agora é feito universalmente através da propriedade `$results`.
+- **BREAKING:** The entire project namespace has been refactored from `Vexura` to `Ashio` for branding consistency. All `use` statements must be updated.
+- **BREAKING:** Complete refactoring of method signatures for all `POST` and `PUT` operations. Methods that previously accepted generic `array`s now require specific, strongly-typed Request DTOs (e.g., `DomainTransferRequest`, `DnsCreateZoneRequest`), ensuring type-safety and predictability.
+- **BREAKING:** Standardized all listing methods to consistently return an `Ashio\Model\PaginatedResponse<T>` object. Access to results is now universally through the `$results` property.
 
 ### Added
-- Novos DTOs de Requisição para cobrir 100% dos endpoints da API, incluindo:
+- New Request DTOs to cover 100% of the API endpoints, including:
     - `DomainTransferRequest`, `DomainTradeRequest`, `DomainRestoreRequest`
     - `DnsCreateZoneRequest`, `DnsUpdateZoneRequest`, `DnsCreateTemplateRequest`
     - `SpamExpertCreateDomainRequest`, `SpamExpertUpdateDomainRequest`
-    - E muitos outros, garantindo uma cobertura completa.
+    - And many others, ensuring complete coverage.
 
 ### Fixed
-- Conclusão de todos os DTOs de Resposta para espelhar 100% da especificação da API. Modelos críticos como `SslOrder` e `Tld` agora incluem todas as propriedades anteriormente ausentes (`vendorOrderId`, `quarantinePeriod`, `levelPrices`, etc.).
-- Corrigida a inconsistência nos retornos dos métodos `listNameserverGroups`, `listTags`, e `listDomainEmailVerifications`, que agora utilizam `PaginatedResponse`.
+- Completed all Response DTOs to mirror 100% of the API specification. Critical models such as `SslOrder` and `Tld` now include all previously missing properties (`vendorOrderId`, `quarantinePeriod`, `levelPrices`, etc.).
+- Resolved inconsistencies in the return types of `listNameserverGroups`, `listTags`, and `listDomainEmailVerifications`, which now use `PaginatedResponse`.

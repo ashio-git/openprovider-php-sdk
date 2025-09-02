@@ -1,14 +1,14 @@
 <?php
 
-namespace Vexura\Tests\Domain;
+namespace Ashio\Tests\Domain;
 
 use PHPUnit\Framework\TestCase;
-use Vexura\OpenProvider;
-use Vexura\Domain\DNS;
-use Vexura\Model\Zone as ZoneModel;
-use Vexura\Model\DnsRecord as DnsRecordModel;
-use Vexura\Model\DnsCreateZoneRequest;
-use Vexura\Model\DomainName;
+use Ashio\OpenProvider;
+use Ashio\Domain\DNS;
+use Ashio\Model\Zone as ZoneModel;
+use Ashio\Model\DnsRecord as DnsRecordModel;
+use Ashio\Model\DnsCreateZoneRequest;
+use Ashio\Model\DomainName;
 
 class DnsTest extends TestCase
 {
@@ -48,7 +48,7 @@ class DnsTest extends TestCase
         $dns = new DNS($mockApi);
         $result = $dns->listZones();
 
-        $this->assertInstanceOf(\Vexura\Model\PaginatedResponse::class, $result);
+        $this->assertInstanceOf(\Ashio\Model\PaginatedResponse::class, $result);
         $this->assertEquals(2, $result->total);
         $this->assertCount(2, $result->results);
         $this->assertInstanceOf(ZoneModel::class, $result->results[0]);
@@ -71,7 +71,7 @@ class DnsTest extends TestCase
         $dns = new DNS($mockApi);
         $result = $dns->listZoneRecords('example.com');
 
-        $this->assertInstanceOf(\Vexura\Model\PaginatedResponse::class, $result);
+        $this->assertInstanceOf(\Ashio\Model\PaginatedResponse::class, $result);
         $this->assertEquals(1, $result->total);
         $this->assertCount(1, $result->results);
         $this->assertInstanceOf(DnsRecordModel::class, $result->results[0]);
@@ -89,7 +89,7 @@ class DnsTest extends TestCase
         ]);
         $op = new OpenProvider('u','p',$client);
         $dns = new DNS($op);
-        $this->expectException(\Vexura\Exception\AuthenticationException::class);
+        $this->expectException(\Ashio\Exception\AuthenticationException::class);
         $dns->getZone('example.com');
     }
 
@@ -109,7 +109,7 @@ class DnsTest extends TestCase
         $request->type = 'master';
         $request->records = [];
         $resp = $dns->createZone($request);
-        $this->assertInstanceOf(\Vexura\Model\DnsActionResponse::class, $resp);
+        $this->assertInstanceOf(\Ashio\Model\DnsActionResponse::class, $resp);
         $this->assertTrue($resp->success);
     }
 }

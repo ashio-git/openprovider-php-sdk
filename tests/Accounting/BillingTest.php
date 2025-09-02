@@ -1,13 +1,13 @@
 <?php
 
-namespace Vexura\Tests\Accounting;
+namespace Ashio\Tests\Accounting;
 
 use PHPUnit\Framework\TestCase;
-use Vexura\OpenProvider;
-use Vexura\Accounting\Billing;
-use Vexura\Model\Invoice as InvoiceModel;
-use Vexura\Model\Payment as PaymentModel;
-use Vexura\Model\Transaction as TransactionModel;
+use Ashio\OpenProvider;
+use Ashio\Accounting\Billing;
+use Ashio\Model\Invoice as InvoiceModel;
+use Ashio\Model\Payment as PaymentModel;
+use Ashio\Model\Transaction as TransactionModel;
 
 class BillingTest extends TestCase
 {
@@ -27,7 +27,7 @@ class BillingTest extends TestCase
         $billing = new Billing($mockApi);
         $result = $billing->listInvoices();
 
-        $this->assertInstanceOf(\Vexura\Model\PaginatedResponse::class, $result);
+        $this->assertInstanceOf(\Ashio\Model\PaginatedResponse::class, $result);
         $this->assertEquals(1, $result->total);
         $this->assertCount(1, $result->results);
         $this->assertInstanceOf(InvoiceModel::class, $result->results[0]);
@@ -50,7 +50,7 @@ class BillingTest extends TestCase
         $billing = new Billing($mockApi);
         $result = $billing->listPayments();
 
-        $this->assertInstanceOf(\Vexura\Model\PaginatedResponse::class, $result);
+        $this->assertInstanceOf(\Ashio\Model\PaginatedResponse::class, $result);
         $this->assertEquals(1, $result->total);
         $this->assertCount(1, $result->results);
         $this->assertInstanceOf(PaymentModel::class, $result->results[0]);
@@ -73,7 +73,7 @@ class BillingTest extends TestCase
         $billing = new Billing($mockApi);
         $result = $billing->listTransactions();
 
-        $this->assertInstanceOf(\Vexura\Model\PaginatedResponse::class, $result);
+        $this->assertInstanceOf(\Ashio\Model\PaginatedResponse::class, $result);
         $this->assertEquals(1, $result->total);
         $this->assertCount(1, $result->results);
         $this->assertInstanceOf(TransactionModel::class, $result->results[0]);
@@ -87,9 +87,9 @@ class BillingTest extends TestCase
             new \GuzzleHttp\Psr7\Response(401, [], json_encode(['desc' => 'Unauthorized'])),
         ])), 'http_errors' => false]);
 
-        $op = new \Vexura\OpenProvider('u','p',$client);
+        $op = new \Ashio\OpenProvider('u','p',$client);
         $billing = new Billing($op);
-        $this->expectException(\Vexura\Exception\AuthenticationException::class);
+        $this->expectException(\Ashio\Exception\AuthenticationException::class);
         $billing->listInvoices();
     }
 }
