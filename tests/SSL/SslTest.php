@@ -43,11 +43,11 @@ class SslTest extends TestCase
         $api = new OpenProvider('u','p',$client);
         $ssl = new SSL($api);
 
-        $create = $ssl->createCsr(['common_name' => 'example.com']);
+        $create = $ssl->createCsr(new \Vexura\Model\CsrCreateRequest('example.com'));
         $this->assertInstanceOf(CsrCreateResponse::class, $create);
         $this->assertSame('openssl req', $create->command);
 
-        $decode = $ssl->decodeCsr(['csr' => '---CSR---']);
+        $decode = $ssl->decodeCsr(new \Vexura\Model\CsrDecodeRequest('---CSR---'));
         $this->assertInstanceOf(CsrDecodeResponse::class, $decode);
         $this->assertSame(1, $decode->domain_names_count);
         $this->assertSame('example.com', $decode->subject->common_name);
@@ -107,7 +107,7 @@ class SslTest extends TestCase
         $api = new OpenProvider('u','p',$client);
         $ssl = new SSL($api);
         $this->expectException(ValidationException::class);
-        $ssl->createCsr([]);
+        $ssl->createCsr(new \Vexura\Model\CsrCreateRequest('example.com'));
     }
 
     public function testGetProductUnauthorized401(): void
