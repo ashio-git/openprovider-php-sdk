@@ -10,6 +10,13 @@ class SettingsPaymentMethodSettings
     public ?float $transactionFee = null;
     public ?float $transactionFeeAbsolute = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         if (isset($data['limit'])) {
@@ -17,9 +24,15 @@ class SettingsPaymentMethodSettings
         }
         $this->transactionFee = $data['transaction_fee'] ?? null;
         $this->transactionFeeAbsolute = $data['transaction_fee_absolute'] ?? null;
+
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [
@@ -29,6 +42,7 @@ class SettingsPaymentMethodSettings
         if ($this->limit) {
             $data['limit'] = $this->limit->toArray();
         }
+
         return array_filter($data, function ($value) {
             return $value !== null;
         });

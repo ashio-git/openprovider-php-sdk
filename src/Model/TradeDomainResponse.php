@@ -24,12 +24,20 @@ class TradeDomainResponse
      */
     public $status;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->creation_date = $data['creation_date'] ?? null;
         $this->expiration_date = $data['expiration_date'] ?? null;
         $this->renewal_date = $data['renewal_date'] ?? null;
         $this->status = $data['status'] ?? null;
+
         return $this;
     }
 }

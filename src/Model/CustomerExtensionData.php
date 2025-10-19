@@ -44,6 +44,13 @@ class CustomerExtensionData
     public ?string $website = null;
     public ?string $whoisEmail = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->adminType = $data['admin_type'] ?? null;
@@ -83,9 +90,15 @@ class CustomerExtensionData
         $this->vat = $data['vat'] ?? null;
         $this->website = $data['website'] ?? null;
         $this->whoisEmail = $data['whois_email'] ?? null;
+
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([

@@ -54,6 +54,13 @@ class TransferDomainResponse
      */
     public $type;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->auth_code = $data['auth_code'] ?? null;
@@ -66,6 +73,7 @@ class TransferDomainResponse
         $this->required = $data['required'] ?? null;
         $this->status = $data['status'] ?? null;
         $this->type = $data['type'] ?? null;
+
         return $this;
     }
 }

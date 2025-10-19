@@ -14,10 +14,15 @@ class RenewDomainRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([
             'period' => $this->period,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
     }
 }

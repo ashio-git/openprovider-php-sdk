@@ -47,6 +47,13 @@ class ContactAddress
      * @param array<string, mixed> $data The data to populate from.
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->street = $data['street'] ?? null;
@@ -56,6 +63,7 @@ class ContactAddress
         $this->city = $data['city'] ?? null;
         $this->state = $data['state'] ?? null;
         $this->country = $data['country'] ?? null;
+
         return $this;
     }
 
@@ -63,6 +71,11 @@ class ContactAddress
      * Converts the ContactAddress object to an array.
      *
      * @return array<string, mixed>
+     */
+    /**
+
+     * @return array<string, mixed>
+
      */
     public function toArray(): array
     {

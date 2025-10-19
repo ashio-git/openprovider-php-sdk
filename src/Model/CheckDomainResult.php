@@ -44,6 +44,13 @@ class CheckDomainResult
      */
     public $whois;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->claim_key = $data['claim_key'] ?? null;

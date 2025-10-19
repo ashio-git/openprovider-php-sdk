@@ -2,10 +2,10 @@
 
 namespace Ashio\Tests\Domain;
 
-use PHPUnit\Framework\TestCase;
-use Ashio\OpenProvider;
 use Ashio\Domain\Domain;
 use Ashio\Model\Tld;
+use Ashio\OpenProvider;
+use PHPUnit\Framework\TestCase;
 
 class TldTest extends TestCase
 {
@@ -17,7 +17,7 @@ class TldTest extends TestCase
                 'data' => [
                     'name' => 'com',
                     'status' => 'ACT',
-                ]
+                ],
             ]);
 
         $domain = new Domain($mockApi);
@@ -38,8 +38,8 @@ class TldTest extends TestCase
                     'results' => [
                         ['name' => 'com', 'status' => 'ACT'],
                         ['name' => 'net', 'status' => 'ACT'],
-                    ]
-                ]
+                    ],
+                ],
             ]);
 
         $domain = new Domain($mockApi);

@@ -13,6 +13,13 @@ class SettingsTransactionFee
     public ?float $westernUnion = null;
     public ?float $yandex = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->bank = $data['bank'] ?? null;
@@ -21,9 +28,15 @@ class SettingsTransactionFee
         $this->paypal = $data['paypal'] ?? null;
         $this->westernUnion = $data['western_union'] ?? null;
         $this->yandex = $data['yandex'] ?? null;
+
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([

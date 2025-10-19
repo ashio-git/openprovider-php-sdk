@@ -11,15 +11,28 @@ class SettingsTacContract
     public ?string $signedAt = null;
     public ?string $type = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->isSigned = $data['is_signed'] ?? null;
         $this->name = $data['name'] ?? null;
         $this->signedAt = $data['signed_at'] ?? null;
         $this->type = $data['type'] ?? null;
+
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([

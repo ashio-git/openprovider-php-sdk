@@ -12,10 +12,17 @@ class SslOrderOptions
      * @param array<string,mixed> $data
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->features = $data['features'] ?? null;
+
         return $this;
     }
 }
-

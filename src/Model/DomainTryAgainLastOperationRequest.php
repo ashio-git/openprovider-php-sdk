@@ -12,6 +12,11 @@ class DomainTryAgainLastOperationRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [
@@ -20,6 +25,7 @@ class DomainTryAgainLastOperationRequest
         if ($this->domain) {
             $data['domain'] = $this->domain->toArray();
         }
-        return array_filter($data, static fn($v) => $v !== null);
+
+        return array_filter($data, static fn ($v) => $v !== null);
     }
 }

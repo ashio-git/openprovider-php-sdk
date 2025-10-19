@@ -2,9 +2,9 @@
 
 namespace Ashio\Tests\Domain;
 
-use PHPUnit\Framework\TestCase;
-use Ashio\OpenProvider;
 use Ashio\Domain\Domain;
+use Ashio\OpenProvider;
+use PHPUnit\Framework\TestCase;
 
 class DomainTest extends TestCase
 {
@@ -17,8 +17,8 @@ class DomainTest extends TestCase
                     'results' => [
                         ['domain' => 'example.com', 'status' => 'free'],
                         ['domain' => 'example.net', 'status' => 'active'],
-                    ]
-                ]
+                    ],
+                ],
             ]);
 
         $domain = new Domain($mockApi);
@@ -40,7 +40,7 @@ class DomainTest extends TestCase
                     'auth_code' => '12345',
                     'success' => true,
                     'type' => 'external',
-                ]
+                ],
             ]);
         $domain = new Domain($mockApi);
         $resp = $domain->getAuthCode(1);
@@ -58,7 +58,7 @@ class DomainTest extends TestCase
                     'auth_code' => '67890',
                     'success' => true,
                     'type' => 'internal',
-                ]
+                ],
             ]);
         $domain = new Domain($mockApi);
         $req = new \Ashio\Model\DomainResetAuthCodeRequest();
@@ -78,7 +78,7 @@ class DomainTest extends TestCase
             ])),
             'http_errors' => false,
         ]);
-        $op = new OpenProvider('u','p',$client);
+        $op = new OpenProvider('u', 'p', $client);
         $domain = new Domain($op);
         $this->expectException(\Ashio\Exception\AuthenticationException::class);
         $domain->getDomain(1);
@@ -96,7 +96,7 @@ class DomainTest extends TestCase
                     'name_servers' => [['name' => 'ns1.example.com']],
                     'dnssec_keys' => [['alg' => 8, 'flags' => 257, 'protocol' => 3, 'pub_key' => 'abc', 'readonly' => 1]],
                     'abuse_details' => ['abuse_id' => 10, 'is_domain_held' => false, 'message' => ''],
-                ]
+                ],
             ]);
         $domain = new Domain($mockApi);
         $dto = $domain->getDomain(1);
@@ -116,7 +116,7 @@ class DomainTest extends TestCase
             ->willReturn([
                 'data' => [
                     ['name' => 'idnScript', 'type' => 'select', 'required' => false],
-                ]
+                ],
             ]);
         $domain = new Domain($mockApi);
         $specs = $domain->getAdditionalData(['domain.extension' => 'eu']);
@@ -131,7 +131,7 @@ class DomainTest extends TestCase
             ->willReturn([
                 'data' => [
                     ['name' => 'country_of_citizenship', 'type' => 'text', 'required' => false],
-                ]
+                ],
             ]);
         $domain = new Domain($mockApi);
         $specs = $domain->getCustomerAdditionalData(['domain.extension' => 'eu']);
@@ -151,6 +151,7 @@ class DomainTest extends TestCase
                     $this->assertEquals('example', $payload['domain']['name']);
                     $this->assertEquals('com', $payload['domain']['extension']);
                     $this->assertEquals(1, $payload['period']);
+
                     return true;
                 })
             )
@@ -170,6 +171,7 @@ class DomainTest extends TestCase
                 $this->equalTo('domains/10'),
                 $this->callback(function ($payload) {
                     $this->assertEquals('off', $payload['autorenew']);
+
                     return true;
                 })
             )
@@ -179,5 +181,158 @@ class DomainTest extends TestCase
         $req = new \Ashio\Model\DomainUpdateRequest();
         $req->autorenew = 'off';
         $domain->updateDomain(10, $req);
+    }
+
+    public function testDeleteDomain(): void
+    {
+        $mockApi = $this->createMock(OpenProvider::class);
+        $mockApi->method('delete')
+            ->willReturn(['data' => ['status' => 'deleted']]);
+
+        $domain = new Domain($mockApi);
+        $result = $domain->deleteDomain(10);
+
+        $this->assertInstanceOf(\Ashio\Model\DeleteDomainResponse::class, $result);
+    }
+
+    public function testRenewDomain(): void
+    {
+        $mockApi = $this->createMock(OpenProvider::class);
+        $mockApi->method('post')
+            ->willReturn(['data' => ['id' => 10, 'renewed' => true]]);
+
+        $domain = new Domain($mockApi);
+        $req = new \Ashio\Model\RenewDomainRequest();
+        $req->period = 1;
+        $result = $domain->renewDomain(10, $req);
+
+        $this->assertInstanceOf(\Ashio\Model\RenewDomainResponse::class, $result);
+    }
+
+    public function testRestoreDomain(): void
+    {
+        $mockApi = $this->createMock(OpenProvider::class);
+        $mockApi->method('post')
+            ->willReturn(['data' => ['id' => 10, 'restored' => true]]);
+
+        $domain = new Domain($mockApi);
+        $req = new \Ashio\Model\DomainRestoreRequest();
+        $result = $domain->restoreDomain(10, $req);
+
+        $this->assertInstanceOf(\Ashio\Model\RestoreDomainResponse::class, $result);
+    }
+
+    public function testApproveTransfer(): void
+    {
+        $mockApi = $this->createMock(OpenProvider::class);
+        $mockApi->method('post')
+            ->willReturn(['data' => ['success' => true]]);
+
+        $domain = new Domain($mockApi);
+        $req = new \Ashio\Model\DomainApproveTransferRequest();
+        $result = $domain->approveTransfer(10, $req);
+
+        $this->assertInstanceOf(\Ashio\Model\ActionResponse::class, $result);
+    }
+
+    public function testTransferDomain(): void
+    {
+        $mockApi = $this->createMock(OpenProvider::class);
+        $mockApi->method('post')
+            ->willReturn(['data' => ['id' => 10, 'transferred' => true]]);
+
+        $domain = new Domain($mockApi);
+        $domainName = (new \Ashio\Model\DomainName())->fromArray(['name' => 'example', 'extension' => 'com']);
+        $req = new \Ashio\Model\DomainTransferRequest($domainName);
+        $result = $domain->transferDomain($req);
+
+        $this->assertInstanceOf(\Ashio\Model\TransferDomainResponse::class, $result);
+    }
+
+    public function testTradeDomain(): void
+    {
+        $mockApi = $this->createMock(OpenProvider::class);
+        $mockApi->method('post')
+            ->willReturn(['data' => ['id' => 10, 'traded' => true]]);
+
+        $domain = new Domain($mockApi);
+        $domainName = (new \Ashio\Model\DomainName())->fromArray(['name' => 'example', 'extension' => 'com']);
+        $req = new \Ashio\Model\DomainTradeRequest($domainName);
+        $result = $domain->tradeDomain($req);
+
+        $this->assertInstanceOf(\Ashio\Model\TradeDomainResponse::class, $result);
+    }
+
+    public function testSuggestName(): void
+    {
+        $mockApi = $this->createMock(OpenProvider::class);
+        $mockApi->method('post')
+            ->willReturn(['data' => ['results' => [['name' => 'example', 'extension' => 'com']]]]);
+
+        $domain = new Domain($mockApi);
+        $req = new \Ashio\Model\DomainSuggestNameRequest();
+        $req->name = 'example';
+        $result = $domain->suggestName($req);
+
+        $this->assertIsArray($result);
+    }
+
+    public function testSendFoa1(): void
+    {
+        $mockApi = $this->createMock(OpenProvider::class);
+        $mockApi->method('post')
+            ->willReturn(['data' => ['success' => true]]);
+
+        $domain = new Domain($mockApi);
+        $req = new \Ashio\Model\DomainSendFoa1Request();
+        $result = $domain->sendFoa1(10, $req);
+
+        $this->assertInstanceOf(\Ashio\Model\ActionResponse::class, $result);
+        $this->assertTrue($result->success);
+    }
+
+    public function testTryAgainLastOperation(): void
+    {
+        $mockApi = $this->createMock(OpenProvider::class);
+        $mockApi->method('post')
+            ->willReturn(['data' => ['success' => true]]);
+
+        $domain = new Domain($mockApi);
+        $req = new \Ashio\Model\DomainTryAgainLastOperationRequest();
+        $result = $domain->tryAgainLastOperation(10, $req);
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetPricelist(): void
+    {
+        $mockApi = $this->createMock(OpenProvider::class);
+        $mockApi->method('get')
+            ->willReturn(['data' => ['currency' => 'EUR']]);
+
+        $domain = new Domain($mockApi);
+        $result = $domain->getPricelist();
+
+        $this->assertInstanceOf(\Ashio\Model\Price::class, $result);
+    }
+
+    public function testListDomains(): void
+    {
+        $mockApi = $this->createMock(OpenProvider::class);
+        $mockApi->method('get')
+            ->willReturn([
+                'data' => [
+                    'total' => 1,
+                    'results' => [
+                        ['id' => 1, 'domain' => ['name' => 'example', 'extension' => 'com']],
+                    ],
+                ],
+            ]);
+
+        $domain = new Domain($mockApi);
+        $result = $domain->listDomains();
+
+        $this->assertInstanceOf(\Ashio\Model\PaginatedResponse::class, $result);
+        $this->assertEquals(1, $result->total);
     }
 }

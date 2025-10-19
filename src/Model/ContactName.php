@@ -37,6 +37,13 @@ class ContactName
      * @param array<string, mixed> $data The data to populate from.
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->initials = $data['initials'] ?? null;
@@ -44,6 +51,7 @@ class ContactName
         $this->prefix = $data['prefix'] ?? null;
         $this->lastName = $data['last_name'] ?? null;
         $this->fullName = $data['full_name'] ?? null;
+
         return $this;
     }
 
@@ -51,6 +59,11 @@ class ContactName
      * Converts the ContactName object to an array.
      *
      * @return array<string, mixed>
+     */
+    /**
+
+     * @return array<string, mixed>
+
      */
     public function toArray(): array
     {

@@ -24,6 +24,13 @@ class SslProductPrices
      */
     public $extra_wildcard_domain_price;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->period = $data['period'] ?? null;
@@ -36,6 +43,7 @@ class SslProductPrices
         if (isset($data['extra_wildcard_domain_price'])) {
             $this->extra_wildcard_domain_price = (new SslProductPriceGroup())->fromArray($data['extra_wildcard_domain_price']);
         }
+
         return $this;
     }
 }

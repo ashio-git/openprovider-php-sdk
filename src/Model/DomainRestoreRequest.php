@@ -18,11 +18,16 @@ class DomainRestoreRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([
             'domain' => $this->domain?->toArray(),
             'id' => $this->id,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
     }
 }

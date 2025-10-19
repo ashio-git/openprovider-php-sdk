@@ -2,17 +2,17 @@
 
 namespace Ashio\Tests\Domain;
 
+use Ashio\Domain\SpamExpert;
+use Ashio\Exception\NotFoundException;
+use Ashio\Exception\ValidationException;
+use Ashio\Model\SpamExpertCreateDomainRequest;
+use Ashio\Model\SpamExpertDomain;
+use Ashio\OpenProvider;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use Ashio\Domain\SpamExpert;
-use Ashio\Exception\NotFoundException;
-use Ashio\Exception\ValidationException;
-use Ashio\Model\SpamExpertDomain;
-use Ashio\Model\SpamExpertCreateDomainRequest;
-use Ashio\OpenProvider;
 
 class SpamExpertTest extends TestCase
 {
@@ -20,6 +20,7 @@ class SpamExpertTest extends TestCase
     {
         $mock = new MockHandler($responses);
         $handlerStack = HandlerStack::create($mock);
+
         return new Client(['handler' => $handlerStack, 'http_errors' => false]);
     }
 
@@ -41,7 +42,7 @@ class SpamExpertTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u','p',$client);
+        $api = new OpenProvider('u', 'p', $client);
         $handler = new SpamExpert($api);
         $domain = $handler->getDomain('example.com');
         $this->assertInstanceOf(SpamExpertDomain::class, $domain);
@@ -54,7 +55,7 @@ class SpamExpertTest extends TestCase
             $this->loginOk(),
             new Response(422, [], json_encode(['desc' => 'Invalid'])),
         ]);
-        $api = new OpenProvider('u','p',$client);
+        $api = new OpenProvider('u', 'p', $client);
         $handler = new SpamExpert($api);
         $this->expectException(ValidationException::class);
         $handler->createDomain(new SpamExpertCreateDomainRequest(''));
@@ -66,10 +67,65 @@ class SpamExpertTest extends TestCase
             $this->loginOk(),
             new Response(404, [], json_encode(['desc' => 'Not found'])),
         ]);
-        $api = new OpenProvider('u','p',$client);
+        $api = new OpenProvider('u', 'p', $client);
         $handler = new SpamExpert($api);
         $this->expectException(NotFoundException::class);
         $handler->getDomain('missing.com');
     }
-}
 
+    public function testCreateDomain(): void
+    {
+        $payload = ['data' => ['success' => true]];
+        $client = $this->makeClient([
+            $this->loginOk(),
+            new Response(200, [], json_encode($payload)),
+        ]);
+        $api = new OpenProvider('u', 'p', $client);
+        $handler = new SpamExpert($api);
+        $req = new SpamExpertCreateDomainRequest('example.com');
+        $result = $handler->createDomain($req);
+        $this->assertTrue($result);
+    }
+
+    public function testUpdateDomain(): void
+    {
+        $payload = ['data' => ['success' => true]];
+        $client = $this->makeClient([
+            $this->loginOk(),
+            new Response(200, [], json_encode($payload)),
+        ]);
+        $api = new OpenProvider('u', 'p', $client);
+        $handler = new SpamExpert($api);
+        $req = new \Ashio\Model\SpamExpertUpdateDomainRequest();
+        $result = $handler->updateDomain('example.com', $req);
+        $this->assertTrue($result);
+    }
+
+    public function testDeleteDomain(): void
+    {
+        $payload = ['data' => ['success' => true]];
+        $client = $this->makeClient([
+            $this->loginOk(),
+            new Response(200, [], json_encode($payload)),
+        ]);
+        $api = new OpenProvider('u', 'p', $client);
+        $handler = new SpamExpert($api);
+        $result = $handler->deleteDomain('example.com');
+        $this->assertTrue($result);
+    }
+
+    public function testGenerateLoginUrl(): void
+    {
+        $payload = ['data' => ['url' => 'https://login.spamexpert.com?token=abc']];
+        $client = $this->makeClient([
+            $this->loginOk(),
+            new Response(200, [], json_encode($payload)),
+        ]);
+        $api = new OpenProvider('u', 'p', $client);
+        $handler = new SpamExpert($api);
+        $req = new \Ashio\Model\SpamExpertGenerateLoginUrlRequest('example.com');
+        $result = $handler->generateLoginUrl($req);
+        $this->assertIsString($result);
+        $this->assertStringContainsString('spamexpert.com', $result);
+    }
+}

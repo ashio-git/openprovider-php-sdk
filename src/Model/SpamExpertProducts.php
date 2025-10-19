@@ -19,16 +19,29 @@ class SpamExpertProducts
      */
     public $archiving;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->incoming = $data['incoming'] ?? null;
         $this->outgoing = $data['outgoing'] ?? null;
         $this->archiving = $data['archiving'] ?? null;
+
         return $this;
     }
 
     /**
      * @return array<string,mixed>
+     */
+    /**
+
+     * @return array<string, mixed>
+
      */
     public function toArray(): array
     {
@@ -36,6 +49,6 @@ class SpamExpertProducts
             'incoming' => $this->incoming,
             'outgoing' => $this->outgoing,
             'archiving' => $this->archiving,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
     }
 }

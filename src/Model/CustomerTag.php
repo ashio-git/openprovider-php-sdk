@@ -22,10 +22,18 @@ class CustomerTag
      * @param array<string, mixed> $data The data to populate from.
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->key = $data['key'] ?? null;
         $this->value = $data['value'] ?? null;
+
         return $this;
     }
 
@@ -33,6 +41,11 @@ class CustomerTag
      * Converts the CustomerTag object to an array.
      *
      * @return array<string, mixed>
+     */
+    /**
+
+     * @return array<string, mixed>
+
      */
     public function toArray(): array
     {

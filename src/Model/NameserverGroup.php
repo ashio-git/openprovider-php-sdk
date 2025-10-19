@@ -13,6 +13,13 @@ class NameserverGroup
     /** @var NameserverSet[]|null */
     public ?array $nameServers = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->id = $data['id'] ?? null;
@@ -29,6 +36,11 @@ class NameserverGroup
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [

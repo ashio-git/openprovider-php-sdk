@@ -15,6 +15,11 @@ class DnsSectigoData
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -23,6 +28,6 @@ class DnsSectigoData
             'renewal_date' => $this->renewalDate,
             'secured' => $this->secured,
             'website_id' => $this->websiteId,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
     }
 }

@@ -137,6 +137,13 @@ class Contact
      * @param array<string, mixed> $data The data to populate from.
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->id = $data['id'] ?? null;
@@ -176,6 +183,7 @@ class Contact
         if (isset($data['additional_data'])) {
             $this->additionalData = (new ContactAdditionalData())->fromArray($data['additional_data']);
         }
+
         return $this;
     }
 
@@ -183,6 +191,11 @@ class Contact
      * Converts the Contact object to an array.
      *
      * @return array<string, mixed>
+     */
+    /**
+
+     * @return array<string, mixed>
+
      */
     public function toArray(): array
     {

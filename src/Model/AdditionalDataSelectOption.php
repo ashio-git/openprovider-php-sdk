@@ -14,10 +14,18 @@ class AdditionalDataSelectOption
      */
     public $description;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->value = $data['value'] ?? null;
         $this->description = $data['description'] ?? null;
+
         return $this;
     }
 }

@@ -18,6 +18,11 @@ class DnsRecordUpdates
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [];
@@ -31,11 +36,16 @@ class DnsRecordUpdates
             $data['replace'] = array_map([self::class, 'recordToArray'], $this->replace);
         }
         if ($this->update) {
-            $data['update'] = array_map(static fn(DnsRecordWithOriginal $r) => $r->toArray(), $this->update);
+            $data['update'] = array_map(static fn (DnsRecordWithOriginal $r) => $r->toArray(), $this->update);
         }
+
         return $data;
     }
 
+    /**
+     * @param DnsRecord $record
+     * @return array<string, mixed>
+     */
     private static function recordToArray(DnsRecord $record): array
     {
         return array_filter([
@@ -44,6 +54,6 @@ class DnsRecordUpdates
             'ttl' => $record->ttl,
             'type' => $record->type,
             'value' => $record->value,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
     }
 }

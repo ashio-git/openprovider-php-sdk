@@ -7,6 +7,11 @@ class DomainRegistryStatus
     public ?bool $is_changeable = null;
     public ?int $value = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     */
     public function __construct(array $data = [])
     {
         if ($data) {
@@ -18,10 +23,18 @@ class DomainRegistryStatus
      * @param array<string,mixed> $data
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->is_changeable = $data['is_changeable'] ?? null;
         $this->value = $data['value'] ?? null;
+
         return $this;
     }
 }

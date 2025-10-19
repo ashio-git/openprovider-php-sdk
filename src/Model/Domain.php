@@ -7,8 +7,10 @@ class Domain
     public ?int $id = null;
     public ?DomainAbuseDetails $abuse_details = null;
     public ?string $active_date = null;
+    /** @var array<string, mixed>|null */
     public ?array $additional_data = null;
     public ?string $admin_handle = null;
+    /** @var array<int, mixed>|null */
     public ?array $api_history = null;
     public ?string $application_id = null;
     public ?string $application_mode = null;
@@ -26,6 +28,7 @@ class Domain
     public ?DomainName $domain = null;
     public ?string $expiration_date = null;
     public ?bool $has_history = null;
+    /** @var array<int, mixed>|null */
     public ?array $history = null;
     public ?string $internal_auth_code = null;
     public ?bool $is_abusive = null;
@@ -58,6 +61,11 @@ class Domain
     public ?string $type = null;
     public ?bool $use_domicile = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     */
     public function __construct(array $data = [])
     {
         if ($data) {
@@ -68,6 +76,13 @@ class Domain
     /**
      * @param array<string,mixed> $data
      * @return self
+     */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
      */
     public function fromArray(array $data): self
     {
@@ -140,6 +155,7 @@ class Domain
         $this->trade_allowed = $data['trade_allowed'] ?? null;
         $this->type = $data['type'] ?? null;
         $this->use_domicile = $data['use_domicile'] ?? null;
+
         return $this;
     }
 }

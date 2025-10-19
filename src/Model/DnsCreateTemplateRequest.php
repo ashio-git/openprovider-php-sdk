@@ -19,6 +19,11 @@ class DnsCreateTemplateRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [
@@ -26,8 +31,9 @@ class DnsCreateTemplateRequest
             'is_spamexperts_enabled' => $this->isSpamexpertsEnabled,
         ];
         if ($this->records) {
-            $data['records'] = array_map(static fn(DnsTemplateRecord $r) => $r->toArray(), $this->records);
+            $data['records'] = array_map(static fn (DnsTemplateRecord $r) => $r->toArray(), $this->records);
         }
-        return array_filter($data, static fn($v) => $v !== null);
+
+        return array_filter($data, static fn ($v) => $v !== null);
     }
 }

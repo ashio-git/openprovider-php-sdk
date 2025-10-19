@@ -2,12 +2,12 @@
 
 namespace Ashio\Tests\Accounting;
 
-use PHPUnit\Framework\TestCase;
-use Ashio\OpenProvider;
 use Ashio\Accounting\Billing;
 use Ashio\Model\Invoice as InvoiceModel;
 use Ashio\Model\Payment as PaymentModel;
 use Ashio\Model\Transaction as TransactionModel;
+use Ashio\OpenProvider;
+use PHPUnit\Framework\TestCase;
 
 class BillingTest extends TestCase
 {
@@ -20,8 +20,8 @@ class BillingTest extends TestCase
                     'total' => 1,
                     'results' => [
                         ['id' => 123, 'invoice_number' => 'INV-001'],
-                    ]
-                ]
+                    ],
+                ],
             ]);
 
         $billing = new Billing($mockApi);
@@ -43,8 +43,8 @@ class BillingTest extends TestCase
                     'total' => 1,
                     'results' => [
                         ['id' => 456, 'status' => 'paid'],
-                    ]
-                ]
+                    ],
+                ],
             ]);
 
         $billing = new Billing($mockApi);
@@ -66,8 +66,8 @@ class BillingTest extends TestCase
                     'total' => 1,
                     'results' => [
                         ['reference_id' => 789, 'action' => 'create'],
-                    ]
-                ]
+                    ],
+                ],
             ]);
 
         $billing = new Billing($mockApi);
@@ -87,7 +87,7 @@ class BillingTest extends TestCase
             new \GuzzleHttp\Psr7\Response(401, [], json_encode(['desc' => 'Unauthorized'])),
         ])), 'http_errors' => false]);
 
-        $op = new \Ashio\OpenProvider('u','p',$client);
+        $op = new \Ashio\OpenProvider('u', 'p', $client);
         $billing = new Billing($op);
         $this->expectException(\Ashio\Exception\AuthenticationException::class);
         $billing->listInvoices();

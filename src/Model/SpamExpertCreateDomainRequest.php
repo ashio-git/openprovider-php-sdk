@@ -22,6 +22,11 @@ class SpamExpertCreateDomainRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [
@@ -30,11 +35,12 @@ class SpamExpertCreateDomainRequest
             'domain_name' => $this->domainName,
         ];
         if ($this->destinations) {
-            $data['destinations'] = array_map(static fn(SpamExpertDestination $d) => $d->toArray(), $this->destinations);
+            $data['destinations'] = array_map(static fn (SpamExpertDestination $d) => $d->toArray(), $this->destinations);
         }
         if ($this->products) {
             $data['products'] = $this->products->toArray();
         }
-        return array_filter($data, static fn($v) => $v !== null);
+
+        return array_filter($data, static fn ($v) => $v !== null);
     }
 }

@@ -13,22 +13,34 @@ class DomainName
      * @param array<string,mixed> $data
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->name = $data['name'] ?? null;
         $this->extension = $data['extension'] ?? null;
+
         return $this;
     }
 
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([
             'name' => $this->name,
             'extension' => $this->extension,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
     }
 }
-

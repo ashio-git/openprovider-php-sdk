@@ -19,6 +19,11 @@ class DnsUpdateZoneRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [
@@ -38,6 +43,7 @@ class DnsUpdateZoneRequest
         if ($this->records) {
             $data['records'] = $this->records->toArray();
         }
-        return array_filter($data, static fn($v) => $v !== null);
+
+        return array_filter($data, static fn ($v) => $v !== null);
     }
 }

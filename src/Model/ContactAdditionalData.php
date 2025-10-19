@@ -27,11 +27,19 @@ class ContactAdditionalData
      * @param array<string, mixed> $data The data to populate from.
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->birthDate = $data['birth_date'] ?? null;
         $this->birthCity = $data['birth_city'] ?? null;
         $this->socialSecurityNumber = $data['social_security_number'] ?? null;
+
         return $this;
     }
 
@@ -39,6 +47,11 @@ class ContactAdditionalData
      * Converts the ContactAdditionalData object to an array.
      *
      * @return array<string, mixed>
+     */
+    /**
+
+     * @return array<string, mixed>
+
      */
     public function toArray(): array
     {

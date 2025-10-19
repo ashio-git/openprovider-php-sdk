@@ -4,8 +4,8 @@ namespace Ashio;
 
 class Credentials
 {
-    private $token;
-    private $url;
+    private string $token;
+    private string $url;
 
     /**
      * Credentials constructor.

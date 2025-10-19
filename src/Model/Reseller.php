@@ -27,6 +27,13 @@ class Reseller
     public ?string $vat = null;
     public ?float $vatperc = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->id = $data['id'] ?? null;
@@ -66,9 +73,15 @@ class Reseller
         $this->tier = $data['tier'] ?? null;
         $this->vat = $data['vat'] ?? null;
         $this->vatperc = $data['vatperc'] ?? null;
+
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [

@@ -29,6 +29,13 @@ class Customer
     public ?CustomerFax $fax = null;
     public ?string $inn = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->id = $data['id'] ?? null;
@@ -69,9 +76,15 @@ class Customer
             $this->fax = (new CustomerFax())->fromArray($data['fax']);
         }
         $this->inn = $data['inn'] ?? null;
+
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [

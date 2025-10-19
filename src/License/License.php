@@ -2,14 +2,14 @@
 
 namespace Ashio\License;
 
-use GuzzleHttp\Exception\GuzzleException;
 use Ashio\Exception\ApiException;
 use Ashio\Exception\AuthenticationException;
 use Ashio\Exception\NotFoundException;
 use Ashio\Exception\ValidationException;
-use Ashio\OpenProvider;
 use Ashio\Model\License as LicenseModel;
 use Ashio\Model\LicenseResetHwidRequest;
+use Ashio\OpenProvider;
+use GuzzleHttp\Exception\GuzzleException;
 
 class License
 {
@@ -54,6 +54,7 @@ class License
                 $licenses[] = new LicenseModel($licenseData);
             }
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $licenses);
     }
 
@@ -71,11 +72,20 @@ class License
      */
     /**
      * Reset the Hardware ID (HWID) for a license.
-     * @return bool
+     * @param string $product
+     * @param int $keyId
+     * @param LicenseResetHwidRequest $request
+     * @return \Ashio\Model\ActionResponse
+     * @throws ApiException
+     * @throws AuthenticationException
+     * @throws GuzzleException
+     * @throws NotFoundException
+     * @throws ValidationException
      */
     public function resetHwid(string $product, int $keyId, LicenseResetHwidRequest $request): \Ashio\Model\ActionResponse
     {
         $response = $this->API->post("licenses/hwids/reset/{$product}/{$keyId}", $request->toArray());
+
         return (new \Ashio\Model\ActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -111,13 +121,14 @@ class License
             'title_pattern' => $titlePattern,
             'key_id' => $keyId,
             'key_number' => $keyNumber,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
 
         $response = $this->API->get('licenses/items', $params);
         $items = [];
         foreach ($response['data']['results'] ?? [] as $row) {
             $items[] = (new \Ashio\Model\LicenseItem())->fromArray($row);
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $items);
     }
 
@@ -153,7 +164,7 @@ class License
             'title_pattern' => $titlePattern,
             'key_number_pattern' => $keyNumberPattern,
             'parent_key_id' => $parentKeyId,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
 
         $response = $this->API->get('licenses/plesk', $params);
         $licenses = [];
@@ -162,6 +173,7 @@ class License
                 $licenses[] = new LicenseModel($licenseData);
             }
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $licenses);
     }
 
@@ -178,6 +190,7 @@ class License
     public function createPleskLicense(\Ashio\Model\CreatePleskLicenseRequest $request): LicenseModel
     {
         $response = $this->API->post('licenses/plesk', $request->toArray());
+
         return new LicenseModel($response['data'] ?? []);
     }
 
@@ -198,6 +211,7 @@ class License
     public function getPleskKey(int $keyId): \Ashio\Model\LicenseKey
     {
         $response = $this->API->get("licenses/plesk/key/{$keyId}");
+
         return (new \Ashio\Model\LicenseKey())->fromArray($response['data'] ?? []);
     }
 
@@ -214,6 +228,7 @@ class License
     public function getPleskLicense(int $keyId): LicenseModel
     {
         $response = $this->API->get("licenses/plesk/{$keyId}");
+
         return new LicenseModel($response['data'] ?? []);
     }
 
@@ -231,6 +246,7 @@ class License
     public function updatePleskLicense(int $keyId, \Ashio\Model\UpdatePleskLicenseRequest $request): bool
     {
         $response = $this->API->put("licenses/plesk/{$keyId}", $request->toArray());
+
         return (bool)($response['data']['success'] ?? false);
     }
 
@@ -251,6 +267,7 @@ class License
     public function deletePleskLicense(int $keyId): \Ashio\Model\ActionResponse
     {
         $response = $this->API->delete("licenses/plesk/{$keyId}");
+
         return (new \Ashio\Model\ActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -286,7 +303,7 @@ class License
             'title_pattern' => $titlePattern,
             'key_number_pattern' => $keyNumberPattern,
             'parent_key_id' => $parentKeyId,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
 
         $response = $this->API->get('licenses/virtuozzo', $params);
         $licenses = [];
@@ -295,25 +312,24 @@ class License
                 $licenses[] = new LicenseModel($licenseData);
             }
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $licenses);
     }
 
     /**
      * Create a new Virtuozzo license.
+     * @param \Ashio\Model\CreateVirtuozzoLicenseRequest $request
+     * @return LicenseModel
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    /**
-     * Create a new Virtuozzo license.
-     * @param LicenseModel $license
-     * @return LicenseModel
-     */
     public function createVirtuozzoLicense(\Ashio\Model\CreateVirtuozzoLicenseRequest $request): LicenseModel
     {
         $response = $this->API->post('licenses/virtuozzo', $request->toArray());
+
         return new LicenseModel($response['data'] ?? []);
     }
 
@@ -330,26 +346,25 @@ class License
     public function getVirtuozzoLicense(int $keyId): LicenseModel
     {
         $response = $this->API->get("licenses/virtuozzo/{$keyId}");
+
         return new LicenseModel($response['data'] ?? []);
     }
 
     /**
      * Update an existing Virtuozzo license.
+     * @param int $keyId
+     * @param \Ashio\Model\UpdateVirtuozzoLicenseRequest $request
+     * @return bool
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    /**
-     * Update an existing Virtuozzo license.
-     * @param int $keyId
-     * @param LicenseModel $license
-     * @return bool
-     */
     public function updateVirtuozzoLicense(int $keyId, \Ashio\Model\UpdateVirtuozzoLicenseRequest $request): bool
     {
         $response = $this->API->put("licenses/virtuozzo/{$keyId}", $request->toArray());
+
         return (bool)($response['data']['success'] ?? false);
     }
 
@@ -368,6 +383,7 @@ class License
     public function deleteVirtuozzoLicense(int $keyId): \Ashio\Model\ActionResponse
     {
         $response = $this->API->delete("licenses/virtuozzo/{$keyId}");
+
         return (new \Ashio\Model\ActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -386,6 +402,7 @@ class License
     public function getVirtuozzoKey(int $keyId): \Ashio\Model\LicenseKey
     {
         $response = $this->API->get("licenses/virtuozzo/{$keyId}/key");
+
         return (new \Ashio\Model\LicenseKey())->fromArray($response['data'] ?? []);
     }
 }

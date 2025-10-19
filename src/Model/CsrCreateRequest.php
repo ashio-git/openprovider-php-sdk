@@ -51,6 +51,11 @@ class CsrCreateRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -65,6 +70,6 @@ class CsrCreateRequest
             'subject_alternative_name' => $this->subject_alternative_name,
             'unit' => $this->unit,
             'with_config' => $this->with_config,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
     }
 }

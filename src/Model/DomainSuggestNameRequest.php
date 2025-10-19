@@ -17,6 +17,11 @@ class DomainSuggestNameRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -26,6 +31,6 @@ class DomainSuggestNameRequest
             'provider' => $this->provider,
             'sensitive' => $this->sensitive,
             'tlds' => $this->tlds,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
     }
 }

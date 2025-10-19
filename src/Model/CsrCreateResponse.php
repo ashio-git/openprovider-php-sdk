@@ -17,6 +17,13 @@ class CsrCreateResponse
      * @param array<string,mixed> $data
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->command = $data['command'] ?? null;
@@ -25,7 +32,7 @@ class CsrCreateResponse
         $this->csr = $data['csr'] ?? null;
         $this->key = $data['key'] ?? null;
         $this->key_path = $data['key_path'] ?? null;
+
         return $this;
     }
 }
-

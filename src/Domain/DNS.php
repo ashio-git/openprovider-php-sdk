@@ -2,21 +2,23 @@
 
 namespace Ashio\Domain;
 
-use GuzzleHttp\Exception\GuzzleException;
 use Ashio\Exception\ApiException;
 use Ashio\Exception\AuthenticationException;
 use Ashio\Exception\NotFoundException;
 use Ashio\Exception\ValidationException;
-use Ashio\OpenProvider;
-use Ashio\Model\DnsTemplate;
 use Ashio\Model\DnsCreateTemplateRequest;
+use Ashio\Model\DnsCreateZoneRequest;
+use Ashio\Model\DnsRecord as DnsRecordModel;
+use Ashio\Model\DnsTemplate;
 use Ashio\Model\DnsUpdateZoneRequest;
+use Ashio\Model\DomainToken;
+use Ashio\Model\DomainTokenRequest;
 use Ashio\Model\Nameserver;
 use Ashio\Model\NameserverGroup;
-use Ashio\Model\Zone as ZoneModel;
-use Ashio\Model\DnsRecord as DnsRecordModel;
-use Ashio\Model\DnsCreateZoneRequest;
 use Ashio\Model\PaginatedResponse;
+use Ashio\Model\Zone as ZoneModel;
+use Ashio\OpenProvider;
+use GuzzleHttp\Exception\GuzzleException;
 
 class DNS
 {
@@ -40,7 +42,8 @@ class DNS
     public function createDomainToken(DomainTokenRequest $data): DomainToken
     {
         $response = $this->API->post('dns/domain-token', $data->toArray());
-        return (new DomainToken())->fromArray($response['data']);
+
+        return (new DomainToken())->fromArray(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
@@ -85,6 +88,7 @@ class DNS
                 $nameservers[] = (new Nameserver())->fromArray($nameserverData);
             }
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $nameservers);
     }
 
@@ -101,7 +105,8 @@ class DNS
     public function createNameserver(Nameserver $nameserver): Nameserver
     {
         $response = $this->API->post('dns/nameservers', $nameserver->toArray());
-        return (new Nameserver())->fromArray($response['data']);
+
+        return (new Nameserver())->fromArray(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
@@ -117,7 +122,8 @@ class DNS
     public function getNameserver(string $name): Nameserver
     {
         $response = $this->API->get("dns/nameservers/{$name}");
-        return (new Nameserver())->fromArray($response['data']);
+
+        return (new Nameserver())->fromArray(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
@@ -134,6 +140,7 @@ class DNS
     public function updateNameserver(string $name, Nameserver $nameserver): bool
     {
         $response = $this->API->put("dns/nameservers/{$name}", $nameserver->toArray());
+
         return $response['data']['success'] ?? false;
     }
 
@@ -150,6 +157,7 @@ class DNS
     public function deleteNameserver(string $name): bool
     {
         $response = $this->API->delete("dns/nameservers/{$name}");
+
         return $response['data']['success'] ?? false;
     }
 
@@ -182,6 +190,7 @@ class DNS
                 $groups[] = (new NameserverGroup())->fromArray($groupData);
             }
         }
+
         return new PaginatedResponse((int)($response['data']['total'] ?? 0), $groups);
     }
 
@@ -198,6 +207,7 @@ class DNS
     public function createNameserverGroup(NameserverGroup $nameserverGroup): bool
     {
         $response = $this->API->post('dns/nameservers/groups', $nameserverGroup->toArray());
+
         return $response['data']['success'] ?? false;
     }
 
@@ -214,7 +224,8 @@ class DNS
     public function getNameserverGroup(string $nsGroup): NameserverGroup
     {
         $response = $this->API->get("dns/nameservers/groups/{$nsGroup}");
-        return (new NameserverGroup())->fromArray($response['data']);
+
+        return (new NameserverGroup())->fromArray(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
@@ -231,6 +242,7 @@ class DNS
     public function updateNameserverGroup(string $nsGroup, NameserverGroup $nameserverGroup): bool
     {
         $response = $this->API->put("dns/nameservers/groups/{$nsGroup}", $nameserverGroup->toArray());
+
         return $response['data']['success'] ?? false;
     }
 
@@ -247,6 +259,7 @@ class DNS
     public function deleteNameserverGroup(string $nsGroup): bool
     {
         $response = $this->API->delete("dns/nameservers/groups/{$nsGroup}");
+
         return $response['data']['success'] ?? false;
     }
 
@@ -282,6 +295,7 @@ class DNS
                 $templates[] = (new DnsTemplate())->fromArray($templateData);
             }
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $templates);
     }
 
@@ -298,7 +312,8 @@ class DNS
     public function createTemplate(DnsCreateTemplateRequest $request): DnsTemplate
     {
         $response = $this->API->post('dns/templates', $request->toArray());
-        return $this->getTemplate($response['data']['id']);
+
+        return $this->getTemplate(is_array($response) ? ($response['data']['id'] ?? 0) : 0);
     }
 
     /**
@@ -314,13 +329,14 @@ class DNS
     public function getTemplate(int $id): DnsTemplate
     {
         $response = $this->API->get("dns/templates/{$id}");
-        return (new DnsTemplate())->fromArray($response['data']);
+
+        return (new DnsTemplate())->fromArray(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
      * Delete a DNS template.
      * @param int $id
-     * @return bool
+     * @return \Ashio\Model\ActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -330,6 +346,7 @@ class DNS
     public function deleteTemplate(int $id): \Ashio\Model\ActionResponse
     {
         $response = $this->API->delete("dns/templates/{$id}");
+
         return (new \Ashio\Model\ActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -365,6 +382,7 @@ class DNS
                 $zones[] = new ZoneModel($zoneData);
             }
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $zones);
     }
 
@@ -381,13 +399,14 @@ class DNS
     public function createZone(DnsCreateZoneRequest $request): \Ashio\Model\DnsActionResponse
     {
         $response = $this->API->post('dns/zones', $request->toArray());
+
         return (new \Ashio\Model\DnsActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * Get a specific DNS zone by its name.
      * @param string $name
-     * @param array $params
+     * @param array<string, mixed> $params
      * @return ZoneModel
      * @throws ApiException
      * @throws AuthenticationException
@@ -398,6 +417,7 @@ class DNS
     public function getZone(string $name, array $params = []): ZoneModel
     {
         $response = $this->API->get("dns/zones/{$name}", $params);
+
         return new ZoneModel($response['data'] ?? []);
     }
 
@@ -418,13 +438,14 @@ class DNS
     public function updateZone(string $name, DnsUpdateZoneRequest $request): \Ashio\Model\DnsActionResponse
     {
         $response = $this->API->put("dns/zones/{$name}", $request->toArray());
+
         return (new \Ashio\Model\DnsActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * Delete a DNS zone.
      * @param string $name
-     * @param array $params
+     * @param array<string, mixed> $params
      * @return \Ashio\Model\DnsActionResponse
      * @throws ApiException
      * @throws AuthenticationException
@@ -432,30 +453,23 @@ class DNS
      * @throws NotFoundException
      * @throws ValidationException
      */
-    /**
-     * @return \Ashio\Model\DnsActionResponse
-     */
     public function deleteZone(string $name, array $params = []): \Ashio\Model\DnsActionResponse
     {
         $response = $this->API->delete("dns/zones/{$name}", $params);
+
         return (new \Ashio\Model\DnsActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * List all DNS records for a zone.
      * @param string $name
-     * @param array $params
-     * @return array
+     * @param array<string, mixed> $params
+     * @return \Ashio\Model\PaginatedResponse<DnsRecordModel>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * @return \Ashio\Model\PaginatedResponse
-     * @phpstan-return \Ashio\Model\PaginatedResponse<DnsRecordModel>
-     * @psalm-return \Ashio\Model\PaginatedResponse<DnsRecordModel>
      */
     public function listZoneRecords(string $name, array $params = []): \Ashio\Model\PaginatedResponse
     {
@@ -466,6 +480,7 @@ class DNS
                 $records[] = new DnsRecordModel($recordData);
             }
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $records);
     }
 }

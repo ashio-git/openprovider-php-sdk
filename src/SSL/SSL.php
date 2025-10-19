@@ -2,7 +2,6 @@
 
 namespace Ashio\SSL;
 
-use GuzzleHttp\Exception\GuzzleException;
 use Ashio\Exception\ApiException;
 use Ashio\Exception\AuthenticationException;
 use Ashio\Exception\NotFoundException;
@@ -10,9 +9,10 @@ use Ashio\Exception\ValidationException;
 use Ashio\Model\CsrCreateResponse;
 use Ashio\Model\CsrDecodeResponse;
 use Ashio\Model\PaginatedResponse;
-use Ashio\OpenProvider;
 use Ashio\Model\SslOrder as SslOrderModel;
 use Ashio\Model\SslProduct as SslProductModel;
+use Ashio\OpenProvider;
+use GuzzleHttp\Exception\GuzzleException;
 
 class SSL
 {
@@ -25,8 +25,8 @@ class SSL
 
     /**
      * List approver emails for a domain.
-     * @param array $queryParams
-     * @return string[]
+     * @param array<string, mixed> $queryParams
+     * @return array<int, string>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -36,6 +36,7 @@ class SSL
     public function listApproverEmails(array $queryParams): array
     {
         $response = $this->API->get('ssl/approver-emails', $queryParams);
+
         return $response['data']['results'] ?? [];
     }
 
@@ -53,6 +54,7 @@ class SSL
     public function createCsr(\Ashio\Model\CsrCreateRequest $request): CsrCreateResponse
     {
         $response = $this->API->post('ssl/csr', $request->toArray());
+
         return (new CsrCreateResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -70,13 +72,18 @@ class SSL
     public function decodeCsr(\Ashio\Model\CsrDecodeRequest $request): CsrDecodeResponse
     {
         $response = $this->API->post('ssl/csr/decode', $request->toArray());
+
         return (new CsrDecodeResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * List all SSL orders with optional filters.
-     * @param array $queryParams Optional parameters to filter the list of orders.
-     * @return \Ashio\Model\PaginatedResponse
+     * @param int $limit
+     * @param int $offset
+     * @param string|null $orderByCommonName
+     * @param string|null $orderByExpirationDate
+     * @param string|null $status
+     * @return PaginatedResponse<SslOrderModel>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -89,28 +96,28 @@ class SSL
         ?string $orderByCommonName = null,
         ?string $orderByExpirationDate = null,
         ?string $status = null
-    ): PaginatedResponse
-    {
+    ): PaginatedResponse {
         $params = array_filter([
             'limit' => $limit,
             'offset' => $offset,
             'order_by.common_name' => $orderByCommonName,
             'order_by.expiration_date' => $orderByExpirationDate,
             'status' => $status,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
 
         $response = $this->API->get('ssl/orders', $params);
         $orders = [];
         foreach ($response['data']['results'] ?? [] as $orderData) {
             $orders[] = new SslOrderModel($orderData);
         }
+
         return new PaginatedResponse((int)($response['data']['total'] ?? 0), $orders);
     }
 
     /**
      * Create a new SSL order.
-     * @param array $body The data for the new order.
-     * @return \Ashio\Model\SslOrder
+     * @param \Ashio\Model\SslOrderCreateRequest $request
+     * @return SslOrderModel
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -120,6 +127,7 @@ class SSL
     public function createOrder(\Ashio\Model\SslOrderCreateRequest $request): SslOrderModel
     {
         $response = $this->API->post('ssl/orders', $request->toArray());
+
         return new SslOrderModel($response['data'] ?? []);
     }
 
@@ -136,6 +144,7 @@ class SSL
     public function getOrder(int $id): SslOrderModel
     {
         $response = $this->API->get("ssl/orders/{$id}");
+
         return new SslOrderModel($response['data'] ?? []);
     }
 
@@ -153,12 +162,18 @@ class SSL
     /**
      * Update an existing SSL order.
      * @param int $id
-     * @param array $body
+     * @param \Ashio\Model\SslOrderUpdateRequest $request
      * @return \Ashio\Model\SslActionResponse
+     * @throws ApiException
+     * @throws AuthenticationException
+     * @throws GuzzleException
+     * @throws NotFoundException
+     * @throws ValidationException
      */
     public function updateOrder(int $id, \Ashio\Model\SslOrderUpdateRequest $request): \Ashio\Model\SslActionResponse
     {
         $response = $this->API->put("ssl/orders/{$id}", $request->toArray());
+
         return (new \Ashio\Model\SslActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -180,6 +195,7 @@ class SSL
     public function updateApproverEmailAddress(int $id, \Ashio\Model\ApproverEmailUpdateRequest $request): \Ashio\Model\SslActionResponse
     {
         $response = $this->API->put("ssl/orders/{$id}/approver-email", $request->toArray());
+
         return (new \Ashio\Model\SslActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -201,6 +217,7 @@ class SSL
     public function resendApproverEmail(int $id, \Ashio\Model\SslOrderResendApproverEmailRequest $request): \Ashio\Model\SslActionResponse
     {
         $response = $this->API->post("ssl/orders/{$id}/approver-email/resend", $request->toArray());
+
         return (new \Ashio\Model\SslActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -222,6 +239,7 @@ class SSL
     public function cancelOrder(int $id, \Ashio\Model\SslOrderCancelRequest $request): \Ashio\Model\SslActionResponse
     {
         $response = $this->API->post("ssl/orders/{$id}/cancel", $request->toArray());
+
         return (new \Ashio\Model\SslActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -243,6 +261,7 @@ class SSL
     public function createOtpToken(int $id, \Ashio\Model\SslOrderOtpTokenRequest $request): \Ashio\Model\SslActionResponse
     {
         $response = $this->API->post("ssl/orders/{$id}/otp-tokens", $request->toArray());
+
         return (new \Ashio\Model\SslActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -264,6 +283,7 @@ class SSL
     public function reissueOrder(int $id, \Ashio\Model\SslOrderReissueRequest $request): \Ashio\Model\SslActionResponse
     {
         $response = $this->API->post("ssl/orders/{$id}/reissue", $request->toArray());
+
         return (new \Ashio\Model\SslActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -285,13 +305,18 @@ class SSL
     public function renewOrder(int $id, \Ashio\Model\SslOrderRenewRequest $request): \Ashio\Model\SslActionResponse
     {
         $response = $this->API->post("ssl/orders/{$id}/renew", $request->toArray());
+
         return (new \Ashio\Model\SslActionResponse())->fromArray($response['data'] ?? []);
     }
 
     /**
      * List all SSL products with optional filters.
-     * @param array $queryParams Optional parameters to filter the list of products.
-     * @return \Ashio\Model\PaginatedResponse
+     * @param int $limit
+     * @param int $offset
+     * @param bool|null $withPrice
+     * @param bool|null $withSupportedSoftware
+     * @param bool|null $withDescription
+     * @return PaginatedResponse<SslProductModel>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -304,20 +329,20 @@ class SSL
         ?bool $withPrice = null,
         ?bool $withSupportedSoftware = null,
         ?bool $withDescription = null
-    ): PaginatedResponse
-    {
+    ): PaginatedResponse {
         $params = array_filter([
             'limit' => $limit,
             'offset' => $offset,
             'with_price' => $withPrice,
             'with_supported_software' => $withSupportedSoftware,
             'with_description' => $withDescription,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
         $response = $this->API->get('ssl/products', $params);
         $products = [];
         foreach ($response['data']['results'] ?? [] as $row) {
             $products[] = (new SslProductModel())->fromArray($row);
         }
+
         return new PaginatedResponse((int)($response['data']['total'] ?? 0), $products);
     }
 
@@ -334,6 +359,7 @@ class SSL
     public function getProduct(int $id): SslProductModel
     {
         $response = $this->API->get("ssl/products/{$id}");
+
         return (new SslProductModel())->fromArray($response['data'] ?? []);
     }
 }

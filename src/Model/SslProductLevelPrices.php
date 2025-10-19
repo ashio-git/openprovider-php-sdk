@@ -19,6 +19,13 @@ class SslProductLevelPrices
      */
     public $prices;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->level = $data['level'] ?? null;
@@ -28,6 +35,7 @@ class SslProductLevelPrices
                 return (new SslProductPrices())->fromArray($price);
             }, $data['prices']);
         }
+
         return $this;
     }
 }

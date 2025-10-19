@@ -10,14 +10,27 @@ class Nameserver
     public ?string $ip = null;
     public ?string $ip6 = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->name = $data['name'] ?? null;
         $this->ip = $data['ip'] ?? null;
         $this->ip6 = $data['ip6'] ?? null;
+
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([

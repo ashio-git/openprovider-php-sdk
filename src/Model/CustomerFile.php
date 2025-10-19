@@ -27,11 +27,19 @@ class CustomerFile
      * @param array<string, mixed> $data The data to populate from.
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->description = $data['description'] ?? null;
         $this->docType = $data['doc_type'] ?? null;
         $this->path = $data['path'] ?? null;
+
         return $this;
     }
 
@@ -39,6 +47,11 @@ class CustomerFile
      * Converts the CustomerFile object to an array.
      *
      * @return array<string, mixed>
+     */
+    /**
+
+     * @return array<string, mixed>
+
      */
     public function toArray(): array
     {

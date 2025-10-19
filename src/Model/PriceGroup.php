@@ -14,6 +14,13 @@ class PriceGroup
      */
     public $reseller;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         if (isset($data['product'])) {
@@ -22,6 +29,7 @@ class PriceGroup
         if (isset($data['reseller'])) {
             $this->reseller = (new ProductPrice())->fromArray($data['reseller']);
         }
+
         return $this;
     }
 }

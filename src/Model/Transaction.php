@@ -8,8 +8,14 @@ class Transaction
     public ?string $action = null;
     public ?string $creation_date = null;
     public ?string $subject = null;
+    /** @var array<string, mixed>|null */
     public ?array $total = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     */
     public function __construct(array $data = [])
     {
         foreach ($data as $key => $value) {

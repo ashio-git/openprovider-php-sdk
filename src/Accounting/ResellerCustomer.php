@@ -2,18 +2,20 @@
 
 namespace Ashio\Accounting;
 
-use GuzzleHttp\Exception\GuzzleException;
 use Ashio\Exception\ApiException;
 use Ashio\Exception\AuthenticationException;
 use Ashio\Exception\NotFoundException;
 use Ashio\Exception\ValidationException;
-use Ashio\OpenProvider;
 use Ashio\Model\Contact;
 use Ashio\Model\Customer as CustomerModel;
-use Ashio\Model\Reseller as ResellerModel;
-use Ashio\Model\Tag;
 use Ashio\Model\DomainEmailVerification;
 use Ashio\Model\PaginatedResponse;
+use Ashio\Model\Reseller as ResellerModel;
+use Ashio\Model\ResellerSettings;
+use Ashio\Model\ResellerStatistics;
+use Ashio\Model\Tag;
+use Ashio\OpenProvider;
+use GuzzleHttp\Exception\GuzzleException;
 
 class ResellerCustomer
 {
@@ -69,6 +71,7 @@ class ResellerCustomer
                 $contacts[] = (new Contact())->fromArray($contactData);
             }
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $contacts);
     }
 
@@ -85,7 +88,8 @@ class ResellerCustomer
     public function createContact(Contact $contact): Contact
     {
         $response = $this->API->post('contacts', $contact->toArray());
-        return $this->getContact($response['data']['id']);
+
+        return $this->getContact(is_array($response) ? ($response['data']['id'] ?? 0) : 0);
     }
 
     /**
@@ -101,7 +105,8 @@ class ResellerCustomer
     public function getContact(int $id): Contact
     {
         $response = $this->API->get("contacts/{$id}");
-        return (new Contact())->fromArray($response['data']);
+
+        return (new Contact())->fromArray(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
@@ -118,6 +123,7 @@ class ResellerCustomer
     public function updateContact(int $id, Contact $contact): bool
     {
         $response = $this->API->put("contacts/{$id}", $contact->toArray());
+
         return $response['data']['success'] ?? false;
     }
 
@@ -134,6 +140,7 @@ class ResellerCustomer
     public function deleteContact(int $id): bool
     {
         $response = $this->API->delete("contacts/{$id}");
+
         return $response['data']['success'] ?? false;
     }
 
@@ -154,8 +161,8 @@ class ResellerCustomer
      * @param string|null $pattern
      * @param bool|null $withAdditionalData
      * @param string|null $type
-     * @param array|null $columns
-     * @return array{total: int, results: array<int, CustomerModel>}
+     * @param array<string, mixed>|null $columns
+     * @return PaginatedResponse<CustomerModel>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
@@ -180,9 +187,21 @@ class ResellerCustomer
         ?array $columns = null
     ): \Ashio\Model\PaginatedResponse {
         $params = array_filter(compact(
-            'resellerId', 'limit', 'offset', 'order', 'orderBy', 'emailPattern',
-            'companyNamePattern', 'lastNamePattern', 'firstNamePattern', 'commentPattern',
-            'handlePattern', 'pattern', 'withAdditionalData', 'type', 'columns'
+            'resellerId',
+            'limit',
+            'offset',
+            'order',
+            'orderBy',
+            'emailPattern',
+            'companyNamePattern',
+            'lastNamePattern',
+            'firstNamePattern',
+            'commentPattern',
+            'handlePattern',
+            'pattern',
+            'withAdditionalData',
+            'type',
+            'columns'
         ));
 
         $response = $this->API->get('customers', $params);
@@ -192,6 +211,7 @@ class ResellerCustomer
                 $customers[] = (new CustomerModel())->fromArray($customerData);
             }
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $customers);
     }
 
@@ -208,13 +228,14 @@ class ResellerCustomer
     public function createCustomer(CustomerModel $customer): CustomerModel
     {
         $response = $this->API->post('customers', $customer->toArray());
-        return $this->getCustomer($response['data']['handle']);
+
+        return $this->getCustomer(is_array($response) ? ($response['data']['handle'] ?? '') : '');
     }
 
     /**
      * Get a specific customer by its handle.
      * @param string $handle The handle of the customer.
-     * @param array $params Optional parameters.
+     * @param array<string, mixed> $params Optional parameters.
      * @return CustomerModel
      * @throws ApiException
      * @throws AuthenticationException
@@ -225,6 +246,7 @@ class ResellerCustomer
     public function getCustomer(string $handle, array $params = []): CustomerModel
     {
         $response = $this->API->get("customers/{$handle}", $params);
+
         return (new CustomerModel())->fromArray($response['data'] ?? []);
     }
 
@@ -242,6 +264,7 @@ class ResellerCustomer
     public function updateCustomer(string $handle, CustomerModel $customer): bool
     {
         $response = $this->API->put("customers/{$handle}", $customer->toArray());
+
         return $response['data']['success'] ?? false;
     }
 
@@ -258,6 +281,7 @@ class ResellerCustomer
     public function deleteCustomer(string $handle): bool
     {
         $response = $this->API->delete("customers/{$handle}");
+
         return $response['data']['success'] ?? false;
     }
 
@@ -298,8 +322,17 @@ class ResellerCustomer
         int $offset = 0
     ): PaginatedResponse {
         $params = array_filter(compact(
-            'domain_id', 'domain', 'email', 'handle', 'status', 'description',
-            'is_suspended', 'response_type', 'response_to', 'limit', 'offset'
+            'domain_id',
+            'domain',
+            'email',
+            'handle',
+            'status',
+            'description',
+            'is_suspended',
+            'response_type',
+            'response_to',
+            'limit',
+            'offset'
         ));
 
         $response = $this->API->get('customers/verifications/emails/domains', $params);
@@ -309,6 +342,7 @@ class ResellerCustomer
                 $verifications[] = (new DomainEmailVerification())->fromArray($verificationData);
             }
         }
+
         return new PaginatedResponse((int)($response['data']['total'] ?? 0), $verifications);
     }
 
@@ -328,6 +362,7 @@ class ResellerCustomer
     {
         $params = array_filter(compact('email', 'language', 'tag'));
         $response = $this->API->post('customers/verifications/emails/restart', $params);
+
         return $response['data']['success'] ?? false;
     }
 
@@ -348,7 +383,8 @@ class ResellerCustomer
     {
         $params = array_filter(compact('email', 'handle', 'language', 'tag'));
         $response = $this->API->post('customers/verifications/emails/start', $params);
-        return $response['data']['id'];
+
+        return is_array($response) ? ($response['data']['id'] ?? 0) : 0;
     }
 
     /**
@@ -372,10 +408,14 @@ class ResellerCustomer
         ?bool $withContacts = null
     ): ResellerModel {
         $params = array_filter(compact(
-            'withAdditionalData', 'withStatistics', 'withSettings', 'withContacts'
+            'withAdditionalData',
+            'withStatistics',
+            'withSettings',
+            'withContacts'
         ));
 
         $response = $this->API->get('resellers', $params);
+
         return (new ResellerModel())->fromArray($response['data'] ?? []);
     }
 
@@ -393,6 +433,7 @@ class ResellerCustomer
     public function updateReseller(int $id, ResellerModel $reseller): bool
     {
         $response = $this->API->put("resellers/{$id}", $reseller->toArray());
+
         return $response['data']['success'] ?? false;
     }
 
@@ -408,6 +449,7 @@ class ResellerCustomer
     public function getSettings(): ResellerSettings
     {
         $response = $this->API->get('resellers/settings');
+
         return (new ResellerSettings())->fromArray($response['data'] ?? []);
     }
 
@@ -423,6 +465,7 @@ class ResellerCustomer
     public function getStatistics(): ResellerStatistics
     {
         $response = $this->API->get('resellers/statistics');
+
         return (new ResellerStatistics())->fromArray($response['data'] ?? []);
     }
 
@@ -450,6 +493,7 @@ class ResellerCustomer
                 $tags[] = (new Tag())->fromArray($tagData);
             }
         }
+
         return new PaginatedResponse((int)($response['data']['total'] ?? 0), $tags);
     }
 
@@ -466,6 +510,7 @@ class ResellerCustomer
     public function createTag(Tag $tag): bool
     {
         $response = $this->API->post('tags', $tag->toArray());
+
         return $response['data']['success'] ?? false;
     }
 
@@ -484,6 +529,7 @@ class ResellerCustomer
     {
         $params = array_filter(compact('key', 'value'));
         $response = $this->API->delete('tags', $params);
+
         return $response['data']['success'] ?? false;
     }
 }

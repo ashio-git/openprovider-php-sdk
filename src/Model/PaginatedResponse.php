@@ -25,7 +25,7 @@ class PaginatedResponse
 
     /**
      * @param int $total
-     * @param array $results
+     * @param array<int, T> $results
      */
     public function __construct(int $total = 0, array $results = [])
     {
@@ -33,4 +33,3 @@ class PaginatedResponse
         $this->results = $results;
     }
 }
-

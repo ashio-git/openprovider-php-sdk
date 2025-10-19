@@ -12,10 +12,17 @@ class LicenseKey
      * @param array<string,mixed> $data
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->key = $data['key'] ?? null;
+
         return $this;
     }
 }
-

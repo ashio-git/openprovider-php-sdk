@@ -13,6 +13,13 @@ class DnsTemplateRecord
     public ?string $type = null;
     public ?string $value = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->id = $data['id'] ?? null;
@@ -21,9 +28,15 @@ class DnsTemplateRecord
         $this->ttl = $data['ttl'] ?? null;
         $this->type = $data['type'] ?? null;
         $this->value = $data['value'] ?? null;
+
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([

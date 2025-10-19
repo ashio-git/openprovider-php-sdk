@@ -2,9 +2,9 @@
 
 namespace Ashio\Accounting;
 
-use GuzzleHttp\Exception\GuzzleException;
 use Ashio\Model\AccountBalance;
 use Ashio\OpenProvider;
+use GuzzleHttp\Exception\GuzzleException;
 
 class Account
 {
@@ -23,6 +23,7 @@ class Account
     public function getBalance(): AccountBalance
     {
         $response = $this->API->get('accounting/balance');
+
         return (new AccountBalance())->fromArray($response['data'] ?? []);
     }
 }

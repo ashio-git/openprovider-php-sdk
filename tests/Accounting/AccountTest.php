@@ -2,10 +2,10 @@
 
 namespace Ashio\Tests\Accounting;
 
-use PHPUnit\Framework\TestCase;
 use Ashio\Accounting\Account;
 use Ashio\Model\AccountBalance;
 use Ashio\OpenProvider;
+use PHPUnit\Framework\TestCase;
 
 class AccountTest extends TestCase
 {
@@ -16,7 +16,7 @@ class AccountTest extends TestCase
             'data' => [
                 'balance' => 100.5,
                 'reserved_balance' => 10.0,
-            ]
+            ],
         ]);
         $acc = new Account($mockApi);
         $balance = $acc->getBalance();
@@ -25,4 +25,3 @@ class AccountTest extends TestCase
         $this->assertSame(10.0, $balance->reserved_balance);
     }
 }
-

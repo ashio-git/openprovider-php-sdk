@@ -2,16 +2,17 @@
 
 namespace Ashio\Domain;
 
-use GuzzleHttp\Exception\GuzzleException;
-use Ashio\Model\SpamExpertDomain;
 use Ashio\Model\SpamExpertCreateDomainRequest;
-use Ashio\Model\SpamExpertUpdateDomainRequest;
+use Ashio\Model\SpamExpertDomain;
 use Ashio\Model\SpamExpertGenerateLoginUrlRequest;
+use Ashio\Model\SpamExpertUpdateDomainRequest;
 use Ashio\OpenProvider;
+use GuzzleHttp\Exception\GuzzleException;
 
 class SpamExpert
 {
     private OpenProvider $API;
+
     public function __construct(OpenProvider $API)
     {
         $this->API = $API;
@@ -26,6 +27,7 @@ class SpamExpert
     public function createDomain(SpamExpertCreateDomainRequest $request): bool
     {
         $response = $this->API->post('spam-expert/domains', $request->toArray());
+
         return (bool)($response['data']['success'] ?? false);
     }
 
@@ -44,6 +46,7 @@ class SpamExpert
             $params['bundle'] = $bundle;
         }
         $response = $this->API->get("spam-expert/domains/{$domainName}", $params);
+
         return (new SpamExpertDomain())->fromArray($response['data'] ?? []);
     }
 
@@ -57,6 +60,7 @@ class SpamExpert
     public function updateDomain(string $domainName, SpamExpertUpdateDomainRequest $request): bool
     {
         $response = $this->API->put("spam-expert/domains/{$domainName}", $request->toArray());
+
         return (bool)($response['data']['success'] ?? false);
     }
 
@@ -74,6 +78,7 @@ class SpamExpert
             $params['bundle'] = $bundle;
         }
         $response = $this->API->delete("spam-expert/domains/{$domainName}", $params);
+
         return (bool)($response['data']['success'] ?? false);
     }
 
@@ -86,6 +91,7 @@ class SpamExpert
     public function generateLoginUrl(SpamExpertGenerateLoginUrlRequest $request): string
     {
         $response = $this->API->post("spam-expert/generate-login-url", $request->toArray());
+
         return (string)($response['data']['url'] ?? '');
     }
 }

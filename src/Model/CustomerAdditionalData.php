@@ -27,6 +27,13 @@ class CustomerAdditionalData
     public ?string $socialSecurityNumber = null;
     public ?string $tradingName = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         if (isset($data['attached_files'])) {
@@ -52,9 +59,15 @@ class CustomerAdditionalData
         $this->passportNumber = $data['passport_number'] ?? null;
         $this->socialSecurityNumber = $data['social_security_number'] ?? null;
         $this->tradingName = $data['trading_name'] ?? null;
+
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [

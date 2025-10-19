@@ -14,12 +14,20 @@ class Zone
     /** @var DnsRecord[] */
     public ?array $records = null;
 
+    /**
+     * @param array<string, mixed> $data
+     */
+    /**
+
+     * @param array<string, mixed> $data
+
+     */
     public function __construct(array $data = [])
     {
         foreach ($data as $key => $value) {
             if (property_exists($this, $key)) {
                 if ($key === 'records' && is_array($value)) {
-                    $this->records = array_map(fn($recordData) => new DnsRecord($recordData), $value);
+                    $this->records = array_map(fn ($recordData) => new DnsRecord($recordData), $value);
                 } else {
                     $this->{$key} = $value;
                 }

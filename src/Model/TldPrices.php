@@ -17,6 +17,11 @@ class TldPrices
     public ?TldPrice $transfer_price = null;
     public ?TldPrice $update_price = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     */
     public function __construct(array $data = [])
     {
         foreach ($data as $key => $value) {

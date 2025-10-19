@@ -12,6 +12,11 @@ class DnsRecordWithOriginal
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -29,6 +34,6 @@ class DnsRecordWithOriginal
                 'type' => $this->record->type,
                 'value' => $this->record->value,
             ] : null,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
     }
 }

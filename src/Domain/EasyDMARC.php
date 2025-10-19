@@ -2,16 +2,17 @@
 
 namespace Ashio\Domain;
 
-use GuzzleHttp\Exception\GuzzleException;
-use Ashio\Model\EasyDmarcOrder;
-use Ashio\Model\PaginatedResponse;
 use Ashio\Model\EasyDmarcCreateRequest;
+use Ashio\Model\EasyDmarcOrder;
 use Ashio\Model\EasyDmarcRetryRequest;
+use Ashio\Model\PaginatedResponse;
 use Ashio\OpenProvider;
+use GuzzleHttp\Exception\GuzzleException;
 
 class EasyDMARC
 {
     private OpenProvider $API;
+
     public function __construct(OpenProvider $API)
     {
         $this->API = $API;
@@ -19,13 +20,14 @@ class EasyDMARC
 
     /**
      * Get EasyDMARC order info (current context).
-     * @param array $params
+     * @param array<string, mixed> $params
      * @return EasyDmarcOrder
      * @throws GuzzleException
      */
     public function getEasyDmarc(array $params = []): EasyDmarcOrder
     {
         $response = $this->API->get('easydmarcs', $params);
+
         return (new EasyDmarcOrder())->fromArray($response['data'] ?? []);
     }
 
@@ -38,6 +40,7 @@ class EasyDMARC
     public function createEasyDmarc(EasyDmarcCreateRequest $request): EasyDmarcOrder
     {
         $response = $this->API->post('easydmarcs', $request->toArray());
+
         return (new EasyDmarcOrder())->fromArray($response['data'] ?? []);
     }
 
@@ -60,6 +63,7 @@ class EasyDMARC
         foreach ($response['data']['results'] ?? [] as $row) {
             $items[] = (new EasyDmarcOrder())->fromArray($row);
         }
+
         return new PaginatedResponse((int)($response['data']['total'] ?? 0), $items);
     }
 
@@ -72,6 +76,7 @@ class EasyDMARC
     public function deleteEasyDmarc(int $id): bool
     {
         $response = $this->API->delete("easydmarcs/{$id}");
+
         return (bool)($response['data']['success'] ?? false);
     }
 
@@ -85,6 +90,7 @@ class EasyDMARC
     public function retryEasyDmarc(int $id, EasyDmarcRetryRequest $request): EasyDmarcOrder
     {
         $response = $this->API->post("easydmarcs/{$id}/retry", $request->toArray());
+
         return (new EasyDmarcOrder())->fromArray($response['data'] ?? []);
     }
 
@@ -97,6 +103,7 @@ class EasyDMARC
     public function getEasyDmarcSso(int $id): string
     {
         $response = $this->API->get("easydmarcs/{$id}/sso");
+
         return (string)($response['data']['url'] ?? '');
     }
 }

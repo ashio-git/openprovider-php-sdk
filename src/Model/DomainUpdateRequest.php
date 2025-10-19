@@ -16,6 +16,11 @@ class DomainUpdateRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [];
@@ -26,12 +31,12 @@ class DomainUpdateRequest
             $data['ns_group'] = $this->ns_group;
         }
         if ($this->name_servers) {
-            $data['name_servers'] = array_map(static fn(Nameserver $ns) => $ns->toArray(), $this->name_servers);
+            $data['name_servers'] = array_map(static fn (Nameserver $ns) => $ns->toArray(), $this->name_servers);
         }
         if ($this->additional_data) {
             $data['additional_data'] = $this->additional_data;
         }
+
         return $data;
     }
 }
-

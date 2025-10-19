@@ -26,6 +26,13 @@ class SslOrderAdditionalData
      * @param array<string,mixed> $data
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         foreach ($data as $k => $v) {
@@ -33,7 +40,7 @@ class SslOrderAdditionalData
                 $this->$k = $v;
             }
         }
+
         return $this;
     }
 }
-

@@ -17,6 +17,11 @@ class SpamExpertGenerateLoginUrlRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [
@@ -25,6 +30,7 @@ class SpamExpertGenerateLoginUrlRequest
         if ($this->bundle !== null) {
             $data['bundle'] = $this->bundle;
         }
+
         return $data;
     }
 }

@@ -24,6 +24,11 @@ class DnsCreateZoneRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [
@@ -43,9 +48,10 @@ class DnsCreateZoneRequest
                     'type' => $record->type,
                     'ttl' => $record->ttl,
                     'prio' => $record->prio,
-                ], static fn($v) => $v !== null);
+                ], static fn ($v) => $v !== null);
             }, $this->records);
         }
-        return array_filter($data, static fn($v) => $v !== null);
+
+        return array_filter($data, static fn ($v) => $v !== null);
     }
 }

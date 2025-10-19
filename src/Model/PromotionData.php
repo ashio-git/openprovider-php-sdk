@@ -14,10 +14,18 @@ class PromotionData
      */
     public $end_date;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->start_date = $data['start_date'] ?? null;
         $this->end_date = $data['end_date'] ?? null;
+
         return $this;
     }
 }

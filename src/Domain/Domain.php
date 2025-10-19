@@ -2,34 +2,31 @@
 
 namespace Ashio\Domain;
 
-use GuzzleHttp\Exception\GuzzleException;
 use Ashio\Exception\ApiException;
 use Ashio\Exception\AuthenticationException;
 use Ashio\Exception\NotFoundException;
 use Ashio\Exception\ValidationException;
-use Ashio\License\License;
-use Ashio\OpenProvider;
-use Ashio\Model\AdditionalDataSpecification;
-use Ashio\Model\AuthCode;
 use Ashio\Model\CheckDomainResult;
 use Ashio\Model\DeleteDomainResponse;
 use Ashio\Model\Domain as DomainModel;
+use Ashio\Model\DomainApproveTransferRequest;
+use Ashio\Model\DomainResetAuthCodeRequest;
+use Ashio\Model\DomainRestoreRequest;
+use Ashio\Model\DomainSendFoa1Request;
+use Ashio\Model\DomainSuggestNameRequest;
+use Ashio\Model\DomainTradeRequest;
+use Ashio\Model\DomainTransferRequest;
+use Ashio\Model\DomainTryAgainLastOperationRequest;
 use Ashio\Model\Price;
-use Ashio\Model\RenewDomainResponse;
 use Ashio\Model\RenewDomainRequest;
+use Ashio\Model\RenewDomainResponse;
 use Ashio\Model\RestoreDomainResponse;
 use Ashio\Model\SuggestNameDomainResult;
 use Ashio\Model\Tld;
 use Ashio\Model\TradeDomainResponse;
 use Ashio\Model\TransferDomainResponse;
-use Ashio\Model\DomainTransferRequest;
-use Ashio\Model\DomainTradeRequest;
-use Ashio\Model\DomainSuggestNameRequest;
-use Ashio\Model\DomainRestoreRequest;
-use Ashio\Model\DomainApproveTransferRequest;
-use Ashio\Model\DomainSendFoa1Request;
-use Ashio\Model\DomainTryAgainLastOperationRequest;
-use Ashio\Model\DomainResetAuthCodeRequest;
+use Ashio\OpenProvider;
+use GuzzleHttp\Exception\GuzzleException;
 
 class Domain
 {
@@ -51,6 +48,7 @@ class Domain
         if (!$this->dnsHandler) {
             $this->dnsHandler = new DNS($this->API);
         }
+
         return $this->dnsHandler;
     }
 
@@ -62,6 +60,7 @@ class Domain
         if (!$this->easyDMARCHandler) {
             $this->easyDMARCHandler = new EasyDMARC($this->API);
         }
+
         return $this->easyDMARCHandler;
     }
 
@@ -73,6 +72,7 @@ class Domain
         if (!$this->spamExpertHandler) {
             $this->spamExpertHandler = new SpamExpert($this->API);
         }
+
         return $this->spamExpertHandler;
     }
 
@@ -88,7 +88,8 @@ class Domain
     public function getPricelist(): Price
     {
         $response = $this->API->get('domains/prices');
-        return (new Price())->fromArray($response['data']);
+
+        return (new Price())->fromArray(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
@@ -108,7 +109,7 @@ class Domain
             $parts = explode('.', $domainName, 2);
             $payload['domains'][] = [
                 'name' => $parts[0],
-                'extension' => $parts[1] ?? ''
+                'extension' => $parts[1] ?? '',
             ];
         }
 
@@ -119,6 +120,7 @@ class Domain
                 $results[] = (new CheckDomainResult())->fromArray($result);
             }
         }
+
         return $results;
     }
 
@@ -135,7 +137,8 @@ class Domain
     public function getDomain(int $id): DomainModel
     {
         $response = $this->API->get("domains/{$id}");
-        return new DomainModel($response['data'] ?? []);
+
+        return new DomainModel(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
@@ -161,19 +164,20 @@ class Domain
             'domain_name_pattern' => $domainNamePattern,
             'with_history' => $withHistory,
             'with_additional_data' => $withAdditionalData,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
 
         $response = $this->API->get('domains', $params);
         $domains = [];
         foreach ($response['data']['results'] ?? [] as $domainData) {
             $domains[] = new DomainModel($domainData);
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $domains);
     }
 
     /**
      * Create a new domain.
-     * @param DomainCreateRequest $request The data for the new domain.
+     * @param \Ashio\Model\DomainCreateRequest $request The data for the new domain.
      * @return DomainModel
      * @throws ApiException
      * @throws AuthenticationException
@@ -184,13 +188,14 @@ class Domain
     public function createDomain(\Ashio\Model\DomainCreateRequest $request): DomainModel
     {
         $response = $this->API->post('domains', $request->toArray());
-        return (new DomainModel())->fromArray($response['data']);
+
+        return (new DomainModel())->fromArray(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
      * Update an existing domain.
      * @param int $id The ID of the domain to update.
-     * @param DomainUpdateRequest $request The data to update.
+     * @param \Ashio\Model\DomainUpdateRequest $request The data to update.
      * @return DomainModel
      * @throws ApiException
      * @throws AuthenticationException
@@ -201,13 +206,14 @@ class Domain
     public function updateDomain(int $id, \Ashio\Model\DomainUpdateRequest $request): DomainModel
     {
         $response = $this->API->put("domains/{$id}", $request->toArray());
-        return (new DomainModel())->fromArray($response['data']);
+
+        return (new DomainModel())->fromArray(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
      * Delete a domain.
      * @param int $id The ID of the domain to delete.
-     * @param array $params Optional parameters.
+     * @param array<string, mixed> $params Optional parameters.
      * @return DeleteDomainResponse
      * @throws ApiException
      * @throws AuthenticationException
@@ -218,7 +224,8 @@ class Domain
     public function deleteDomain(int $id, array $params = []): DeleteDomainResponse
     {
         $response = $this->API->delete("domains/{$id}", $params);
-        return (new DeleteDomainResponse())->fromArray($response['data']);
+
+        return (new DeleteDomainResponse())->fromArray(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
@@ -235,7 +242,8 @@ class Domain
     public function renewDomain(int $id, RenewDomainRequest $request): RenewDomainResponse
     {
         $response = $this->API->post("domains/{$id}/renew", $request->toArray());
-        return (new RenewDomainResponse())->fromArray($response['data']);
+
+        return (new RenewDomainResponse())->fromArray(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
@@ -252,7 +260,8 @@ class Domain
     public function restoreDomain(int $id, DomainRestoreRequest $request): RestoreDomainResponse
     {
         $response = $this->API->post("domains/{$id}/restore", $request->toArray());
-        return (new RestoreDomainResponse())->fromArray($response['data']);
+
+        return (new RestoreDomainResponse())->fromArray(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
@@ -269,6 +278,7 @@ class Domain
     public function approveTransfer(int $id, DomainApproveTransferRequest $request): \Ashio\Model\ActionResponse
     {
         $response = $this->API->post("domains/{$id}/transfer/approve", $request->toArray());
+
         return (new \Ashio\Model\ActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -285,7 +295,8 @@ class Domain
     public function transferDomain(DomainTransferRequest $request): TransferDomainResponse
     {
         $response = $this->API->post("domains/transfer", $request->toArray());
-        return (new TransferDomainResponse())->fromArray($response['data']);
+
+        return (new TransferDomainResponse())->fromArray(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
@@ -301,7 +312,8 @@ class Domain
     public function tradeDomain(DomainTradeRequest $request): TradeDomainResponse
     {
         $response = $this->API->post("domains/trade", $request->toArray());
-        return (new TradeDomainResponse())->fromArray($response['data']);
+
+        return (new TradeDomainResponse())->fromArray(is_array($response) ? ($response['data'] ?? []) : []);
     }
 
     /**
@@ -323,6 +335,7 @@ class Domain
                 $results[] = (new SuggestNameDomainResult())->fromArray($result);
             }
         }
+
         return $results;
     }
 
@@ -340,6 +353,7 @@ class Domain
     public function sendFoa1(int $id, DomainSendFoa1Request $request): \Ashio\Model\ActionResponse
     {
         $response = $this->API->post("domains/{$id}/transfer/send-foa1", $request->toArray());
+
         return (new \Ashio\Model\ActionResponse())->fromArray($response['data'] ?? []);
     }
 
@@ -360,6 +374,7 @@ class Domain
     public function getAuthCode(int $id): \Ashio\Model\AuthCode
     {
         $response = $this->API->get("domains/{$id}/authcode");
+
         return (new \Ashio\Model\AuthCode())->fromArray($response['data'] ?? []);
     }
 
@@ -377,6 +392,7 @@ class Domain
     public function resetAuthCode(int $id, DomainResetAuthCodeRequest $request): \Ashio\Model\AuthCode
     {
         $response = $this->API->post("domains/{$id}/authcode/reset", $request->toArray());
+
         return (new \Ashio\Model\AuthCode())->fromArray($response['data'] ?? []);
     }
 
@@ -394,46 +410,49 @@ class Domain
     public function tryAgainLastOperation(int $id, DomainTryAgainLastOperationRequest $request): bool
     {
         $response = $this->API->post("domains/{$id}/last-operation/restart", $request->toArray());
+
         return (bool)($response['data']['success'] ?? false);
     }
 
     /**
      * Get additional data required for a specific TLD.
-     * @param array $params The parameters to get additional data.
-     * @return \Ashio\Model\AdditionalDataSpecification[]
+     * @param array<string, mixed> $params The parameters to get additional data.
+     * @return array<int, \Ashio\Model\AdditionalDataSpecification>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function getAdditionalData(array $params = [])
+    public function getAdditionalData(array $params = []): array
     {
         $response = $this->API->get('domains/additional-data', $params);
         $specs = [];
         foreach (($response['data'] ?? []) as $row) {
             $specs[] = (new \Ashio\Model\AdditionalDataSpecification())->fromArray($row);
         }
+
         return $specs;
     }
 
     /**
      * Get additional data required for a specific customer.
-     * @param array $params The parameters to get customer additional data.
-     * @return \Ashio\Model\AdditionalDataSpecification[]
+     * @param array<string, mixed> $params The parameters to get customer additional data.
+     * @return array<int, \Ashio\Model\AdditionalDataSpecification>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    public function getCustomerAdditionalData(array $params = [])
+    public function getCustomerAdditionalData(array $params = []): array
     {
         $response = $this->API->get('domains/additional-data/customers', $params);
         $specs = [];
         foreach (($response['data'] ?? []) as $row) {
             $specs[] = (new \Ashio\Model\AdditionalDataSpecification())->fromArray($row);
         }
+
         return $specs;
     }
 
@@ -468,13 +487,14 @@ class Domain
         foreach ($response['data']['results'] ?? [] as $tldData) {
             $tlds[] = new Tld($tldData);
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $tlds);
     }
 
     /**
      * Get a specific TLD.
      * @param string $name The name of the TLD.
-     * @param array $params Optional parameters.
+     * @param array<string, mixed> $params Optional parameters.
      * @return Tld
      * @throws ApiException
      * @throws AuthenticationException
@@ -485,6 +505,7 @@ class Domain
     public function getTld(string $name, array $params = []): Tld
     {
         $response = $this->API->get("tlds/{$name}", $params);
+
         return new Tld($response['data'] ?? []);
     }
 }

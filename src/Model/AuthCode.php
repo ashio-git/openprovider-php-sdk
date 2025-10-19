@@ -39,6 +39,13 @@ class AuthCode
      */
     public $rgp_statuses;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->auth_code = $data['auth_code'] ?? null;

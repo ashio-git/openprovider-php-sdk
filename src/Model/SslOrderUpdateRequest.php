@@ -23,19 +23,24 @@ class SslOrderUpdateRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [];
         foreach ([
             'approver_email','autorenew','csr','domain_validation_methods','enable_dns_automation','host_names',
-            'organization_handle','signature_hash_algorithm','software_id','start_provision','technical_handle'
+            'organization_handle','signature_hash_algorithm','software_id','start_provision','technical_handle',
         ] as $prop) {
             $val = $this->$prop;
             if ($val !== null) {
                 $data[$prop] = $val;
             }
         }
+
         return $data;
     }
 }
-

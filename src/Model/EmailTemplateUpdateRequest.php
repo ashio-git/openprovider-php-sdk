@@ -20,6 +20,11 @@ class EmailTemplateUpdateRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [
@@ -34,7 +39,7 @@ class EmailTemplateUpdateRequest
                 return array_filter([
                     'name' => $field->name,
                     'value' => $field->value,
-                ], static fn($v) => $v !== null);
+                ], static fn ($v) => $v !== null);
             }, $this->fields);
         }
         if ($this->tags) {
@@ -42,9 +47,10 @@ class EmailTemplateUpdateRequest
                 return array_filter([
                     'key' => $tag->key,
                     'value' => $tag->value,
-                ], static fn($v) => $v !== null);
+                ], static fn ($v) => $v !== null);
             }, $this->tags);
         }
-        return array_filter($data, static fn($v) => $v !== null);
+
+        return array_filter($data, static fn ($v) => $v !== null);
     }
 }

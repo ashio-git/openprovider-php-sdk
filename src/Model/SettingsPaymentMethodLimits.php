@@ -9,6 +9,13 @@ class SettingsPaymentMethodLimits
     public ?SettingsPaymentMethodLimit $maximum = null;
     public ?SettingsPaymentMethodLimit $minimum = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         if (isset($data['maximum'])) {
@@ -17,9 +24,15 @@ class SettingsPaymentMethodLimits
         if (isset($data['minimum'])) {
             $this->minimum = (new SettingsPaymentMethodLimit())->fromArray($data['minimum']);
         }
+
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [];
@@ -29,6 +42,7 @@ class SettingsPaymentMethodLimits
         if ($this->minimum) {
             $data['minimum'] = $this->minimum->toArray();
         }
+
         return $data;
     }
 }

@@ -28,6 +28,13 @@ class EmailTemplate
     /** @var EmailTag[]|null */
     public $tags;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->id = $data['id'] ?? null;

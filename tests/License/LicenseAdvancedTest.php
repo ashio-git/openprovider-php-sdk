@@ -2,19 +2,19 @@
 
 namespace Ashio\Tests\License;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 use Ashio\Exception\NotFoundException;
 use Ashio\Exception\ValidationException;
+use Ashio\License\License;
 use Ashio\Model\License as LicenseModel;
 use Ashio\Model\LicenseItem as LicenseItemModel;
 use Ashio\Model\LicenseKey as LicenseKeyModel;
 use Ashio\Model\PaginatedResponse;
 use Ashio\OpenProvider;
-use Ashio\License\License;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\TestCase;
 
 class LicenseAdvancedTest extends TestCase
 {
@@ -22,6 +22,7 @@ class LicenseAdvancedTest extends TestCase
     {
         $mock = new MockHandler($responses);
         $handlerStack = HandlerStack::create($mock);
+
         return new Client(['handler' => $handlerStack, 'http_errors' => false]);
     }
 
@@ -37,7 +38,7 @@ class LicenseAdvancedTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u','p',$client);
+        $api = new OpenProvider('u', 'p', $client);
         $lic = new License($api);
         $key = $lic->getPleskKey(1);
         $this->assertInstanceOf(LicenseKeyModel::class, $key);
@@ -53,7 +54,7 @@ class LicenseAdvancedTest extends TestCase
             new Response(200, [], json_encode($create)),
             new Response(200, [], json_encode($listItems)),
         ]);
-        $api = new OpenProvider('u','p',$client);
+        $api = new OpenProvider('u', 'p', $client);
         $lic = new License($api);
         $created = $lic->createPleskLicense(new \Ashio\Model\CreatePleskLicenseRequest(items: ['ITEM1'], period: 1, title: 'My License'));
         $this->assertInstanceOf(LicenseModel::class, $created);
@@ -70,7 +71,7 @@ class LicenseAdvancedTest extends TestCase
             $this->loginOk(),
             new Response(404, [], json_encode(['desc' => 'Not found'])),
         ]);
-        $api = new OpenProvider('u','p',$client);
+        $api = new OpenProvider('u', 'p', $client);
         $lic = new License($api);
         $this->expectException(NotFoundException::class);
         $lic->updatePleskLicense(999, new \Ashio\Model\UpdatePleskLicenseRequest());
@@ -82,7 +83,7 @@ class LicenseAdvancedTest extends TestCase
             $this->loginOk(),
             new Response(422, [], json_encode(['desc' => 'Invalid'])),
         ]);
-        $api = new OpenProvider('u','p',$client);
+        $api = new OpenProvider('u', 'p', $client);
         $lic = new License($api);
         $this->expectException(ValidationException::class);
         $lic->createVirtuozzoLicense(new \Ashio\Model\CreateVirtuozzoLicenseRequest(items: ['ITEM']));
@@ -94,7 +95,7 @@ class LicenseAdvancedTest extends TestCase
             $this->loginOk(),
             new Response(401, [], json_encode(['desc' => 'Unauthorized'])),
         ]);
-        $api = new OpenProvider('u','p',$client);
+        $api = new OpenProvider('u', 'p', $client);
         $lic = new License($api);
         $this->expectException(\Ashio\Exception\AuthenticationException::class);
         $lic->getPleskLicense(1);

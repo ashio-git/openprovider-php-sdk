@@ -43,6 +43,11 @@ class DomainTransferRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [
@@ -78,12 +83,13 @@ class DomainTransferRequest
                     'protocol' => $key->protocol,
                     'pub_key' => $key->pub_key,
                     'readonly' => $key->readonly,
-                ], static fn($v) => $v !== null);
+                ], static fn ($v) => $v !== null);
             }, $this->dnssecKeys);
         }
         if ($this->nameServers) {
-            $data['name_servers'] = array_map(static fn(Nameserver $ns) => $ns->toArray(), $this->nameServers);
+            $data['name_servers'] = array_map(static fn (Nameserver $ns) => $ns->toArray(), $this->nameServers);
         }
-        return array_filter($data, static fn($v) => $v !== null);
+
+        return array_filter($data, static fn ($v) => $v !== null);
     }
 }

@@ -16,6 +16,13 @@ class DomainDnssecKey
      * @param array<string,mixed> $data
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->alg = $data['alg'] ?? null;
@@ -23,7 +30,7 @@ class DomainDnssecKey
         $this->protocol = $data['protocol'] ?? null;
         $this->pub_key = $data['pub_key'] ?? null;
         $this->readonly = $data['readonly'] ?? null;
+
         return $this;
     }
 }
-

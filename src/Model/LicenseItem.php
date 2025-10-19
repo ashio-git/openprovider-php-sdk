@@ -18,13 +18,20 @@ class LicenseItem
      * @param array<string,mixed> $data
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->item = $data['item'] ?? null;
         $this->product = $data['product'] ?? null;
         $this->sku_values = $data['sku_values'] ?? null;
         $this->title = $data['title'] ?? null;
+
         return $this;
     }
 }
-

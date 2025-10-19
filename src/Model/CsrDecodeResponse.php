@@ -13,10 +13,18 @@ class CsrPublicKey
      * @param array<string,mixed> $data
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->bits = $data['bits'] ?? null;
         $this->key = $data['key'] ?? null;
+
         return $this;
     }
 }
@@ -35,6 +43,13 @@ class CsrSubject
      * @param array<string,mixed> $data
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->common_name = $data['common_name'] ?? null;
@@ -44,6 +59,7 @@ class CsrSubject
         $this->organization = $data['organization'] ?? null;
         $this->state = $data['state'] ?? null;
         $this->unit = $data['unit'] ?? null;
+
         return $this;
     }
 }
@@ -63,6 +79,13 @@ class CsrDecodeResponse
      * @param array<string,mixed> $data
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->domain_names_count = $data['domain_names_count'] ?? null;
@@ -74,7 +97,7 @@ class CsrDecodeResponse
             $this->subject = (new CsrSubject())->fromArray($data['subject']);
         }
         $this->subject_alternative_name = $data['subject_alternative_name'] ?? null;
+
         return $this;
     }
 }
-

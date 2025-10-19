@@ -15,6 +15,13 @@ class SettingsSignedContracts
     public ?string $type = null;
     public ?int $versionId = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->contents = $data['contents'] ?? null;
@@ -25,9 +32,15 @@ class SettingsSignedContracts
         $this->title = $data['title'] ?? null;
         $this->type = $data['type'] ?? null;
         $this->versionId = $data['version_id'] ?? null;
+
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([

@@ -10,14 +10,27 @@ class ResellerAdditionalData
     public ?string $gstin = null;
     public ?string $internalReference = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->cifNifNumber = $data['cif_nif_number'] ?? null;
         $this->gstin = $data['gstin'] ?? null;
         $this->internalReference = $data['internal_reference'] ?? null;
+
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([

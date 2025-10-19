@@ -11,12 +11,18 @@ class DnsPremiumDnsData
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [];
         if ($this->sectigo) {
             $data['sectigo'] = $this->sectigo->toArray();
         }
+
         return $data;
     }
 }

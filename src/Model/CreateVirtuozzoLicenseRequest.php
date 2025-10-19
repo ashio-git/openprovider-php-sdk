@@ -12,6 +12,11 @@ class CreateVirtuozzoLicenseRequest
     public ?int $period = null;
     public ?string $title = null;
 
+    /**
+     * @param array<int, string>|null $items
+     * @param int|null $period
+     * @param string|null $title
+     */
     public function __construct(?array $items = null, ?int $period = null, ?string $title = null)
     {
         $this->items = $items;
@@ -22,6 +27,11 @@ class CreateVirtuozzoLicenseRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -29,7 +39,6 @@ class CreateVirtuozzoLicenseRequest
             'items' => $this->items,
             'period' => $this->period,
             'title' => $this->title,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
     }
 }
-

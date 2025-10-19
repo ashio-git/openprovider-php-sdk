@@ -2,17 +2,17 @@
 
 namespace Ashio\Tests\Accounting;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 use Ashio\Accounting\EmailTemplate as EmailTemplateHandler;
 use Ashio\Exception\NotFoundException;
 use Ashio\Exception\ValidationException;
 use Ashio\Model\EmailTemplate as EmailTemplateModel;
 use Ashio\Model\PaginatedResponse;
 use Ashio\OpenProvider;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\TestCase;
 
 class EmailTemplateTest extends TestCase
 {
@@ -20,6 +20,7 @@ class EmailTemplateTest extends TestCase
     {
         $mock = new MockHandler($responses);
         $handlerStack = HandlerStack::create($mock);
+
         return new Client(['handler' => $handlerStack, 'http_errors' => false]);
     }
 
@@ -53,7 +54,7 @@ class EmailTemplateTest extends TestCase
             new Response(200, [], json_encode($listPayload)),
         ]);
 
-        $api = new OpenProvider('u','p',$client);
+        $api = new OpenProvider('u', 'p', $client);
         $handler = new EmailTemplateHandler($api);
         $resp = $handler->listEmails();
 
@@ -70,7 +71,7 @@ class EmailTemplateTest extends TestCase
             new Response(422, [], json_encode(['desc' => 'Invalid'])),
         ]);
 
-        $api = new OpenProvider('u','p',$client);
+        $api = new OpenProvider('u', 'p', $client);
         $handler = new EmailTemplateHandler($api);
 
         $this->expectException(ValidationException::class);
@@ -83,7 +84,7 @@ class EmailTemplateTest extends TestCase
             $this->loginOk(),
             new Response(404, [], json_encode(['desc' => 'Not found'])),
         ]);
-        $api = new OpenProvider('u','p',$client);
+        $api = new OpenProvider('u', 'p', $client);
         $handler = new EmailTemplateHandler($api);
 
         $this->expectException(NotFoundException::class);
@@ -92,4 +93,3 @@ class EmailTemplateTest extends TestCase
         $handler->updateEmail(9999, $req);
     }
 }
-

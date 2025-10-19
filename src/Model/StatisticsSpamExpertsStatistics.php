@@ -17,6 +17,13 @@ class StatisticsSpamExpertsStatistics
     public ?string $status = null;
     public ?bool $withOutgoingFilter = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->activatedAt = $data['activated_at'] ?? null;
@@ -29,9 +36,15 @@ class StatisticsSpamExpertsStatistics
         $this->outgoingLimit = $data['outgoing_limit'] ?? null;
         $this->status = $data['status'] ?? null;
         $this->withOutgoingFilter = $data['with_outgoing_filter'] ?? null;
+
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter(get_object_vars($this));

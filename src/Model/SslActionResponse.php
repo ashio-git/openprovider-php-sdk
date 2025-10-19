@@ -13,11 +13,18 @@ class SslActionResponse
      * @param array<string,mixed> $data
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->id = isset($data['id']) ? (int)$data['id'] : null;
         $this->success = $data['success'] ?? null;
+
         return $this;
     }
 }
-

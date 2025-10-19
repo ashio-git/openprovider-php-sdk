@@ -11,6 +11,7 @@ class Tld
     public ?bool $is_private_whois_allowed = null;
     public ?TldPrices $prices = null;
     public ?TldDescription $description = null;
+    /** @var array<string, mixed>|null */
     public ?array $restrictions = null;
     public ?int $usage_count = null;
     /** @var int[]|null */
@@ -35,38 +36,52 @@ class Tld
     /** @var TldLevelPrice[]|null */
     public ?array $levelPrices = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     */
     public function __construct(array $data = [])
     {
         foreach ($data as $key => $value) {
             switch ($key) {
                 case 'prices':
                     $this->prices = new TldPrices($value);
+
                     break;
                 case 'description':
                     $this->description = new TldDescription($value);
+
                     break;
                 case 'supported_application_mode':
-                    $this->supported_application_mode = array_map(static fn($row) => (new TldApplicationMode())->fromArray($row), $value);
+                    $this->supported_application_mode = array_map(static fn ($row) => (new TldApplicationMode())->fromArray($row), $value);
+
                     break;
                 case 'supported_idn_scripts':
-                    $this->supported_idn_scripts = array_map(static fn($row) => (new TldIdnScript())->fromArray($row), $value);
+                    $this->supported_idn_scripts = array_map(static fn ($row) => (new TldIdnScript())->fromArray($row), $value);
+
                     break;
                 case 'level_prices':
-                    $this->levelPrices = array_map(static fn($row) => (new TldLevelPrice())->fromArray($row), $value);
+                    $this->levelPrices = array_map(static fn ($row) => (new TldLevelPrice())->fromArray($row), $value);
+
                     break;
                 case 'quarantine_period':
                     $this->quarantinePeriod = $value;
+
                     break;
                 case 'trade_available':
                     $this->tradeAvailable = $value;
+
                     break;
                 case 'transfer_available':
                     $this->transferAvailable = $value;
+
                     break;
                 default:
                     if (property_exists($this, $key)) {
                         $this->{$key} = $value;
                     }
+
                     break;
             }
         }

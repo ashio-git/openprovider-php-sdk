@@ -2,12 +2,12 @@
 
 namespace Ashio\Accounting;
 
-use GuzzleHttp\Exception\GuzzleException;
 use Ashio\Model\EmailTemplate as EmailTemplateModel;
-use Ashio\Model\PaginatedResponse;
 use Ashio\Model\EmailTemplateCreateRequest;
 use Ashio\Model\EmailTemplateUpdateRequest;
+use Ashio\Model\PaginatedResponse;
 use Ashio\OpenProvider;
+use GuzzleHttp\Exception\GuzzleException;
 
 class EmailTemplate
 {
@@ -47,13 +47,14 @@ class EmailTemplate
             'name' => $name,
             'group' => $group,
             'is_system' => $isSystem,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
 
         $response = $this->API->get('emails', $params);
         $items = [];
         foreach ($response['data']['results'] ?? [] as $row) {
             $items[] = (new EmailTemplateModel())->fromArray($row);
         }
+
         return new PaginatedResponse((int)($response['data']['total'] ?? 0), $items);
     }
 
@@ -66,6 +67,7 @@ class EmailTemplate
     public function createEmail(EmailTemplateCreateRequest $request): int
     {
         $response = $this->API->post('emails', $request->toArray());
+
         return (int)($response['data']['id'] ?? 0);
     }
 
@@ -79,6 +81,7 @@ class EmailTemplate
     public function updateEmail(int $id, EmailTemplateUpdateRequest $request): bool
     {
         $response = $this->API->put("emails/{$id}", $request->toArray());
+
         return (bool)($response['data']['success'] ?? false);
     }
 
@@ -91,6 +94,7 @@ class EmailTemplate
     public function deleteEmail(int $id): bool
     {
         $response = $this->API->delete("emails/{$id}");
+
         return (bool)($response['data']['success'] ?? false);
     }
 }

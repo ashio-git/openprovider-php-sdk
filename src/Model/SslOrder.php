@@ -42,6 +42,11 @@ class SslOrder
      * SslOrder constructor.
      * @param array $data
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     */
     public function __construct(array $data = [])
     {
         if ($data) {
@@ -52,6 +57,13 @@ class SslOrder
     /**
      * @param array<string,mixed> $data
      * @return self
+     */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
      */
     public function fromArray(array $data): self
     {
@@ -73,7 +85,7 @@ class SslOrder
             $this->vendorReferenceId = $data['vendor_reference_id'];
         }
         if (isset($data['domain_validation_methods'])) {
-            $this->domain_validation_methods = array_map(static fn($row) => (new SslOrderDomainValidationMethods())->fromArray($row), $data['domain_validation_methods']);
+            $this->domain_validation_methods = array_map(static fn ($row) => (new SslOrderDomainValidationMethods())->fromArray($row), $data['domain_validation_methods']);
         }
         if (isset($data['domain_validation_statuses'])) {
             $this->domain_validation_statuses = (new SslOrderDomainValidationStatuses())->fromArray($data['domain_validation_statuses']);
@@ -82,8 +94,9 @@ class SslOrder
             $this->options = (new SslOrderOptions())->fromArray($data['options']);
         }
         if (isset($data['additional_data'])) {
-            $this->additional_data = array_map(static fn($row) => (new SslOrderAdditionalData())->fromArray($row), $data['additional_data']);
+            $this->additional_data = array_map(static fn ($row) => (new SslOrderAdditionalData())->fromArray($row), $data['additional_data']);
         }
+
         return $this;
     }
 }

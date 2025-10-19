@@ -14,6 +14,13 @@ class DomainEmailVerification
     public ?bool $isSuspended = null;
     public ?string $status = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->description = $data['description'] ?? null;
@@ -23,9 +30,15 @@ class DomainEmailVerification
         $this->handle = $data['handle'] ?? null;
         $this->isSuspended = $data['is_suspended'] ?? null;
         $this->status = $data['status'] ?? null;
+
         return $this;
     }
 
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([

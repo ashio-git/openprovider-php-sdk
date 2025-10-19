@@ -2,15 +2,15 @@
 
 namespace Ashio\Accounting;
 
-use GuzzleHttp\Exception\GuzzleException;
 use Ashio\Exception\ApiException;
 use Ashio\Exception\AuthenticationException;
 use Ashio\Exception\NotFoundException;
 use Ashio\Exception\ValidationException;
-use Ashio\OpenProvider;
 use Ashio\Model\Invoice as InvoiceModel;
 use Ashio\Model\Payment as PaymentModel;
 use Ashio\Model\Transaction as TransactionModel;
+use Ashio\OpenProvider;
+use GuzzleHttp\Exception\GuzzleException;
 
 class Billing
 {
@@ -57,6 +57,7 @@ class Billing
                 $invoices[] = new InvoiceModel($invoiceData);
             }
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $invoices);
     }
 
@@ -94,6 +95,7 @@ class Billing
                 $payments[] = new PaymentModel($paymentData);
             }
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $payments);
     }
 
@@ -129,6 +131,7 @@ class Billing
                 $transactions[] = new TransactionModel($transactionData);
             }
         }
+
         return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $transactions);
     }
 }

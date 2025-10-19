@@ -16,6 +16,11 @@ class CsrDecodeRequest
     /**
      * @return array{csr:string}
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return ['csr' => $this->csr];

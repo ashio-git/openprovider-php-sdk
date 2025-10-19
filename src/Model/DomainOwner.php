@@ -13,11 +13,18 @@ class DomainOwner
      * @param array<string,mixed> $data
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->company_name = $data['company_name'] ?? null;
         $this->full_name = $data['full_name'] ?? null;
+
         return $this;
     }
 }
-

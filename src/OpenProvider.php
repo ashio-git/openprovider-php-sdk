@@ -2,31 +2,32 @@
 
 namespace Ashio;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use Psr\Http\Message\ResponseInterface;
 use Ashio\Accounting\Billing;
 use Ashio\Accounting\EmailTemplate;
 use Ashio\Accounting\ResellerCustomer;
 use Ashio\Domain\Domain;
-use Ashio\Exception\AuthenticationException;
 use Ashio\Exception\ApiException;
+use Ashio\Exception\AuthenticationException;
 use Ashio\Exception\NotFoundException;
+use Ashio\Exception\ParameterException;
 use Ashio\Exception\ValidationException;
 use Ashio\License\License;
 use Ashio\SSL\SSL;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use Psr\Http\Message\ResponseInterface;
 
 class OpenProvider
 {
-    private $httpClient;
-    private $credentials;
-    private $apiToken;
-    private $domainHandler;
-    private $billingHandler;
-    private $emailTemplateHandler;
-    private $resellerCustomerHandler;
-    private $licenseHandler;
-    private $sslHandler;
+    private Client $httpClient;
+    private Credentials $credentials;
+    private string $apiToken;
+    private ?Domain $domainHandler = null;
+    private ?Billing $billingHandler = null;
+    private ?EmailTemplate $emailTemplateHandler = null;
+    private ?ResellerCustomer $resellerCustomerHandler = null;
+    private ?License $licenseHandler = null;
+    private ?SSL $sslHandler = null;
 
     /**
      * OpenProvider constructor.
@@ -39,7 +40,7 @@ class OpenProvider
     public function __construct(
         string $username,
         string $password,
-        Client $httpClient = null
+        ?Client $httpClient = null
     ) {
         $this->setHttpClient($httpClient);
         $this->authenticate($username, $password);
@@ -47,15 +48,16 @@ class OpenProvider
 
     /**
      * @param Client|null $httpClient
+     * @return void
      */
-    public function setHttpClient(Client $httpClient = null)
+    public function setHttpClient(?Client $httpClient = null): void
     {
         $this->httpClient = $httpClient ?: new Client([
             'http_errors' => false,
-            'headers'     => [
-                'Accept'       => 'application/json',
+            'headers' => [
+                'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
-                'User-Agent'   => 'OpenProvider/1.0',
+                'User-Agent' => 'OpenProvider/1.0',
             ],
             'allow_redirects' => false,
             'timeout' => 120,
@@ -67,9 +69,10 @@ class OpenProvider
      *
      * @param string $username
      * @param string $password
+     * @return void
      * @throws GuzzleException
      */
-    private function authenticate(string $username, string $password)
+    private function authenticate(string $username, string $password): void
     {
         $response = $this->httpClient->post('https://api.openprovider.eu/v1beta/auth/login', [
             'json' => [
@@ -92,7 +95,7 @@ class OpenProvider
 
     /**
      * @param string $actionPath The resource path you want to request, see more at the documentation.
-     * @param array $params Array filled with request params
+     * @param array<string, mixed> $params Array filled with request params
      * @param string $method HTTP method used in the request
      *
      * @return ResponseInterface
@@ -103,21 +106,15 @@ class OpenProvider
     {
         $url = $this->credentials->getUrl() . $actionPath;
 
-        if (!is_array($params)) {
-            throw new ParameterException('Parameters must be an array.');
-        }
-
         $options = [
-            'json'   => $params,
+            'json' => $params,
             'headers' => [
                 'Authorization' => $this->apiToken ? ('Bearer ' . $this->apiToken) : null,
             ],
         ];
 
         // Remove null headers to avoid sending empty header lines
-        if (isset($options['headers'])) {
-            $options['headers'] = array_filter($options['headers'], static fn($v) => $v !== null);
-        }
+        $options['headers'] = array_filter($options['headers'], static fn ($v) => $v !== null);
 
         switch ($method) {
             case 'GET':
@@ -135,7 +132,7 @@ class OpenProvider
 
     /**
      * @param ResponseInterface $response
-     * @return array|string
+     * @return array<string, mixed>|string
      */
     private function processRequest(ResponseInterface $response)
     {
@@ -163,38 +160,54 @@ class OpenProvider
     }
 
     /**
+     * @param string $actionPath
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>|string
      * @throws GuzzleException
      */
-    public function post($actionPath, $params = [])
+    public function post(string $actionPath, array $params = [])
     {
         $response = $this->request($actionPath, $params, 'POST');
+
         return $this->processRequest($response);
     }
 
     /**
+     * @param string $actionPath
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>|string
      * @throws GuzzleException
      */
-    public function get($actionPath, $params = [])
+    public function get(string $actionPath, array $params = [])
     {
         $response = $this->request($actionPath, $params, 'GET');
+
         return $this->processRequest($response);
     }
 
     /**
+     * @param string $actionPath
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>|string
      * @throws GuzzleException
      */
-    public function put($actionPath, $params = [])
+    public function put(string $actionPath, array $params = [])
     {
         $response = $this->request($actionPath, $params, 'PUT');
+
         return $this->processRequest($response);
     }
 
     /**
+     * @param string $actionPath
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>|string
      * @throws GuzzleException
      */
-    public function delete($actionPath, $params = [])
+    public function delete(string $actionPath, array $params = [])
     {
         $response = $this->request($actionPath, $params, 'DELETE');
+
         return $this->processRequest($response);
     }
 
@@ -206,6 +219,7 @@ class OpenProvider
         if (!$this->billingHandler) {
             $this->billingHandler = new Billing($this);
         }
+
         return $this->billingHandler;
     }
 
@@ -217,6 +231,7 @@ class OpenProvider
         if (!$this->emailTemplateHandler) {
             $this->emailTemplateHandler = new EmailTemplate($this);
         }
+
         return $this->emailTemplateHandler;
     }
 
@@ -228,9 +243,9 @@ class OpenProvider
         if (!$this->resellerCustomerHandler) {
             $this->resellerCustomerHandler = new ResellerCustomer($this);
         }
+
         return $this->resellerCustomerHandler;
     }
-
 
     /**
      * @return Domain
@@ -240,6 +255,7 @@ class OpenProvider
         if (!$this->domainHandler) {
             $this->domainHandler = new Domain($this);
         }
+
         return $this->domainHandler;
     }
 
@@ -251,6 +267,7 @@ class OpenProvider
         if (!$this->licenseHandler) {
             $this->licenseHandler = new License($this);
         }
+
         return $this->licenseHandler;
     }
 
@@ -262,6 +279,7 @@ class OpenProvider
         if (!$this->sslHandler) {
             $this->sslHandler = new SSL($this);
         }
+
         return $this->sslHandler;
     }
 }

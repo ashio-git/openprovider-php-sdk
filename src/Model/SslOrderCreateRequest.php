@@ -16,6 +16,12 @@ class SslOrderCreateRequest
     public ?string $technical_handle = null;
     public ?bool $start_provision = null;
 
+    /**
+     * @param int $productId
+     * @param string $csr
+     * @param array<int, string> $hostNames
+     * @param int $period
+     */
     public function __construct(int $productId, string $csr, array $hostNames, int $period = 12)
     {
         $this->product_id = $productId;
@@ -27,6 +33,11 @@ class SslOrderCreateRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         $data = [
@@ -35,11 +46,19 @@ class SslOrderCreateRequest
             'host_names' => $this->host_names,
             'period' => $this->period,
         ];
-        if ($this->approver_email !== null) $data['approver_email'] = $this->approver_email;
-        if ($this->organization_handle !== null) $data['organization_handle'] = $this->organization_handle;
-        if ($this->technical_handle !== null) $data['technical_handle'] = $this->technical_handle;
-        if ($this->start_provision !== null) $data['start_provision'] = $this->start_provision;
+        if ($this->approver_email !== null) {
+            $data['approver_email'] = $this->approver_email;
+        }
+        if ($this->organization_handle !== null) {
+            $data['organization_handle'] = $this->organization_handle;
+        }
+        if ($this->technical_handle !== null) {
+            $data['technical_handle'] = $this->technical_handle;
+        }
+        if ($this->start_provision !== null) {
+            $data['start_provision'] = $this->start_provision;
+        }
+
         return $data;
     }
 }
-

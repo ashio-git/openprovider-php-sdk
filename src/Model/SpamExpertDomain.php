@@ -43,6 +43,13 @@ class SpamExpertDomain
     /** @var SpamExpertRecords|null */
     public $records;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         $this->id = $data['id'] ?? null;

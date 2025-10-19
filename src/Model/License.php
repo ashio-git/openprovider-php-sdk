@@ -13,8 +13,14 @@ class License
     public ?string $expiration_date = null;
     public ?int $period = null;
     public ?string $ip_address_binding = null;
+    /** @var array<int, mixed>|null */
     public ?array $items = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     */
     public function __construct(array $data = [])
     {
         if ($data) {
@@ -26,6 +32,13 @@ class License
      * @param array<string,mixed> $data
      * @return self
      */
+    /**
+
+     * @param array<string, mixed> $data
+
+     * @return self
+
+     */
     public function fromArray(array $data): self
     {
         foreach ($data as $key => $value) {
@@ -33,11 +46,17 @@ class License
                 $this->{$key} = $value;
             }
         }
+
         return $this;
     }
 
     /**
      * @return array<string,mixed>
+     */
+    /**
+
+     * @return array<string, mixed>
+
      */
     public function toArray(): array
     {
@@ -52,6 +71,6 @@ class License
             'period' => $this->period,
             'ip_address_binding' => $this->ip_address_binding,
             'items' => $this->items,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
     }
 }

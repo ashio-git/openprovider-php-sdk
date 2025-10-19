@@ -12,6 +12,11 @@ class DnsRecord
     public ?string $creation_date = null;
     public ?string $modification_date = null;
 
+    /**
+
+     * @param array<string, mixed> $data
+
+     */
     public function __construct(array $data = [])
     {
         foreach ($data as $key => $value) {

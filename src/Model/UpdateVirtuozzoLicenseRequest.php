@@ -14,13 +14,17 @@ class UpdateVirtuozzoLicenseRequest
     /**
      * @return array<string,mixed>
      */
+    /**
+
+     * @return array<string, mixed>
+
+     */
     public function toArray(): array
     {
         return array_filter([
             'title' => $this->title,
             'items' => $this->items,
             'status' => $this->status,
-        ], static fn($v) => $v !== null);
+        ], static fn ($v) => $v !== null);
     }
 }
-
