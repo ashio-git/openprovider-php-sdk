@@ -10,11 +10,15 @@ class Credentials
     /**
      * Credentials constructor.
      * @param string $token
+     * @param string $environment Environment: 'production' or 'test'
      */
-    public function __construct(string $token)
+    public function __construct(string $token, string $environment = 'production')
     {
         $this->token = $token;
-        $this->url = "https://api.openprovider.eu/v1beta/"; // Updated URL
+        // Set URL based on environment
+        $this->url = $environment === 'test'
+            ? "http://api.sandbox.openprovider.nl:8480/v1beta/"
+            : "https://api.openprovider.eu/v1beta/";
     }
 
     public function __toString()

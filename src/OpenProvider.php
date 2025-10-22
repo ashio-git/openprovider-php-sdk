@@ -34,16 +34,18 @@ class OpenProvider
      *
      * @param string $username OpenProvider Username
      * @param string $password OpenProvider Password
+     * @param string $environment Environment: 'production' or 'test' (sandbox)
      * @param Client|null $httpClient
      * @throws GuzzleException
      */
     public function __construct(
         string $username,
         string $password,
+        string $environment = 'production',
         ?Client $httpClient = null
     ) {
         $this->setHttpClient($httpClient);
-        $this->authenticate($username, $password);
+        $this->authenticate($username, $password, $environment);
     }
 
     /**
@@ -69,12 +71,18 @@ class OpenProvider
      *
      * @param string $username
      * @param string $password
+     * @param string $environment
      * @return void
      * @throws GuzzleException
      */
-    private function authenticate(string $username, string $password): void
+    private function authenticate(string $username, string $password, string $environment = 'production'): void
     {
-        $response = $this->httpClient->post('https://api.openprovider.eu/v1beta/auth/login', [
+        // Determine API URL based on environment
+        $baseUrl = $environment === 'test' 
+            ? 'http://api.sandbox.openprovider.nl:8480/v1beta/'
+            : 'https://api.openprovider.eu/v1beta/';
+        
+        $response = $this->httpClient->post($baseUrl . 'auth/login', [
             'json' => [
                 'username' => $username,
                 'password' => $password,
@@ -88,7 +96,7 @@ class OpenProvider
         }
 
         $this->apiToken = $data['data']['token'];
-        $this->credentials = new Credentials($this->apiToken);
+        $this->credentials = new Credentials($this->apiToken, $environment);
 
         // Keep the injected client as-is to allow testing with custom handlers.
     }
