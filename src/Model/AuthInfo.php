@@ -1,25 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ashio\Model;
 
 class AuthInfo
 {
-    /**
-     * @var string|null
-     */
-    public $pw;
+    public function __construct(
+        public readonly ?string $pw = null,
+    ) {}
 
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->pw = $data['pw'] ?? null;
+        return new self(
+            pw: $data['pw'] ?? null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'pw' => $this->pw,
+        ], fn($v) => $v !== null);
     }
 }

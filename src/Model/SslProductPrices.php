@@ -1,49 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ashio\Model;
 
 class SslProductPrices
 {
-    /**
-     * @var int|null
-     */
-    public $period;
+    public function __construct(
+        public readonly ?SslProductPriceGroup $extra_domain_price = null,
+        public readonly ?SslProductPriceGroup $extra_wildcard_domain_price = null,
+        public readonly ?int $period = null,
+        public readonly ?SslProductPriceGroup $price = null,
+    ) {}
 
-    /**
-     * @var SslProductPriceGroup|null
-     */
-    public $price;
-
-    /**
-     * @var SslProductPriceGroup|null
-     */
-    public $extra_domain_price;
-
-    /**
-     * @var SslProductPriceGroup|null
-     */
-    public $extra_wildcard_domain_price;
-
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->period = $data['period'] ?? null;
-        if (isset($data['price'])) {
-            $this->price = (new SslProductPriceGroup())->fromArray($data['price']);
-        }
-        if (isset($data['extra_domain_price'])) {
-            $this->extra_domain_price = (new SslProductPriceGroup())->fromArray($data['extra_domain_price']);
-        }
-        if (isset($data['extra_wildcard_domain_price'])) {
-            $this->extra_wildcard_domain_price = (new SslProductPriceGroup())->fromArray($data['extra_wildcard_domain_price']);
-        }
+        return new self(
+            extra_domain_price: isset($data['extra_domain_price']) ? SslProductPriceGroup::fromArray($data['extra_domain_price']) : null,
+            extra_wildcard_domain_price: isset($data['extra_wildcard_domain_price']) ? SslProductPriceGroup::fromArray($data['extra_wildcard_domain_price']) : null,
+            period: $data['period'] ?? null,
+            price: isset($data['price']) ? SslProductPriceGroup::fromArray($data['price']) : null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'extra_domain_price' => $this->extra_domain_price?->toArray(),
+            'extra_wildcard_domain_price' => $this->extra_wildcard_domain_price?->toArray(),
+            'period' => $this->period,
+            'price' => $this->price?->toArray(),
+        ], fn($v) => $v !== null);
     }
 }

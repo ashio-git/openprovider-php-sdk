@@ -1,31 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ashio\Model;
 
 class PromotionData
 {
-    /**
-     * @var string|null
-     */
-    public $start_date;
+    public function __construct(
+        public readonly ?string $end_date = null,
+        public readonly ?string $start_date = null,
+    ) {}
 
-    /**
-     * @var string|null
-     */
-    public $end_date;
-
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->start_date = $data['start_date'] ?? null;
-        $this->end_date = $data['end_date'] ?? null;
+        return new self(
+            end_date: $data['end_date'] ?? null,
+            start_date: $data['start_date'] ?? null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'end_date' => $this->end_date,
+            'start_date' => $this->start_date,
+        ], fn($v) => $v !== null);
     }
 }

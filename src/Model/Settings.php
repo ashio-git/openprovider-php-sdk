@@ -1,0 +1,148 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Ashio\Model;
+
+class Settings
+{
+    public function __construct(
+        public readonly ?string $av_handle = null,
+        public readonly ?string $claims_confirm_url = null,
+        public readonly ?string $claims_email_subject = null,
+        public readonly ?string $claims_reseller_name = null,
+        public readonly ?string $claims_sender_email = null,
+        public readonly ?string $currency = null,
+        public readonly ?string $default_domain_billing_handle = null,
+        public readonly ?string $default_domain_reseller_handle = null,
+        public readonly ?string $foa_confirm_url = null,
+        public readonly ?string $foa_email_subject = null,
+        public readonly ?string $foa_reseller_name = null,
+        public readonly ?string $foa_sender_email = null,
+        public readonly ?string $foa_terms_conditions_url = null,
+        public readonly ?bool $is_auto_renew_enabled = null,
+        public readonly ?bool $is_custom_nses_enabled = null,
+        public readonly ?string $ive2_customized_body = null,
+        public readonly ?string $ive2_email_subject = null,
+        public readonly ?string $ive_confirm_url = null,
+        public readonly ?string $ive_customized_body = null,
+        public readonly ?string $ive_email_subject = null,
+        public readonly ?string $ive_reseller_name = null,
+        public readonly ?string $ive_sender_email = null,
+        public readonly ?string $jurisdiction = null,
+        public readonly ?string $language = null,
+        public readonly ?float $maximum_credit = null,
+        public readonly ?float $maximum_credit_card_payment = null,
+        public readonly ?float $maximum_i_deal_payment = null,
+        public readonly ?float $maximum_western_union_payment = null,
+        public readonly ?float $minimum_payment = null,
+        public readonly ?float $minimum_western_union_payment = null,
+        /** @var string[]|null */
+        public readonly ?array $pay_methods = null,
+        /** @var PaymentMethods[]|null */
+        public readonly ?array $payment_methods = null,
+        public readonly ?string $preregistered_domain_priorities = null,
+        /** @var PaymentMethods[]|null */
+        public readonly ?array $recurring_payment_methods = null,
+        /** @var int[]|null */
+        public readonly ?array $renew_notification_days = null,
+        public readonly ?bool $renew_notification_every_week = null,
+        public readonly ?TacContract $tac_contract = null,
+        /** @var string[]|null */
+        public readonly ?array $tags = null,
+        public readonly ?TransactionFee $transaction_fee = null,
+        public readonly ?string $type = null,
+    ) {}
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            av_handle: $data['av_handle'] ?? null,
+            claims_confirm_url: $data['claims_confirm_url'] ?? null,
+            claims_email_subject: $data['claims_email_subject'] ?? null,
+            claims_reseller_name: $data['claims_reseller_name'] ?? null,
+            claims_sender_email: $data['claims_sender_email'] ?? null,
+            currency: $data['currency'] ?? null,
+            default_domain_billing_handle: $data['default_domain_billing_handle'] ?? null,
+            default_domain_reseller_handle: $data['default_domain_reseller_handle'] ?? null,
+            foa_confirm_url: $data['foa_confirm_url'] ?? null,
+            foa_email_subject: $data['foa_email_subject'] ?? null,
+            foa_reseller_name: $data['foa_reseller_name'] ?? null,
+            foa_sender_email: $data['foa_sender_email'] ?? null,
+            foa_terms_conditions_url: $data['foa_terms_conditions_url'] ?? null,
+            is_auto_renew_enabled: $data['is_auto_renew_enabled'] ?? null,
+            is_custom_nses_enabled: $data['is_custom_nses_enabled'] ?? null,
+            ive2_customized_body: $data['ive2_customized_body'] ?? null,
+            ive2_email_subject: $data['ive2_email_subject'] ?? null,
+            ive_confirm_url: $data['ive_confirm_url'] ?? null,
+            ive_customized_body: $data['ive_customized_body'] ?? null,
+            ive_email_subject: $data['ive_email_subject'] ?? null,
+            ive_reseller_name: $data['ive_reseller_name'] ?? null,
+            ive_sender_email: $data['ive_sender_email'] ?? null,
+            jurisdiction: $data['jurisdiction'] ?? null,
+            language: $data['language'] ?? null,
+            maximum_credit: $data['maximum_credit'] ?? null,
+            maximum_credit_card_payment: $data['maximum_credit_card_payment'] ?? null,
+            maximum_i_deal_payment: $data['maximum_i_deal_payment'] ?? null,
+            maximum_western_union_payment: $data['maximum_western_union_payment'] ?? null,
+            minimum_payment: $data['minimum_payment'] ?? null,
+            minimum_western_union_payment: $data['minimum_western_union_payment'] ?? null,
+            pay_methods: $data['pay_methods'] ?? null,
+            payment_methods: isset($data['payment_methods']) ? array_map(fn(array $item) => PaymentMethods::fromArray($item), $data['payment_methods']) : null,
+            preregistered_domain_priorities: $data['preregistered_domain_priorities'] ?? null,
+            recurring_payment_methods: isset($data['recurring_payment_methods']) ? array_map(fn(array $item) => PaymentMethods::fromArray($item), $data['recurring_payment_methods']) : null,
+            renew_notification_days: $data['renew_notification_days'] ?? null,
+            renew_notification_every_week: $data['renew_notification_every_week'] ?? null,
+            tac_contract: isset($data['tac_contract']) ? TacContract::fromArray($data['tac_contract']) : null,
+            tags: $data['tags'] ?? null,
+            transaction_fee: isset($data['transaction_fee']) ? TransactionFee::fromArray($data['transaction_fee']) : null,
+            type: $data['type'] ?? null,
+        );
+    }
+
+    public function toArray(): array
+    {
+        return array_filter([
+            'av_handle' => $this->av_handle,
+            'claims_confirm_url' => $this->claims_confirm_url,
+            'claims_email_subject' => $this->claims_email_subject,
+            'claims_reseller_name' => $this->claims_reseller_name,
+            'claims_sender_email' => $this->claims_sender_email,
+            'currency' => $this->currency,
+            'default_domain_billing_handle' => $this->default_domain_billing_handle,
+            'default_domain_reseller_handle' => $this->default_domain_reseller_handle,
+            'foa_confirm_url' => $this->foa_confirm_url,
+            'foa_email_subject' => $this->foa_email_subject,
+            'foa_reseller_name' => $this->foa_reseller_name,
+            'foa_sender_email' => $this->foa_sender_email,
+            'foa_terms_conditions_url' => $this->foa_terms_conditions_url,
+            'is_auto_renew_enabled' => $this->is_auto_renew_enabled,
+            'is_custom_nses_enabled' => $this->is_custom_nses_enabled,
+            'ive2_customized_body' => $this->ive2_customized_body,
+            'ive2_email_subject' => $this->ive2_email_subject,
+            'ive_confirm_url' => $this->ive_confirm_url,
+            'ive_customized_body' => $this->ive_customized_body,
+            'ive_email_subject' => $this->ive_email_subject,
+            'ive_reseller_name' => $this->ive_reseller_name,
+            'ive_sender_email' => $this->ive_sender_email,
+            'jurisdiction' => $this->jurisdiction,
+            'language' => $this->language,
+            'maximum_credit' => $this->maximum_credit,
+            'maximum_credit_card_payment' => $this->maximum_credit_card_payment,
+            'maximum_i_deal_payment' => $this->maximum_i_deal_payment,
+            'maximum_western_union_payment' => $this->maximum_western_union_payment,
+            'minimum_payment' => $this->minimum_payment,
+            'minimum_western_union_payment' => $this->minimum_western_union_payment,
+            'pay_methods' => $this->pay_methods,
+            'payment_methods' => $this->payment_methods !== null ? array_map(fn(PaymentMethods $item) => $item->toArray(), $this->payment_methods) : null,
+            'preregistered_domain_priorities' => $this->preregistered_domain_priorities,
+            'recurring_payment_methods' => $this->recurring_payment_methods !== null ? array_map(fn(PaymentMethods $item) => $item->toArray(), $this->recurring_payment_methods) : null,
+            'renew_notification_days' => $this->renew_notification_days,
+            'renew_notification_every_week' => $this->renew_notification_every_week,
+            'tac_contract' => $this->tac_contract?->toArray(),
+            'tags' => $this->tags,
+            'transaction_fee' => $this->transaction_fee?->toArray(),
+            'type' => $this->type,
+        ], fn($v) => $v !== null);
+    }
+}

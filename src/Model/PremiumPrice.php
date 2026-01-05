@@ -1,33 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ashio\Model;
 
 class PremiumPrice
 {
-    /**
-     * @var string|null
-     */
-    public $currency;
+    public function __construct(
+        public readonly ?string $currency = null,
+        public readonly ?OperationPrice $price = null,
+    ) {}
 
-    /**
-     * @var OperationPrice|null
-     */
-    public $price;
-
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->currency = $data['currency'] ?? null;
-        if (isset($data['price'])) {
-            $this->price = (new OperationPrice())->fromArray($data['price']);
-        }
+        return new self(
+            currency: $data['currency'] ?? null,
+            price: isset($data['price']) ? OperationPrice::fromArray($data['price']) : null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'currency' => $this->currency,
+            'price' => $this->price?->toArray(),
+        ], fn($v) => $v !== null);
     }
 }

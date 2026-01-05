@@ -6,25 +6,24 @@ namespace Ashio\Model;
 
 class SslOrderDomainValidationMethods
 {
-    public ?string $host_name = null;
-    public ?string $method = null;
+    public function __construct(
+        public readonly ?string $host_name = null,
+        public readonly ?string $method = null,
+    ) {}
 
-    /**
-     * @param array<string,mixed> $data
-     * @return self
-     */
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->host_name = $data['host_name'] ?? null;
-        $this->method = $data['method'] ?? null;
+        return new self(
+            host_name: $data['host_name'] ?? null,
+            method: $data['method'] ?? null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'host_name' => $this->host_name,
+            'method' => $this->method,
+        ], fn($v) => $v !== null);
     }
 }

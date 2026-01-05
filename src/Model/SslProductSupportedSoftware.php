@@ -1,31 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ashio\Model;
 
 class SslProductSupportedSoftware
 {
-    /**
-     * @var string|null
-     */
-    public $id;
+    public function __construct(
+        public readonly ?string $id = null,
+        public readonly ?string $title = null,
+    ) {}
 
-    /**
-     * @var string|null
-     */
-    public $title;
-
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->id = $data['id'] ?? null;
-        $this->title = $data['title'] ?? null;
+        return new self(
+            id: $data['id'] ?? null,
+            title: $data['title'] ?? null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'id' => $this->id,
+            'title' => $this->title,
+        ], fn($v) => $v !== null);
     }
 }

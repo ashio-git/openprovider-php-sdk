@@ -1,35 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ashio\Model;
 
 class PriceGroup
 {
-    /**
-     * @var ProductPrice|null
-     */
-    public $product;
+    public function __construct(
+        public readonly ?Price $product = null,
+        public readonly ?Price $reseller = null,
+    ) {}
 
-    /**
-     * @var ProductPrice|null
-     */
-    public $reseller;
-
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        if (isset($data['product'])) {
-            $this->product = (new ProductPrice())->fromArray($data['product']);
-        }
-        if (isset($data['reseller'])) {
-            $this->reseller = (new ProductPrice())->fromArray($data['reseller']);
-        }
+        return new self(
+            product: isset($data['product']) ? Price::fromArray($data['product']) : null,
+            reseller: isset($data['reseller']) ? Price::fromArray($data['reseller']) : null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'product' => $this->product?->toArray(),
+            'reseller' => $this->reseller?->toArray(),
+        ], fn($v) => $v !== null);
     }
 }

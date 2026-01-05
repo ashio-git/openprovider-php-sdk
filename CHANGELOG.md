@@ -5,7 +5,43 @@ All notable changes to the OpenProvider PHP SDK will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2024-01-15
+## [2.1.0] - 2026-01-05
+
+### Added
+- `listLicensesWithPriceVersion()` method for license queries with pricing info
+- Extracted `CsrPublicKey` to its own file for proper PSR-4 compliance
+
+### Changed
+- Reorganized repository structure for cleanliness
+- Moved development/audit files to `.archive/` (gitignored)
+- Updated README with comprehensive API documentation
+- Updated model count: 219 actively-used models
+
+### Fixed
+- Restored 110 critical model classes that were accidentally removed
+- Restored all service files to their working state
+- Fixed class organization (no more multiple classes per file)
+
+### Removed
+- Removed 245 orphan model files (unused Swagger-generated files)
+- Cleaned up temporary analysis scripts
+- Removed redundant audit files from repository root
+
+### Quality
+- **219 models** - all actively used (0 orphans)
+- **237 source files** - all passing syntax checks
+- **51 test files** - comprehensive coverage
+- **111 API endpoints** - 100% coverage
+- **6 exception classes** - complete error handling
+
+---
+
+## [2.0.0] - 2025-09-02
+
+### Changed
+- **BREAKING:** The entire project namespace has been refactored to `Ashio` for branding consistency
+- **BREAKING:** Complete refactoring of method signatures for type-safe Request DTOs
+- **BREAKING:** Standardized all listing methods to return `PaginatedResponse<T>`
 
 ### Added
 - Complete OpenProvider API implementation

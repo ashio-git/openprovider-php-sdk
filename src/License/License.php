@@ -59,6 +59,42 @@ class License
     }
 
     /**
+     * List all licenses with price version information.
+     * @param int $limit
+     * @param int $offset
+     * @param string|null $status
+     * @param string|null $product
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<\Ashio\Model\LicenseWithPriceVersion>
+     * @psalm-return \Ashio\Model\PaginatedResponse<\Ashio\Model\LicenseWithPriceVersion>
+     * @throws ApiException
+     * @throws AuthenticationException
+     * @throws GuzzleException
+     * @throws NotFoundException
+     * @throws ValidationException
+     */
+    public function listLicensesWithPriceVersion(int $limit = 100, int $offset = 0, ?string $status = null, ?string $product = null): \Ashio\Model\PaginatedResponse
+    {
+        $params = array_filter([
+            'limit' => $limit,
+            'offset' => $offset,
+            'status' => $status,
+            'product' => $product,
+            'with_price_version' => true,
+        ]);
+
+        $response = $this->API->get('licenses', $params);
+        $licenses = [];
+        if (isset($response['data']['results'])) {
+            foreach ($response['data']['results'] as $licenseData) {
+                $licenses[] = \Ashio\Model\LicenseWithPriceVersion::fromArray($licenseData);
+            }
+        }
+
+        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $licenses);
+    }
+
+    /**
      * Reset the Hardware ID (HWID) for a license.
      * @param string $product
      * @param int $keyId

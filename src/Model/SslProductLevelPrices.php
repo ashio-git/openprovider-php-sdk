@@ -1,41 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ashio\Model;
 
 class SslProductLevelPrices
 {
-    /**
-     * @var int|null
-     */
-    public $level;
+    public function __construct(
+        public readonly ?int $level = null,
+        public readonly ?string $name = null,
+        /** @var SslProductPrices[]|null */
+        public readonly ?array $prices = null,
+    ) {}
 
-    /**
-     * @var string|null
-     */
-    public $name;
-
-    /**
-     * @var SslProductPrices[]|null
-     */
-    public $prices;
-
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->level = $data['level'] ?? null;
-        $this->name = $data['name'] ?? null;
-        if (isset($data['prices'])) {
-            $this->prices = array_map(function ($price) {
-                return (new SslProductPrices())->fromArray($price);
-            }, $data['prices']);
-        }
+        return new self(
+            level: $data['level'] ?? null,
+            name: $data['name'] ?? null,
+            prices: isset($data['prices']) ? array_map(fn(array $item) => SslProductPrices::fromArray($item), $data['prices']) : null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'level' => $this->level,
+            'name' => $this->name,
+            'prices' => $this->prices !== null ? array_map(fn(SslProductPrices $item) => $item->toArray(), $this->prices) : null,
+        ], fn($v) => $v !== null);
     }
 }

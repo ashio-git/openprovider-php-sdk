@@ -6,23 +6,21 @@ namespace Ashio\Model;
 
 class SslOrderOptions
 {
-    public ?string $features = null;
+    public function __construct(
+        public readonly ?string $features = null,
+    ) {}
 
-    /**
-     * @param array<string,mixed> $data
-     * @return self
-     */
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->features = $data['features'] ?? null;
+        return new self(
+            features: $data['features'] ?? null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'features' => $this->features,
+        ], fn($v) => $v !== null);
     }
 }

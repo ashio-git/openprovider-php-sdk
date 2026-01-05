@@ -6,7 +6,6 @@ composer.lock
 .phpunit.result.cache
 /coverage/
 coverage.xml
-phpunit.xml
 
 # IDE
 .idea/
@@ -39,3 +38,6 @@ yarn-error.log*
 *.tmp
 *.bak
 *.cache
+
+# Archive (internal development files)
+/.archive/

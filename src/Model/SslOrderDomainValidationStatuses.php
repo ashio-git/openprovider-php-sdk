@@ -6,29 +6,30 @@ namespace Ashio\Model;
 
 class SslOrderDomainValidationStatuses
 {
-    public ?string $ca_operation = null;
-    public ?string $ca_order_status = null;
-    public ?string $ca_status = null;
-    public ?string $status = null;
+    public function __construct(
+        public readonly ?string $ca_operation = null,
+        public readonly ?string $ca_order_status = null,
+        public readonly ?string $ca_status = null,
+        public readonly ?string $status = null,
+    ) {}
 
-    /**
-     * @param array<string,mixed> $data
-     * @return self
-     */
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->ca_operation = $data['ca_operation'] ?? null;
-        $this->ca_order_status = $data['ca_order_status'] ?? null;
-        $this->ca_status = $data['ca_status'] ?? null;
-        $this->status = $data['status'] ?? null;
+        return new self(
+            ca_operation: $data['ca_operation'] ?? null,
+            ca_order_status: $data['ca_order_status'] ?? null,
+            ca_status: $data['ca_status'] ?? null,
+            status: $data['status'] ?? null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'ca_operation' => $this->ca_operation,
+            'ca_order_status' => $this->ca_order_status,
+            'ca_status' => $this->ca_status,
+            'status' => $this->status,
+        ], fn($v) => $v !== null);
     }
 }

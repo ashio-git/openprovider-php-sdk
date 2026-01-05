@@ -6,99 +6,76 @@ namespace Ashio\Model;
 
 class CustomerAdditionalData
 {
-    /** @var CustomerFile[]|null */
-    public ?array $attachedFiles = null;
-    public ?string $birthAddress = null;
-    public ?string $birthCity = null;
-    public ?string $birthCountry = null;
-    public ?string $birthDate = null;
-    public ?string $birthState = null;
-    public ?string $birthZipcode = null;
-    public ?string $companyRegistrationCity = null;
-    public ?string $companyRegistrationNumber = null;
-    public ?string $companyRegistrationSubscriptionDate = null;
-    public ?string $companyUrl = null;
-    public ?string $headquartersAddress = null;
-    public ?string $headquartersCity = null;
-    public ?string $headquartersCountry = null;
-    public ?string $headquartersState = null;
-    public ?string $headquartersZipcode = null;
-    public ?string $passportNumber = null;
-    public ?string $socialSecurityNumber = null;
-    public ?string $tradingName = null;
+    public function __construct(
+        /** @var File[]|null */
+        public readonly ?array $attached_files = null,
+        public readonly ?string $birth_address = null,
+        public readonly ?string $birth_city = null,
+        public readonly ?string $birth_country = null,
+        public readonly ?string $birth_date = null,
+        public readonly ?string $birth_state = null,
+        public readonly ?string $birth_zipcode = null,
+        public readonly ?string $company_registration_city = null,
+        public readonly ?string $company_registration_number = null,
+        public readonly ?string $company_registration_subscription_date = null,
+        public readonly ?string $company_url = null,
+        public readonly ?string $headquarters_address = null,
+        public readonly ?string $headquarters_city = null,
+        public readonly ?string $headquarters_country = null,
+        public readonly ?string $headquarters_state = null,
+        public readonly ?string $headquarters_zipcode = null,
+        public readonly ?string $passport_number = null,
+        public readonly ?string $social_security_number = null,
+        public readonly ?string $trading_name = null,
+    ) {}
 
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        if (isset($data['attached_files'])) {
-            $this->attachedFiles = array_map(function ($fileData) {
-                return (new CustomerFile())->fromArray($fileData);
-            }, $data['attached_files']);
-        }
-        $this->birthAddress = $data['birth_address'] ?? null;
-        $this->birthCity = $data['birth_city'] ?? null;
-        $this->birthCountry = $data['birth_country'] ?? null;
-        $this->birthDate = $data['birth_date'] ?? null;
-        $this->birthState = $data['birth_state'] ?? null;
-        $this->birthZipcode = $data['birth_zipcode'] ?? null;
-        $this->companyRegistrationCity = $data['company_registration_city'] ?? null;
-        $this->companyRegistrationNumber = $data['company_registration_number'] ?? null;
-        $this->companyRegistrationSubscriptionDate = $data['company_registration_subscription_date'] ?? null;
-        $this->companyUrl = $data['company_url'] ?? null;
-        $this->headquartersAddress = $data['headquarters_address'] ?? null;
-        $this->headquartersCity = $data['headquarters_city'] ?? null;
-        $this->headquartersCountry = $data['headquarters_country'] ?? null;
-        $this->headquartersState = $data['headquarters_state'] ?? null;
-        $this->headquartersZipcode = $data['headquarters_zipcode'] ?? null;
-        $this->passportNumber = $data['passport_number'] ?? null;
-        $this->socialSecurityNumber = $data['social_security_number'] ?? null;
-        $this->tradingName = $data['trading_name'] ?? null;
-
-        return $this;
+        return new self(
+            attached_files: isset($data['attached_files']) ? array_map(fn(array $item) => File::fromArray($item), $data['attached_files']) : null,
+            birth_address: $data['birth_address'] ?? null,
+            birth_city: $data['birth_city'] ?? null,
+            birth_country: $data['birth_country'] ?? null,
+            birth_date: $data['birth_date'] ?? null,
+            birth_state: $data['birth_state'] ?? null,
+            birth_zipcode: $data['birth_zipcode'] ?? null,
+            company_registration_city: $data['company_registration_city'] ?? null,
+            company_registration_number: $data['company_registration_number'] ?? null,
+            company_registration_subscription_date: $data['company_registration_subscription_date'] ?? null,
+            company_url: $data['company_url'] ?? null,
+            headquarters_address: $data['headquarters_address'] ?? null,
+            headquarters_city: $data['headquarters_city'] ?? null,
+            headquarters_country: $data['headquarters_country'] ?? null,
+            headquarters_state: $data['headquarters_state'] ?? null,
+            headquarters_zipcode: $data['headquarters_zipcode'] ?? null,
+            passport_number: $data['passport_number'] ?? null,
+            social_security_number: $data['social_security_number'] ?? null,
+            trading_name: $data['trading_name'] ?? null,
+        );
     }
 
-    /**
-
-     * @return array<string, mixed>
-
-     */
     public function toArray(): array
     {
-        $data = [
-            'birth_address' => $this->birthAddress,
-            'birth_city' => $this->birthCity,
-            'birth_country' => $this->birthCountry,
-            'birth_date' => $this->birthDate,
-            'birth_state' => $this->birthState,
-            'birth_zipcode' => $this->birthZipcode,
-            'company_registration_city' => $this->companyRegistrationCity,
-            'company_registration_number' => $this->companyRegistrationNumber,
-            'company_registration_subscription_date' => $this->companyRegistrationSubscriptionDate,
-            'company_url' => $this->companyUrl,
-            'headquarters_address' => $this->headquartersAddress,
-            'headquarters_city' => $this->headquartersCity,
-            'headquarters_country' => $this->headquartersCountry,
-            'headquarters_state' => $this->headquartersState,
-            'headquarters_zipcode' => $this->headquartersZipcode,
-            'passport_number' => $this->passportNumber,
-            'social_security_number' => $this->socialSecurityNumber,
-            'trading_name' => $this->tradingName,
-        ];
-
-        if ($this->attachedFiles) {
-            $data['attached_files'] = array_map(function (CustomerFile $file) {
-                return $file->toArray();
-            }, $this->attachedFiles);
-        }
-
-        return array_filter($data, function ($value) {
-            return $value !== null;
-        });
+        return array_filter([
+            'attached_files' => $this->attached_files !== null ? array_map(fn(File $item) => $item->toArray(), $this->attached_files) : null,
+            'birth_address' => $this->birth_address,
+            'birth_city' => $this->birth_city,
+            'birth_country' => $this->birth_country,
+            'birth_date' => $this->birth_date,
+            'birth_state' => $this->birth_state,
+            'birth_zipcode' => $this->birth_zipcode,
+            'company_registration_city' => $this->company_registration_city,
+            'company_registration_number' => $this->company_registration_number,
+            'company_registration_subscription_date' => $this->company_registration_subscription_date,
+            'company_url' => $this->company_url,
+            'headquarters_address' => $this->headquarters_address,
+            'headquarters_city' => $this->headquarters_city,
+            'headquarters_country' => $this->headquarters_country,
+            'headquarters_state' => $this->headquarters_state,
+            'headquarters_zipcode' => $this->headquarters_zipcode,
+            'passport_number' => $this->passport_number,
+            'social_security_number' => $this->social_security_number,
+            'trading_name' => $this->trading_name,
+        ], fn($v) => $v !== null);
     }
 }

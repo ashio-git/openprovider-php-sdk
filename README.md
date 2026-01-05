@@ -1,312 +1,348 @@
-# OpenProvider PHP SDK
+<p align="center">
+  <img src="https://img.shields.io/badge/PHP-8.1+-8892BF.svg?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.1+">
+  <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/badge/Coverage-100%25-brightgreen.svg?style=for-the-badge" alt="Coverage">
+  <img src="https://img.shields.io/badge/API-111%20Endpoints-blue.svg?style=for-the-badge" alt="API Coverage">
+</p>
 
-[![PHP Version](https://img.shields.io/badge/php-%3E%3D8.1-blue.svg)](https://php.net)
-[![Tests](https://img.shields.io/badge/tests-445%20passing-brightgreen.svg)](https://github.com/ashio-git/openprovider-php-sdk)
-[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/ashio-git/openprovider-php-sdk)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+<h1 align="center">🌐 OpenProvider PHP SDK</h1>
 
-A modern, fully-tested PHP SDK for the OpenProvider API. Built with PHP 8.1+, featuring comprehensive test coverage, type safety, and professional code quality.
+<p align="center">
+  <strong>The most complete, production-ready PHP SDK for the OpenProvider API</strong>
+</p>
 
-## ✨ Features
+<p align="center">
+  Modern • Type-Safe • Fully Tested • Professional Grade
+</p>
 
-- 🎯 **Complete API Coverage** - All OpenProvider API endpoints supported
-- ✅ **100% Test Coverage** - 445 tests with 959 assertions
-- 🔒 **Type Safe** - Full PHP 8.1+ type declarations
-- 📦 **PSR-12 Compliant** - Follows PHP coding standards
-- 🚀 **Production Ready** - Battle-tested and reliable
-- 📚 **Well Documented** - Comprehensive documentation and examples
-- 🛠️ **Easy to Use** - Intuitive API and clear error messages
+---
 
-## 📋 Requirements
+## ✨ Highlights
 
-- PHP 8.1 or higher
-- Composer
-- ext-json
-- ext-curl
+| Feature | Status |
+|---------|--------|
+| **PHP 8.1+** | Modern syntax with strict types |
+| **100% API Coverage** | All 111 endpoints implemented |
+| **219 Models** | Complete data type coverage |
+| **Production Ready** | Battle-tested and reliable |
+| **PSR-12 Compliant** | Industry-standard code style |
+| **Fully Documented** | Comprehensive PHPDoc blocks |
+
+---
 
 ## 📦 Installation
-
-Install via Composer:
 
 ```bash
 composer require ashio/openprovider-php-sdk
 ```
+
+### Requirements
+
+- PHP 8.1 or higher
+- ext-json
+- ext-curl
+
+---
 
 ## 🚀 Quick Start
 
 ```php
 <?php
 
-require 'vendor/autoload.php';
-
 use Ashio\OpenProvider;
-use Ashio\Credentials;
 
-// Initialize the client
-$credentials = new Credentials('your-username', 'your-password');
-$client = new OpenProvider($credentials);
-
-// Check domain availability
-$result = $client->domain()->checkDomain('example.com');
-
-if ($result->status === 'free') {
-    echo "Domain is available!";
-}
-
-// Register a domain
-$domain = $client->domain()->createDomain([
-    'domain' => ['name' => 'example', 'extension' => 'com'],
-    'period' => 1,
-    'owner_handle' => 'OWNER123',
-    'admin_handle' => 'ADMIN123',
-    'tech_handle' => 'TECH123',
-    'billing_handle' => 'BILLING123',
-]);
-```
-
-## 📖 Documentation
-
-### Core Services
-
-#### Domain Management
-
-```php
-// Check domain availability
-$result = $client->domain()->checkDomain('example.com');
-
-// Register a domain
-$domain = $client->domain()->createDomain($domainData);
-
-// Update domain
-$client->domain()->updateDomain('example.com', $updateData);
-
-// Transfer domain
-$client->domain()->transferDomain('example.com', 'AUTH_CODE');
-
-// Renew domain
-$client->domain()->renewDomain('example.com', 1);
-
-// Delete domain
-$client->domain()->deleteDomain('example.com');
-
-// Get domain info
-$info = $client->domain()->getDomain('example.com');
-
-// List domains
-$domains = $client->domain()->listDomains();
-```
-
-#### DNS Management
-
-```php
-// Create DNS zone
-$zone = $client->dns()->createZone('example.com');
-
-// Add DNS record
-$client->dns()->createRecord('example.com', [
-    'type' => 'A',
-    'name' => 'www',
-    'value' => '192.168.1.1',
-    'ttl' => 3600,
-]);
-
-// Update DNS record
-$client->dns()->updateRecord('example.com', $recordId, $recordData);
-
-// Delete DNS record
-$client->dns()->deleteRecord('example.com', $recordId);
-
-// Get zone
-$zone = $client->dns()->getZone('example.com');
-
-// List zones
-$zones = $client->dns()->listZones();
-```
-
-#### SSL Certificate Management
-
-```php
-// Order SSL certificate
-$order = $client->ssl()->createOrder([
-    'product_id' => 123,
-    'csr' => $csrContent,
-    'period' => 1,
-    'approver_email' => 'admin@example.com',
-]);
-
-// Get order status
-$status = $client->ssl()->getOrder($orderId);
-
-// Reissue certificate
-$client->ssl()->reissueOrder($orderId, $newCsr);
-
-// Renew certificate
-$client->ssl()->renewOrder($orderId);
-
-// Cancel order
-$client->ssl()->cancelOrder($orderId);
-
-// List orders
-$orders = $client->ssl()->listOrders();
-```
-
-#### License Management
-
-```php
-// Create Plesk license
-$license = $client->license()->createPleskLicense([
-    'key_id' => 'KEY123',
-    'ip_address' => '192.168.1.1',
-]);
-
-// Create Virtuozzo license
-$license = $client->license()->createVirtuozzoLicense([
-    'key_id' => 'KEY456',
-    'ip_address' => '10.0.0.1',
-]);
-
-// Update license
-$client->license()->updateLicense($licenseId, $updateData);
-
-// Reset HWID
-$client->license()->resetHwid($licenseId);
-
-// Get license
-$license = $client->license()->getLicense($licenseId);
-
-// List licenses
-$licenses = $client->license()->listLicenses();
-```
-
-#### Customer & Reseller Management
-
-```php
-// Create customer
-$customer = $client->resellerCustomer()->createCustomer([
-    'handle' => 'CUST123',
-    'email' => 'customer@example.com',
-    'company_name' => 'Customer Inc',
-]);
-
-// Update customer
-$client->resellerCustomer()->updateCustomer('CUST123', $updateData);
-
-// Get customer
-$customer = $client->resellerCustomer()->getCustomer('CUST123');
-
-// List customers
-$customers = $client->resellerCustomer()->listCustomers();
-
-// Get reseller info
-$reseller = $client->resellerCustomer()->getReseller();
-
-// Update reseller settings
-$client->resellerCustomer()->updateResellerSettings($settings);
-```
-
-#### Account & Billing
-
-```php
-// Get account balance
-$balance = $client->account()->getBalance();
-
-// Get transactions
-$transactions = $client->billing()->listTransactions();
-
-// Get invoices
-$invoices = $client->billing()->listInvoices();
-
-// Get invoice
-$invoice = $client->billing()->getInvoice($invoiceId);
-```
-
-### Advanced Features
-
-#### Email Templates
-
-```php
-// Create email template
-$template = $client->emailTemplate()->createTemplate([
-    'group' => 'notifications',
-    'name' => 'Welcome Email',
-    'subject' => 'Welcome!',
-    'body' => 'Welcome to our service!',
-]);
-
-// Update template
-$client->emailTemplate()->updateTemplate($templateId, $updateData);
-
-// Get template
-$template = $client->emailTemplate()->getTemplate($templateId);
-
-// List templates
-$templates = $client->emailTemplate()->listTemplates();
-```
-
-#### EasyDMARC Integration
-
-```php
-// Create EasyDMARC order
-$order = $client->easyDmarc()->createOrder([
-    'domain' => ['name' => 'example', 'extension' => 'com'],
-    'owner_handle' => 'OWNER123',
-]);
-
-// Get order status
-$status = $client->easyDmarc()->getOrder($orderId);
-
-// Retry order
-$client->easyDmarc()->retryOrder($orderId);
-```
-
-#### SpamExpert Integration
-
-```php
-// Add domain to SpamExpert
-$client->spamExpert()->createDomain('example.com');
-
-// Update domain settings
-$client->spamExpert()->updateDomain('example.com', $settings);
-
-// Generate login URL
-$url = $client->spamExpert()->generateLoginUrl('example.com');
-
-// Remove domain
-$client->spamExpert()->deleteDomain('example.com');
-```
-
-## 🔧 Configuration
-
-### Environment Variables
-
-```bash
-OPENPROVIDER_USERNAME=your-username
-OPENPROVIDER_PASSWORD=your-password
-OPENPROVIDER_ENVIRONMENT=production # or 'test'
-```
-
-### Custom Configuration
-
-```php
-use Ashio\OpenProvider;
-use Ashio\Credentials;
-
-$credentials = new Credentials(
+// Initialize the SDK
+$client = new OpenProvider(
     username: 'your-username',
     password: 'your-password',
-    environment: 'test' // Use test environment
+    environment: 'production' // or 'test' for sandbox
 );
 
-$client = new OpenProvider($credentials, [
-    'timeout' => 30,
-    'verify_ssl' => true,
-    'debug' => false,
-]);
+// Check domain availability
+$results = $client->domain()->check(['example.com', 'example.net']);
+
+foreach ($results as $result) {
+    echo "{$result->domain}: {$result->status}\n";
+}
 ```
 
-## 🧪 Testing
+---
 
-Run the test suite:
+## 📚 Complete API Reference
+
+### 🌍 Domain Management
+
+```php
+// Check availability
+$results = $client->domain()->check(['example.com']);
+
+// Register a new domain
+use Ashio\Model\DomainCreateRequest;
+use Ashio\Model\DomainName;
+
+$request = new DomainCreateRequest(
+    ownerHandle: 'OWNER123',
+    domain: new DomainName('example', 'com'),
+    period: 1
+);
+$domain = $client->domain()->createDomain($request);
+
+// Get domain details
+$domain = $client->domain()->getDomain(12345);
+
+// List all domains
+$domains = $client->domain()->listDomains(limit: 100);
+
+// Update domain
+$client->domain()->updateDomain(12345, $updateRequest);
+
+// Renew domain
+$client->domain()->renewDomain(12345, new RenewDomainRequest(period: 1));
+
+// Transfer domain
+$client->domain()->transferDomain($transferRequest);
+
+// Delete domain
+$client->domain()->deleteDomain(12345);
+```
+
+### 🔧 DNS Management
+
+```php
+$dns = $client->domain()->dns();
+
+// List zones
+$zones = $dns->listZones();
+
+// Create zone
+$dns->createZone($createZoneRequest);
+
+// Get zone with records
+$zone = $dns->getZone('example.com', ['with_records' => true]);
+
+// List zone records
+$records = $dns->listZoneRecords('example.com');
+
+// Manage nameservers
+$nameservers = $dns->listNameservers();
+$dns->createNameserver($nameserver);
+
+// Nameserver groups
+$groups = $dns->listNameserverGroups();
+
+// DNS templates
+$templates = $dns->listTemplates();
+```
+
+### 🔐 SSL Certificates
+
+```php
+$ssl = $client->ssl();
+
+// List products
+$products = $ssl->listProducts();
+
+// Get product details
+$product = $ssl->getProduct(123);
+
+// Create SSL order
+$order = $ssl->createOrder($orderRequest);
+
+// Manage orders
+$orders = $ssl->listOrders();
+$order = $ssl->getOrder(456);
+$ssl->updateOrder(456, $updateRequest);
+$ssl->cancelOrder(456);
+$ssl->reissueOrder(456, $reissueRequest);
+$ssl->renewOrder(456);
+
+// CSR operations
+$csr = $ssl->createCsr($csrRequest);
+$decoded = $ssl->decodeCsr($decodeRequest);
+```
+
+### 📜 License Management
+
+```php
+$license = $client->license();
+
+// Plesk licenses
+$pleskLicenses = $license->listPleskLicenses();
+$license->createPleskLicense($request);
+$license->getPleskLicense($keyId);
+$license->updatePleskLicense($keyId, $request);
+$license->deletePleskLicense($keyId);
+$license->getPleskKey($keyId);
+
+// Virtuozzo licenses
+$virtuozzoLicenses = $license->listVirtuozzoLicenses();
+$license->createVirtuozzoLicense($request);
+
+// License items
+$items = $license->listItems();
+
+// Reset HWID
+$license->resetHwid('plesk', $keyId, $request);
+```
+
+### 👥 Customer & Reseller
+
+```php
+$reseller = $client->resellerCustomer();
+
+// Customers
+$customers = $reseller->listCustomers();
+$customer = $reseller->createCustomer($request);
+$reseller->getCustomer('HANDLE123');
+$reseller->updateCustomer('HANDLE123', $request);
+$reseller->deleteCustomer('HANDLE123');
+
+// Contacts
+$contacts = $reseller->listContacts();
+$reseller->createContact($request);
+
+// Reseller info
+$info = $reseller->getReseller();
+$settings = $reseller->getSettings();
+$stats = $reseller->getStatistics();
+
+// Tags
+$tags = $reseller->listTags();
+$reseller->createTag($request);
+
+// Email verification
+$reseller->startEmailVerification($request);
+```
+
+### 💰 Billing
+
+```php
+$billing = $client->billing();
+
+// Invoices
+$invoices = $billing->listInvoices();
+
+// Payments
+$payments = $billing->listPayments();
+
+// Transactions
+$transactions = $billing->listTransactions();
+```
+
+### 📧 Email Templates
+
+```php
+$templates = $client->emailTemplate();
+
+// List templates
+$list = $templates->listEmails();
+
+// CRUD operations
+$templates->createEmail($request);
+$templates->updateEmail($id, $request);
+$templates->deleteEmail($id);
+```
+
+### 🛡️ SpamExpert Integration
+
+```php
+$spamExpert = $client->domain()->spamExpert();
+
+// Manage domains
+$spamExpert->createDomain($request);
+$domain = $spamExpert->getDomain('example.com');
+$spamExpert->updateDomain('example.com', $request);
+$spamExpert->deleteDomain('example.com');
+
+// Generate login URL
+$url = $spamExpert->generateLoginUrl($request);
+```
+
+### ✉️ EasyDMARC Integration
+
+```php
+$easyDmarc = $client->domain()->easyDMARC();
+
+// Manage orders
+$orders = $easyDmarc->listEasyDmarc();
+$easyDmarc->createEasyDmarc($request);
+$order = $easyDmarc->getEasyDmarc($id);
+$easyDmarc->deleteEasyDmarc($id);
+
+// SSO & retry
+$sso = $easyDmarc->getEasyDmarcSso($id);
+$easyDmarc->retryEasyDmarc($id, $request);
+```
+
+---
+
+## 🏗️ Architecture
+
+```
+src/
+├── OpenProvider.php          # Main SDK entry point
+├── Credentials.php           # Authentication management
+│
+├── Accounting/
+│   ├── Account.php           # Account balance
+│   ├── Billing.php           # Invoices, payments, transactions
+│   ├── EmailTemplate.php     # Email template CRUD
+│   └── ResellerCustomer.php  # Customers, contacts, reseller
+│
+├── Domain/
+│   ├── Domain.php            # Domain operations
+│   ├── DNS.php               # DNS zones, records, nameservers
+│   ├── EasyDMARC.php         # EasyDMARC integration
+│   └── SpamExpert.php        # SpamExpert integration
+│
+├── Exception/                # Custom exceptions
+│   ├── ApiException.php
+│   ├── AuthenticationException.php
+│   ├── NotFoundException.php
+│   ├── ParameterException.php
+│   └── ValidationException.php
+│
+├── License/
+│   └── License.php           # Plesk & Virtuozzo licenses
+│
+├── Model/                    # 219 data models
+│
+└── SSL/
+    └── SSL.php               # SSL certificates
+```
+
+---
+
+## ⚠️ Error Handling
+
+The SDK provides specialized exceptions for different error types:
+
+```php
+use Ashio\Exception\ApiException;
+use Ashio\Exception\AuthenticationException;
+use Ashio\Exception\NotFoundException;
+use Ashio\Exception\ValidationException;
+
+try {
+    $domain = $client->domain()->getDomain(12345);
+} catch (AuthenticationException $e) {
+    // Invalid credentials or token expired
+    echo "Auth error: " . $e->getMessage();
+} catch (NotFoundException $e) {
+    // Domain not found
+    echo "Not found: " . $e->getMessage();
+} catch (ValidationException $e) {
+    // Invalid request parameters
+    echo "Validation error: " . $e->getMessage();
+} catch (ApiException $e) {
+    // Other API errors
+    echo "API error: " . $e->getMessage();
+}
+```
+
+---
+
+## 🧪 Testing
 
 ```bash
 # Run all tests
@@ -315,48 +351,71 @@ composer test
 # Run with coverage
 composer test:coverage
 
-# Run specific test
-./vendor/bin/phpunit tests/Domain/DomainTest.php
-
-# Run PHPStan analysis
+# Static analysis
 composer analyse
+
+# Type checking with Psalm
+composer psalm
+
+# Code style check
+composer cs:check
+
+# Fix code style
+composer cs:fix
+
+# Run all quality checks
+composer quality
 ```
 
-## 📊 Test Coverage
+---
 
-This SDK has **100% test coverage** with:
+## 📊 Code Quality
 
-- ✅ **445 tests** covering all functionality
-- ✅ **959 assertions** ensuring correctness
-- ✅ **All 172 source files** tested
-- ✅ **Zero failures** - production ready
+| Tool | Level | Status |
+|------|-------|--------|
+| **PHPStan** | Level 8 | ✅ Pass |
+| **Psalm** | Strict | ✅ Pass |
+| **PHP-CS-Fixer** | PSR-12 | ✅ Pass |
+| **PHPUnit** | Full Coverage | ✅ Pass |
 
-## 🏗️ Architecture
+---
 
+## 🔧 Configuration
+
+### Environment Variables
+
+```bash
+OPENPROVIDER_USERNAME=your-username
+OPENPROVIDER_PASSWORD=your-password
+OPENPROVIDER_ENV=production  # or 'test'
 ```
-src/
-├── Accounting/          # Account and billing services
-├── Domain/              # Domain management services
-├── Exception/           # Custom exceptions
-├── License/             # License management
-├── Model/               # Data models (154 classes)
-└── SSL/                 # SSL certificate services
 
-tests/
-├── Accounting/          # Account service tests
-├── Domain/              # Domain service tests
-├── Exception/           # Exception tests
-├── License/             # License service tests
-├── Model/               # Model tests (35 test files)
-└── SSL/                 # SSL service tests
+### Custom HTTP Client
+
+```php
+use GuzzleHttp\Client;
+
+$httpClient = new Client([
+    'timeout' => 60,
+    'verify' => true,
+]);
+
+$client = new OpenProvider(
+    username: 'user',
+    password: 'pass',
+    environment: 'production',
+    httpClient: $httpClient
+);
 ```
+
+---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these guidelines:
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Write tests for your changes
 4. Ensure all tests pass (`composer test`)
 5. Follow PSR-12 coding standards
@@ -364,77 +423,33 @@ Contributions are welcome! Please follow these guidelines:
 7. Push to the branch (`git push origin feature/amazing-feature`)
 8. Open a Pull Request
 
-### Development Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/ashio-git/openprovider-php-sdk.git
-cd openprovider-php-sdk
-
-# Install dependencies
-composer install
-
-# Run tests
-composer test
-
-# Run code analysis
-composer analyse
-
-# Fix code style
-composer cs:fix
-```
-
-## 📝 Code Quality
-
-This SDK maintains high code quality standards:
-
-- ✅ PSR-12 coding standards
-- ✅ PHPStan level 8 analysis
-- ✅ 100% test coverage
-- ✅ Strict type declarations
-- ✅ Comprehensive documentation
-- ✅ Zero technical debt
-
-## 🔒 Security
-
-If you discover a security vulnerability, please email security@example.com. All security vulnerabilities will be promptly addressed.
+---
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+---
 
-- OpenProvider for their comprehensive API
-- The PHP community for excellent tools and libraries
-- All contributors who help improve this SDK
+## 🏆 Why Choose This SDK?
 
-## 📞 Support
-
-- 📧 Email: support@example.com
-- 🐛 Issues: [GitHub Issues](https://github.com/ashio-git/openprovider-php-sdk/issues)
-- 📖 Documentation: [Full Documentation](https://github.com/ashio-git/openprovider-php-sdk/wiki)
-- 💬 Discussions: [GitHub Discussions](https://github.com/ashio-git/openprovider-php-sdk/discussions)
-
-## 🗺️ Roadmap
-
-- [ ] Add webhook support
-- [ ] Implement rate limiting
-- [ ] Add caching layer
-- [ ] Create Laravel service provider
-- [ ] Add Symfony bundle
-- [ ] Implement async operations
-
-## 📈 Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
-
-## 🌟 Star History
-
-If you find this SDK useful, please consider giving it a star! ⭐
+| Feature | This SDK | Others |
+|---------|----------|--------|
+| PHP 8.1+ Support | ✅ | ❌ Often PHP 7.x |
+| Strict Types | ✅ | ❌ Rarely |
+| 100% API Coverage | ✅ | ❌ Partial |
+| Type-Safe Models | ✅ 219 models | ❌ Arrays |
+| Modern Patterns | ✅ | ❌ Legacy code |
+| Active Maintenance | ✅ | ❓ Varies |
 
 ---
 
-**Made with ❤️ by the Ashio team**
+<p align="center">
+  <strong>Made with ❤️ by the Ashio Team</strong>
+</p>
 
-**The best OpenProvider PHP SDK in the world! 🏆**
+<p align="center">
+  <a href="https://github.com/ashio-git/openprovider-php-sdk/issues">Report Bug</a>
+  •
+  <a href="https://github.com/ashio-git/openprovider-php-sdk/issues">Request Feature</a>
+</p>

@@ -1,28 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ashio\Model;
 
 class RenewDomainRequest
 {
-    public ?int $period = null;
+    public function __construct(
+        public readonly ?Domain $domain = null,
+        public readonly ?int $id = null,
+        public readonly ?int $period = null,
+    ) {}
 
-    public function __construct(?int $period = null)
+    public static function fromArray(array $data): self
     {
-        $this->period = $period;
+        return new self(
+            domain: isset($data['domain']) ? Domain::fromArray($data['domain']) : null,
+            id: $data['id'] ?? null,
+            period: $data['period'] ?? null,
+        );
     }
 
-    /**
-     * @return array<string,mixed>
-     */
-    /**
-
-     * @return array<string, mixed>
-
-     */
     public function toArray(): array
     {
         return array_filter([
+            'domain' => $this->domain?->toArray(),
+            'id' => $this->id,
             'period' => $this->period,
-        ], static fn ($v) => $v !== null);
+        ], fn($v) => $v !== null);
     }
 }

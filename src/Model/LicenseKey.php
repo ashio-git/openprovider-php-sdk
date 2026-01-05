@@ -6,23 +6,21 @@ namespace Ashio\Model;
 
 class LicenseKey
 {
-    public ?string $key = null;
+    public function __construct(
+        public readonly ?string $key = null,
+    ) {}
 
-    /**
-     * @param array<string,mixed> $data
-     * @return self
-     */
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->key = $data['key'] ?? null;
+        return new self(
+            key: $data['key'] ?? null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'key' => $this->key,
+        ], fn($v) => $v !== null);
     }
 }

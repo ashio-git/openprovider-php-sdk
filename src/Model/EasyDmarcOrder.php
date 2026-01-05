@@ -1,69 +1,56 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ashio\Model;
 
 class EasyDmarcOrder
 {
-    /** @var int|null */
-    public $id;
+    public function __construct(
+        public readonly ?string $activated_at = null,
+        public readonly ?Domain $domain = null,
+        public readonly ?string $easydmarc_email_address = null,
+        public readonly ?string $expired_at = null,
+        public readonly ?int $id = null,
+        public readonly ?RecentEasyDmarcAction $recent_easydmarc_action = null,
+        public readonly ?string $record_host = null,
+        public readonly ?string $record_type = null,
+        public readonly ?string $record_value = null,
+        public readonly ?string $renew_at = null,
+        public readonly ?string $status = null,
+    ) {}
 
-    /** @var string|null */
-    public $status;
-
-    /** @var string|null */
-    public $activated_at;
-
-    /** @var string|null */
-    public $expired_at;
-
-    /** @var string|null */
-    public $renew_at;
-
-    /** @var EasyDmarcDomain|null */
-    public $domain;
-
-    /** @var string|null */
-    public $easydmarc_email_address;
-
-    /** @var string|null */
-    public $record_type;
-
-    /** @var string|null */
-    public $record_host;
-
-    /** @var string|null */
-    public $record_value;
-
-    /** @var EasyDmarcRecentAction|null */
-    public $recent_easydmarc_action;
-
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->id = $data['id'] ?? null;
-        $this->status = $data['status'] ?? null;
-        $this->activated_at = $data['activated_at'] ?? null;
-        $this->expired_at = $data['expired_at'] ?? null;
-        $this->renew_at = $data['renew_at'] ?? null;
-        $this->easydmarc_email_address = $data['easydmarc_email_address'] ?? null;
-        $this->record_type = $data['record_type'] ?? null;
-        $this->record_host = $data['record_host'] ?? null;
-        $this->record_value = $data['record_value'] ?? null;
+        return new self(
+            activated_at: $data['activated_at'] ?? null,
+            domain: isset($data['domain']) ? Domain::fromArray($data['domain']) : null,
+            easydmarc_email_address: $data['easydmarc_email_address'] ?? null,
+            expired_at: $data['expired_at'] ?? null,
+            id: $data['id'] ?? null,
+            recent_easydmarc_action: isset($data['recent_easydmarc_action']) ? RecentEasyDmarcAction::fromArray($data['recent_easydmarc_action']) : null,
+            record_host: $data['record_host'] ?? null,
+            record_type: $data['record_type'] ?? null,
+            record_value: $data['record_value'] ?? null,
+            renew_at: $data['renew_at'] ?? null,
+            status: $data['status'] ?? null,
+        );
+    }
 
-        if (isset($data['domain'])) {
-            $this->domain = (new EasyDmarcDomain())->fromArray($data['domain']);
-        }
-
-        if (isset($data['recent_easydmarc_action'])) {
-            $this->recent_easydmarc_action = (new EasyDmarcRecentAction())->fromArray($data['recent_easydmarc_action']);
-        }
-
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'activated_at' => $this->activated_at,
+            'domain' => $this->domain?->toArray(),
+            'easydmarc_email_address' => $this->easydmarc_email_address,
+            'expired_at' => $this->expired_at,
+            'id' => $this->id,
+            'recent_easydmarc_action' => $this->recent_easydmarc_action?->toArray(),
+            'record_host' => $this->record_host,
+            'record_type' => $this->record_type,
+            'record_value' => $this->record_value,
+            'renew_at' => $this->renew_at,
+            'status' => $this->status,
+        ], fn($v) => $v !== null);
     }
 }

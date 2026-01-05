@@ -1,25 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ashio\Model;
 
 class OperationPrice
 {
-    /**
-     * @var float|null
-     */
-    public $create;
+    public function __construct(
+        public readonly ?float $create = null,
+    ) {}
 
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->create = $data['create'] ?? null;
+        return new self(
+            create: $data['create'] ?? null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'create' => $this->create,
+        ], fn($v) => $v !== null);
     }
 }

@@ -1,31 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ashio\Model;
 
 class RgpStatuses
 {
-    /**
-     * @var string|null
-     */
-    public $add_period;
+    public function __construct(
+        public readonly ?string $add_period = null,
+        public readonly ?string $auto_renew_period = null,
+    ) {}
 
-    /**
-     * @var string|null
-     */
-    public $auto_renew_period;
-
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->add_period = $data['add_period'] ?? null;
-        $this->auto_renew_period = $data['auto_renew_period'] ?? null;
+        return new self(
+            add_period: $data['add_period'] ?? null,
+            auto_renew_period: $data['auto_renew_period'] ?? null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'add_period' => $this->add_period,
+            'auto_renew_period' => $this->auto_renew_period,
+        ], fn($v) => $v !== null);
     }
 }

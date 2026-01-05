@@ -1,37 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ashio\Model;
 
 class SuggestNameDomainResult
 {
-    /**
-     * @var string|null
-     */
-    public $domain;
+    public function __construct(
+        public readonly ?string $domain = null,
+        public readonly ?string $name = null,
+        public readonly ?string $tld = null,
+    ) {}
 
-    /**
-     * @var string|null
-     */
-    public $name;
-
-    /**
-     * @var string|null
-     */
-    public $tld;
-
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->domain = $data['domain'] ?? null;
-        $this->name = $data['name'] ?? null;
-        $this->tld = $data['tld'] ?? null;
+        return new self(
+            domain: $data['domain'] ?? null,
+            name: $data['name'] ?? null,
+            tld: $data['tld'] ?? null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'domain' => $this->domain,
+            'name' => $this->name,
+            'tld' => $this->tld,
+        ], fn($v) => $v !== null);
     }
 }

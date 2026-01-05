@@ -1,31 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ashio\Model;
 
 class SslProductPrice
 {
-    /**
-     * @var string|null
-     */
-    public $currency;
+    public function __construct(
+        public readonly ?string $currency = null,
+        public readonly ?float $price = null,
+    ) {}
 
-    /**
-     * @var float|null
-     */
-    public $price;
-
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
-     */
-    public function fromArray(array $data): self
+    public static function fromArray(array $data): self
     {
-        $this->currency = $data['currency'] ?? null;
-        $this->price = $data['price'] ?? null;
+        return new self(
+            currency: $data['currency'] ?? null,
+            price: $data['price'] ?? null,
+        );
+    }
 
-        return $this;
+    public function toArray(): array
+    {
+        return array_filter([
+            'currency' => $this->currency,
+            'price' => $this->price,
+        ], fn($v) => $v !== null);
     }
 }
