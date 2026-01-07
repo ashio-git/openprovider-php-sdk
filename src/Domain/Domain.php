@@ -457,30 +457,61 @@ class Domain
     }
 
     /**
-     * List all TLDs.
-     * @param array $params Optional parameters to filter the list of TLDs.
-     * @return \Ashio\Model\PaginatedResponse
+     * List TLDs with optional filtering and data enrichment.
+     * 
+     * @param int $limit Number of results per page (max 500).
+     * @param int $offset Pagination offset.
+     * @param string|null $namePattern Filter by TLD name pattern.
+     * @param bool $withPrice Include pricing data.
+     * @param bool $withDescription Include TLD descriptions.
+     * @param bool $withLevelPrices Include tier-based pricing.
+     * @param bool $withUsageCount Include usage statistics.
+     * @param bool|null $isActive Filter by active status (null = all).
+     * @return \Ashio\Model\PaginatedResponse<Tld>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
      */
-    /**
-     * List TLDs.
-     * @return \Ashio\Model\PaginatedResponse
-     * @phpstan-return \Ashio\Model\PaginatedResponse<Tld>
-     * @psalm-return \Ashio\Model\PaginatedResponse<Tld>
-     */
-    public function listTlds(int $limit = 100, int $offset = 0, ?string $namePattern = null, bool $withPrice = false, bool $withDescription = false): \Ashio\Model\PaginatedResponse
-    {
-        $params = array_filter([
+    public function listTlds(
+        int $limit = 100,
+        int $offset = 0,
+        ?string $namePattern = null,
+        bool $withPrice = false,
+        bool $withDescription = false,
+        bool $withLevelPrices = false,
+        bool $withUsageCount = false,
+        ?bool $isActive = null
+    ): \Ashio\Model\PaginatedResponse {
+        $params = [
             'limit' => $limit,
             'offset' => $offset,
-            'name_pattern' => $namePattern,
-            'with_price' => $withPrice,
-            'with_description' => $withDescription,
-        ]);
+        ];
+        
+        // Add optional string/nullable params
+        if ($namePattern !== null) {
+            $params['name_pattern'] = $namePattern;
+        }
+        
+        // Add boolean params (only when true, as API treats absence as false)
+        if ($withPrice) {
+            $params['with_price'] = true;
+        }
+        if ($withDescription) {
+            $params['with_description'] = true;
+        }
+        if ($withLevelPrices) {
+            $params['with_level_prices'] = true;
+        }
+        if ($withUsageCount) {
+            $params['with_usage_count'] = true;
+        }
+        
+        // is_active can be explicitly true or false
+        if ($isActive !== null) {
+            $params['is_active'] = $isActive;
+        }
 
         $response = $this->API->get('tlds', $params);
         $tlds = [];
