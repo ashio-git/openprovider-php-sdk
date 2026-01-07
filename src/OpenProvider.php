@@ -115,7 +115,6 @@ class OpenProvider
         $url = $this->credentials->getUrl() . $actionPath;
 
         $options = [
-            'json' => $params,
             'headers' => [
                 'Authorization' => $this->apiToken ? ('Bearer ' . $this->apiToken) : null,
             ],
@@ -124,9 +123,23 @@ class OpenProvider
         // Remove null headers to avoid sending empty header lines
         $options['headers'] = array_filter($options['headers'], static fn ($v) => $v !== null);
 
+        // GET requests must use query string, not JSON body
+        if ($method === 'GET') {
+            // Convert booleans to strings for OpenProvider API
+            $queryParams = array_map(static function ($v) {
+                if (is_bool($v)) {
+                    return $v ? 'true' : 'false';
+                }
+                return $v;
+            }, $params);
+            $options['query'] = $queryParams;
+            return $this->httpClient->get($url, $options);
+        }
+
+        // POST/PUT/DELETE use JSON body
+        $options['json'] = $params;
+
         switch ($method) {
-            case 'GET':
-                return $this->httpClient->get($url, $options);
             case 'POST':
                 return $this->httpClient->post($url, $options);
             case 'PUT':
