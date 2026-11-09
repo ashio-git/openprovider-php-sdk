@@ -54,7 +54,10 @@
     },
     "scripts": {
         "test": "phpunit",
-        "test:coverage": "phpunit --coverage-text --coverage-clover coverage.xml",
+        "test:coverage": [
+            "@php -d pcov.directory=. -d \"pcov.exclude=~/vendor/~\" vendor/bin/phpunit --coverage-text --coverage-clover coverage.xml",
+            "@php tools/coverage coverage.xml"
+        ],
         "analyse": "phpstan analyse --no-progress",
         "psalm": "psalm",
         "cs:check": "php-cs-fixer fix --dry-run --diff",

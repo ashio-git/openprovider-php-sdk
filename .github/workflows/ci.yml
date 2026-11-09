@@ -93,13 +93,20 @@ jobs:
       - name: Install dependencies
         run: composer update --prefer-dist --no-progress --no-interaction
 
+      # S4: tools/coverage fails the job below 95% of lines. pcov.directory is set by the
+      # composer script; without it pcov instruments src/ only and tools/src reads as 0%.
       - name: Run tests with coverage
+        shell: bash
+        run: composer test:coverage 2>&1 | tee coverage.txt
+
+      - name: Summarise coverage
+        if: always()
+        shell: bash
         run: |
-          composer test:coverage | tee coverage.txt
           {
-            echo '### Coverage'
+            echo '### Line coverage'
             echo '```'
-            grep -A4 'Summary:' coverage.txt
+            grep -E '^(src|tools|total) ' coverage.txt || echo 'no coverage report'
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
