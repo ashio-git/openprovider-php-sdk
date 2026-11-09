@@ -8,6 +8,9 @@ use Ashio\OpenProvider\Response\ApiResponse;
 
 final class ExceptionFactory
 {
+    /**
+     * @param ApiResponse<mixed> $response
+     */
     public static function fromResponse(ApiResponse $response): ApiException
     {
         if ($response->isSuccess()) {

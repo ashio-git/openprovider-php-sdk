@@ -69,8 +69,10 @@
             "php tools/spec-sync --verify",
             "php tools/spec-merge --check",
             "php tools/generate errors --check",
-            "php tools/generate models --check"
-        ]
+            "php tools/generate models --check",
+            "php tools/generate operations --check"
+        ],
+        "conformance": "php tools/conformance"
     },
     "suggest": {
         "psr/simple-cache": "Share the API token between processes with Psr16TokenStore"

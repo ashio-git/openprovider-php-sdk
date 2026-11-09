@@ -86,7 +86,7 @@ final class ApiClientTest extends TestCase
 
     /**
      * F3 gate: on code 196 the client logs in again exactly once and repeats the call once,
-     * for reads and writes alike (a 196 means the call was not executed).
+     * for reads and writes alike (a 196 means the call was not executed; plan decision D10).
      *
      * @param array<string, mixed> $arguments
      */

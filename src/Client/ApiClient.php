@@ -34,7 +34,8 @@ use Psr\Http\Message\StreamFactoryInterface;
  *
  * - Authentication is lazy and the token is reused (see Authenticator).
  * - Code 196 (expired or invalid token): forget the token, log in again once, repeat the call
- *   once. This holds for writes too: a 196 means the API refused the call before running it.
+ *   once. This holds for writes too: a 196 means the API refused the call before running it
+ *   (plan decision D10; the no-repeat rule A11 is about transient failures, below).
  * - Reads (GET) may be retried on network failures, non-JSON 5xx answers and maintenance
  *   codes, only when ClientConfig::$getRetry allows it. Writes are sent exactly once.
  */
@@ -85,6 +86,8 @@ final class ApiClient
 
     /**
      * @param array<array-key, mixed> $arguments keyed by the spec's parameter names
+     *
+     * @return ApiResponse<mixed> a successful envelope (code 0); data as decoded
      */
     public function call(OperationSpec $operation, array $arguments = []): ApiResponse
     {
@@ -112,6 +115,9 @@ final class ApiClient
         return $this->config;
     }
 
+    /**
+     * @return ApiResponse<mixed>
+     */
     private function send(OperationSpec $operation, EncodedRequest $request, ?AccessToken $token): ApiResponse
     {
         $retries = $operation->isWrite() ? 0 : $this->config->getRetry->maxRetries;
@@ -137,6 +143,9 @@ final class ApiClient
         }
     }
 
+    /**
+     * @param ApiResponse<mixed> $response
+     */
     private static function isTransient(ApiResponse $response): bool
     {
         return !$response->isSuccess()

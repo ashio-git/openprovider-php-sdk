@@ -7,7 +7,7 @@ $finder = PhpCsFixer\Finder::create()
         __DIR__ . '/tools',
     ])
     ->name('*.php')
-    ->name(['spec-sync', 'spec-merge', 'generate'])
+    ->name(['spec-sync', 'spec-merge', 'generate', 'conformance'])
     ->ignoreDotFiles(true)
     ->ignoreVCS(true);
 

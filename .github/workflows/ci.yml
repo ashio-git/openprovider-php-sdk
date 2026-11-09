@@ -73,6 +73,9 @@ jobs:
       - name: Verify the vendored spec and that the merge reproduces it
         run: composer spec:verify
 
+      - name: Audit the operations against the spec (S2)
+        run: composer conformance
+
   coverage:
     name: Coverage
     runs-on: ubuntu-latest

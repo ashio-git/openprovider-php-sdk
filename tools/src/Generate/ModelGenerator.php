@@ -33,7 +33,7 @@ final class ModelGenerator
         $definitions = Json::object($spec['definitions'] ?? null, 'definitions');
         $set = ModelSet::fromSpec($spec);
         $classes = NameMap::classes([...$set->models, ...$set->enums]);
-        $portal = self::portalUrl($spec);
+        $portal = DocText::portalUrl($spec);
 
         $files = [];
         foreach ($set->models as $name) {
@@ -250,18 +250,6 @@ final class ModelGenerator
     }
 
     /**
-     * @param array<array-key, mixed> $spec
-     */
-    private static function portalUrl(array $spec): ?string
-    {
-        $sources = $spec['x-openprovider-sources'] ?? null;
-        $portal = is_array($sources) ? ($sources['portal'] ?? null) : null;
-        $url = is_array($portal) ? ($portal['url'] ?? null) : null;
-
-        return is_string($url) ? $url : null;
-    }
-
-    /**
      * Title, description, the given note, @experimental when the portal is the only source, and
      * the @generated marker.
      *
@@ -277,15 +265,12 @@ final class ModelGenerator
         $sections = [];
         foreach ([$title, $description === $title ? '' : $description] as $text) {
             if (trim($text) !== '') {
-                $sections[] = self::docLines($text);
+                $sections[] = DocText::lines($text);
             }
         }
         $sections[] = $note;
         if (($definition['x-experimental'] ?? false) === true) {
-            $sections[] = [sprintf(
-                '@experimental Documented only by the developer portal%s; it may change without notice.',
-                $portal === null ? '' : " ($portal)",
-            )];
+            $sections[] = [DocText::experimental($portal)];
         }
 
         $lines = ['/**'];
@@ -322,31 +307,9 @@ final class ModelGenerator
         if (array_key_exists('default', $schema)) {
             $notes[] = 'API default: ' . (string) json_encode($schema['default'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
-        $text = self::sanitize(implode(' ', preg_split('/\s+/u', $text, -1, PREG_SPLIT_NO_EMPTY) ?: []));
+        $text = DocText::inline($text);
 
         return trim($text . ($notes === [] ? '' : ' (' . implode(', ', $notes) . ')'));
-    }
-
-    /**
-     * @return list<string>
-     */
-    private static function docLines(string $text): array
-    {
-        $lines = [];
-        foreach (preg_split('/\R/u', trim($text)) ?: [] as $line) {
-            $line = self::sanitize(rtrim($line));
-            $lines[] = str_starts_with(ltrim($line), '@') ? '\\' . ltrim($line) : $line;
-        }
-
-        return $lines;
-    }
-
-    /**
-     * Text from the spec cannot close the comment it is written into.
-     */
-    private static function sanitize(string $text): string
-    {
-        return str_replace('*/', '* /', $text);
     }
 
     /**

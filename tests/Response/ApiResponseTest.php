@@ -77,6 +77,25 @@ final class ApiResponseTest extends TestCase
         yield 'code is not an integer' => [200, '{"code":"0"}'];
     }
 
+    public function testWithDataReplacesOnlyTheData(): void
+    {
+        $response = ApiResponse::fromHttp(201, (string) json_encode([
+            'code' => 0,
+            'desc' => 'ok',
+            'data' => ['id' => 5],
+            'warnings' => [['code' => 1001, 'desc' => 'Check the handle']],
+            'maintenance' => true,
+        ]));
+
+        $typed = $response->withData(new \ArrayObject(['id' => 5]));
+
+        self::assertNotSame($response, $typed);
+        self::assertEquals(new \ArrayObject(['id' => 5]), $typed->data);
+        self::assertSame(['id' => 5], $response->data);
+        self::assertSame([0, 'ok', true, 201], [$typed->code, $typed->desc, $typed->maintenance, $typed->httpStatus]);
+        self::assertSame($response->warnings, $typed->warnings);
+    }
+
     #[DataProvider('bodiesThatAreNotAnEnvelope')]
     public function testABodyThatIsNotAnEnvelopeIsAnException(int $status, string $body): void
     {

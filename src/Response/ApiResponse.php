@@ -9,10 +9,16 @@ use Ashio\OpenProvider\Exception\UnexpectedResponseException;
 /**
  * The API envelope `{code, desc, data, warnings, maintenance}`. Success is `code === 0`,
  * whatever the HTTP status says.
+ *
+ * `data` is the decoded JSON as received (`ApiResponse<mixed>`) until a service reads it into
+ * its model with withData(); the services return `ApiResponse<SomeModel>`.
+ *
+ * @template-covariant T
  */
 final class ApiResponse
 {
     /**
+     * @param T             $data
      * @param list<Warning> $warnings
      */
     public function __construct(
@@ -26,6 +32,8 @@ final class ApiResponse
     }
 
     /**
+     * @return self<mixed>
+     *
      * @throws UnexpectedResponseException when the body is not a JSON envelope with an integer code
      */
     public static function fromHttp(int $status, string $body): self
@@ -61,6 +69,20 @@ final class ApiResponse
     public function isSuccess(): bool
     {
         return $this->code === 0;
+    }
+
+    /**
+     * The same envelope with `data` replaced, typically by the model read from it.
+     *
+     * @template U
+     *
+     * @param U $data
+     *
+     * @return self<U>
+     */
+    public function withData(mixed $data): self
+    {
+        return new self($this->code, $this->desc, $data, $this->warnings, $this->maintenance, $this->httpStatus);
     }
 
     /**
