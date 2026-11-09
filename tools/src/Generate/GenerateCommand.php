@@ -7,20 +7,22 @@ namespace Ashio\OpenProvider\Tools\Generate;
 use Ashio\OpenProvider\Tools\Spec\SpecException;
 
 /**
- * tools/generate <errors|models|operations>... [--check]
+ * tools/generate <errors|models|operations|readme>... [--check]
  *
  * - errors: src/Exception/ErrorCatalog.php from spec/error-codes.json and spec/behavior.json.
  * - models: src/Model from spec/openprovider.json. src/Model holds generated files only: files
  *   the spec no longer yields are removed, and a hand-written file there is refused.
  * - operations: src/Service (same rules as src/Model) and src/OpenProvider.php, from
  *   spec/openprovider.json and spec/behavior.json.
+ * - readme: the generated regions of README.md (badges, numbers, the operation reference and the
+ *   error table), from the generated code, the spec pin and the gates' configuration.
  *
  * Writes the generated sources, or with --check exits 1 when the committed ones differ. Exits 2
  * on bad usage or an input the generator refuses.
  */
 final class GenerateCommand
 {
-    private const TARGETS = ['errors', 'models', 'operations'];
+    private const TARGETS = ['errors', 'models', 'operations', 'readme'];
 
     /**
      * @param list<string> $arguments
@@ -32,7 +34,7 @@ final class GenerateCommand
         $check = in_array('--check', $arguments, true);
         $targets = array_values(array_unique(array_diff($arguments, ['--check'])));
         if ($targets === [] || array_diff($targets, self::TARGETS) !== []) {
-            fwrite($err, "Usage: tools/generate <errors|models|operations>... [--check]\n");
+            fwrite($err, "Usage: tools/generate <errors|models|operations|readme>... [--check]\n");
 
             return 2;
         }
@@ -43,6 +45,7 @@ final class GenerateCommand
                 $status = max($status, match ($target) {
                     'errors' => self::errors($root, $check, $out, $err),
                     'models' => self::models($root, $check, $out, $err),
+                    'readme' => self::readme($root, $check, $out, $err),
                     default => self::operations($root, $check, $out, $err),
                 });
             }
@@ -78,6 +81,31 @@ final class GenerateCommand
         }
         self::write($file, $source);
         fwrite($out, "Wrote src/Exception/ErrorCatalog.php\n");
+
+        return 0;
+    }
+
+    /**
+     * @param resource $out
+     * @param resource $err
+     */
+    private static function readme(string $root, bool $check, $out, $err): int
+    {
+        $file = $root . '/README.md';
+        $current = self::read($file);
+        $readme = ReadmeGenerator::render($current, ReadmeInventory::fromCode($root));
+        if ($check) {
+            if ($current !== $readme) {
+                fwrite($err, "README.md is out of date: run tools/generate readme\n");
+
+                return 1;
+            }
+            fwrite($out, "README.md is up to date.\n");
+
+            return 0;
+        }
+        self::write($file, $readme);
+        fwrite($out, "Wrote the generated regions of README.md\n");
 
         return 0;
     }

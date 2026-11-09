@@ -74,7 +74,8 @@
             "php tools/spec-merge --check",
             "php tools/generate errors --check",
             "php tools/generate models --check",
-            "php tools/generate operations --check"
+            "php tools/generate operations --check",
+            "php tools/generate readme --check"
         ],
         "conformance": "php tools/conformance",
         "smoke": "phpunit --configuration phpunit.smoke.xml"
