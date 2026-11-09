@@ -9,10 +9,8 @@
 /.github            export-ignore
 /docs               export-ignore
 /tests              export-ignore
-/legacy/tests       export-ignore
 /spec               export-ignore
 /tools              export-ignore
-/phpstan-legacy.neon export-ignore
 /.gitattributes     export-ignore
 /.gitignore         export-ignore
 /.php-cs-fixer.php  export-ignore

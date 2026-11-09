@@ -5,8 +5,6 @@ $finder = PhpCsFixer\Finder::create()
         __DIR__ . '/src',
         __DIR__ . '/tests',
         __DIR__ . '/tools',
-        __DIR__ . '/legacy/src',
-        __DIR__ . '/legacy/tests',
     ])
     ->name('*.php')
     ->name(['spec-sync', 'spec-merge', 'generate'])

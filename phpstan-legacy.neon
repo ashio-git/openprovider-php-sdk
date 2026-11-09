@@ -1,5 +1,0 @@
-# The 2.x code kept until F4/F5 of docs/plans/2026-11-09-sdk-api-v1.md removes it.
-parameters:
-    level: 8
-    paths:
-        - legacy/src

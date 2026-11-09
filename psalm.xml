@@ -11,7 +11,6 @@
     <projectFiles>
         <directory name="src" />
         <directory name="tools/src" />
-        <directory name="legacy/src" />
         <ignoreFiles>
             <directory name="vendor" />
         </ignoreFiles>

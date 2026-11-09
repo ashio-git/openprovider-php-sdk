@@ -34,7 +34,8 @@ final class ErrorCatalogGenerationTest extends TestCase
         self::assertIsResource($err);
 
         self::assertSame(0, GenerateCommand::run(['errors', '--check'], self::ROOT, $out, $err));
-        self::assertSame(2, GenerateCommand::run(['models'], self::ROOT, $out, $err));
+        self::assertSame(0, GenerateCommand::run(['errors', 'models', '--check'], self::ROOT, $out, $err));
+        self::assertSame(2, GenerateCommand::run(['services'], self::ROOT, $out, $err));
         self::assertSame(2, GenerateCommand::run([], self::ROOT, $out, $err));
     }
 

@@ -43,24 +43,19 @@
     },
     "autoload": {
         "psr-4": {
-            "Ashio\\OpenProvider\\": "src/",
-            "Ashio\\": "legacy/src/"
+            "Ashio\\OpenProvider\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "Ashio\\OpenProvider\\Tests\\": "tests/",
-            "Ashio\\OpenProvider\\Tools\\": "tools/src/",
-            "Ashio\\Tests\\": "legacy/tests/"
+            "Ashio\\OpenProvider\\Tools\\": "tools/src/"
         }
     },
     "scripts": {
         "test": "phpunit",
         "test:coverage": "phpunit --coverage-text --coverage-clover coverage.xml",
-        "analyse": [
-            "phpstan analyse --no-progress",
-            "phpstan analyse --no-progress -c phpstan-legacy.neon"
-        ],
+        "analyse": "phpstan analyse --no-progress",
         "psalm": "psalm",
         "cs:check": "php-cs-fixer fix --dry-run --diff",
         "cs:fix": "php-cs-fixer fix",
@@ -73,7 +68,8 @@
         "spec:verify": [
             "php tools/spec-sync --verify",
             "php tools/spec-merge --check",
-            "php tools/generate errors --check"
+            "php tools/generate errors --check",
+            "php tools/generate models --check"
         ]
     },
     "suggest": {
