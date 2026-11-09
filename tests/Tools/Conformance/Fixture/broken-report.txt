@@ -1,0 +1,47 @@
+MAJOR registry/untraced_method Ashio\OpenProvider\Tests\Tools\Conformance\Fixture\BrokenDnsService::helper: a public method of a service that implements no operation
+MAJOR auth/auth Login: sends a token to an operation the API serves without one
+MAJOR params/wrong_param_name ListCustomers: $resellerId is sent as "resellerId", which the spec does not declare (the spec's name is "reseller_id")
+MINOR params/missing_param ListCustomers: the spec's query parameter "reseller_id" has no argument
+MINOR params/missing_param ListCustomers: the spec's query parameter "limit" has no argument
+MINOR params/missing_param ListCustomers: the spec's query parameter "offset" has no argument
+MINOR params/missing_param ListCustomers: the spec's query parameter "order" has no argument
+MINOR params/missing_param ListCustomers: the spec's query parameter "order_by" has no argument
+MINOR params/missing_param ListCustomers: the spec's query parameter "email_pattern" has no argument
+MINOR params/missing_param ListCustomers: the spec's query parameter "company_name_pattern" has no argument
+MINOR params/missing_param ListCustomers: the spec's query parameter "last_name_pattern" has no argument
+MINOR params/missing_param ListCustomers: the spec's query parameter "first_name_pattern" has no argument
+MINOR params/missing_param ListCustomers: the spec's query parameter "comment_pattern" has no argument
+MINOR params/missing_param ListCustomers: the spec's query parameter "handle_pattern" has no argument
+MINOR params/missing_param ListCustomers: the spec's query parameter "pattern" has no argument
+MINOR params/missing_param ListCustomers: the spec's query parameter "with_additional_data" has no argument
+MINOR params/missing_param ListCustomers: the spec's query parameter "type" has no argument
+MINOR params/missing_param ListCustomers: the spec's query parameter "columns" has no argument
+MAJOR body/body_model CreateToken: the body is typed array, the spec's body is the model Ashio\OpenProvider\Model\Dns\DomainTokenCreateTokenRequest (dns.domain_tokenCreateTokenRequest)
+MAJOR registry/wrong_route GetZone: #[Operation] says GET /dns/zone/{name}, the spec GET /dns/zones/{name}
+MINOR params/missing_param GetZone: the spec's query parameter "id" has no argument
+MINOR params/missing_param GetZone: the spec's query parameter "with_records" has no argument
+MINOR params/missing_param GetZone: the spec's query parameter "with_history" has no argument
+MINOR params/missing_param GetZone: the spec's query parameter "with_dnskey" has no argument
+MINOR params/missing_param GetZone: the spec's query parameter "provider" has no argument
+MAJOR body/body_not_in_spec DeleteZone: sends a body ({}), the spec declares none
+MAJOR params/query_sent_as_body DeleteZone: $domainName goes into the JSON body as "domain.name", but the spec reads it from the query
+MAJOR params/param_ignored DeleteZone: $provider = "v3 \u00e4\/&=" never reaches the request
+MINOR params/missing_param DeleteZone: the spec's query parameter "domain.name" has no argument
+MINOR params/missing_param DeleteZone: the spec's query parameter "domain.extension" has no argument
+MINOR params/missing_param DeleteZone: the spec's query parameter "provider" has no argument
+MAJOR registry/missing_operation GetPrice: GET /domains/prices has no method
+MINOR response/raw_data GetReseller: hands back the raw data; the spec declares the model Ashio\OpenProvider\Model\ResellerCustomer\ResellerReseller
+MAJOR params/param_ignored GetReseller: $withSettings = false never reaches the request
+MINOR params/missing_param GetReseller: the spec's query parameter "with_additional_data" has no argument
+MINOR params/missing_param GetReseller: the spec's query parameter "with_statistics" has no argument
+MINOR params/missing_param GetReseller: the spec's query parameter "with_settings" has no argument
+MINOR params/missing_param GetReseller: the spec's query parameter "with_contacts" has no argument
+MINOR docs/experimental_undocumented CreateResellerPublic: documented only by the developer portal, but the method does not say @experimental
+MAJOR response/model_mismatch CreateResellerPublic: reads data into Ashio\OpenProvider\Model\Auth\AuthLoginResponseData, the spec declares Ashio\OpenProvider\Model\Portal\SignupCreateResellerData
+MAJOR registry/duplicate_operation DeleteTag: implemented by Ashio\OpenProvider\Tests\Tools\Conformance\Fixture\BrokenDnsService::deleteTagAgain() and Ashio\OpenProvider\Tests\Tools\Conformance\Fixture\BrokenResellerService::deleteTag()
+MINOR params/missing_param DeleteTag: the spec's query parameter "value" has no argument
+MINOR params/param_type DeleteTag: $key is typed ?int, the spec's "key" is string
+MAJOR registry/mixed_service Ashio\OpenProvider\Tests\Tools\Conformance\Fixture\BrokenAuthService: one service per tag group, but it holds Auth, EasyDmarc
+MAJOR registry/mixed_service Ashio\OpenProvider\Tests\Tools\Conformance\Fixture\BrokenDnsService: one service per tag group, but it holds DNS, Reseller/Customer
+MINOR registry/split_group Reseller/Customer: the tag group is spread over Ashio\OpenProvider\Tests\Tools\Conformance\Fixture\BrokenResellerService, Ashio\OpenProvider\Tests\Tools\Conformance\Fixture\BrokenDnsService
+11 operations audited: 2 conform, 14 MAJOR, 32 MINOR; 1 pending (Mailcow: deferred by this test)

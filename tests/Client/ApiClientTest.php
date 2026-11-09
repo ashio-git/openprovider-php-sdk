@@ -230,6 +230,25 @@ final class ApiClientTest extends TestCase
         self::assertSame([10, 20, 20], $this->sleeper->sleeps);
     }
 
+    public function testANonJsonHttp500IsTransientButA4xxIsNot(): void
+    {
+        $this->http->login()
+            ->replyRaw('<html>internal error</html>', 500)
+            ->reply(['code' => 0, 'data' => 'ok'])
+            ->replyRaw('<html>not found</html>', 404);
+        $client = $this->client(new RetryPolicy(1, [5]));
+
+        self::assertSame('ok', $client->call(self::listDomains())->data);
+
+        try {
+            $client->call(self::listDomains());
+            self::fail('expected an exception');
+        } catch (UnexpectedResponseException $e) {
+            self::assertSame(404, $e->httpStatus);
+        }
+        self::assertSame(3, $this->http->count('GET /v1/domains'));
+    }
+
     public function testReadRetriesStopAtTheLimitAndRethrowTheLastError(): void
     {
         $this->http->login()

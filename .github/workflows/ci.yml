@@ -18,12 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      # S6: every supported PHP with both the lowest and the highest dependencies composer.json allows.
       matrix:
         php: ['8.2', '8.3', '8.4', '8.5']
-        dependencies: [highest]
-        include:
-          - php: '8.2'
-            dependencies: lowest
+        dependencies: [lowest, highest]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -115,3 +113,27 @@ jobs:
         with:
           name: coverage
           path: coverage.xml
+
+  mutation:
+    name: Mutation testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Infection is a tool here, not a dev dependency: its current releases need PHP 8.3, and the
+      # test matrix installs the dev dependencies on 8.2.
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: curl, dom, json, mbstring
+          coverage: pcov
+          tools: infection
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress --no-interaction
+
+      # S4: infection.json5 holds the scope and the minimum MSI (85%).
+      - name: Run Infection
+        run: infection --threads=max --no-progress --show-mutations=0

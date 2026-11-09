@@ -20,6 +20,7 @@ use Ashio\OpenProvider\Tests\Support\ArrayCache;
 use Ashio\OpenProvider\Tests\Support\FakeHttpClient;
 use Ashio\OpenProvider\Tests\Support\FrozenClock;
 use GuzzleHttp\Psr7\HttpFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class AuthenticatorTest extends TestCase
@@ -122,13 +123,33 @@ final class AuthenticatorTest extends TestCase
         $this->authenticator()->token();
     }
 
-    public function testALoginWithoutATokenIsAnUnexpectedResponse(): void
+    /**
+     * @return iterable<string, array{mixed}>
+     */
+    public static function loginDataWithoutAToken(): iterable
     {
-        $this->http->reply(['code' => 0, 'data' => ['reseller_id' => 1]]);
+        yield 'no token' => [['reseller_id' => 1]];
+        yield 'empty token' => [['token' => '', 'reseller_id' => 1]];
+        yield 'token that is not a string' => [['token' => 5]];
+        yield 'data that is not an object' => ['tok'];
+    }
+
+    #[DataProvider('loginDataWithoutAToken')]
+    public function testALoginWithoutATokenIsAnUnexpectedResponse(mixed $data): void
+    {
+        $this->http->reply(['code' => 0, 'data' => $data]);
 
         $this->expectException(UnexpectedResponseException::class);
+        $this->expectExceptionMessage('The login response has no token');
 
         $this->authenticator()->token();
+    }
+
+    public function testAResellerIdThatIsNotAnIntegerIsLeftOut(): void
+    {
+        $this->http->reply(['code' => 0, 'data' => ['token' => 'tok', 'reseller_id' => '7']]);
+
+        self::assertNull($this->authenticator()->token()->resellerId);
     }
 
     public function testThePsr16StoreKeepsTheTokenUntilItsRefreshPoint(): void
@@ -150,14 +171,40 @@ final class AuthenticatorTest extends TestCase
         self::assertNull($store->get('k'));
     }
 
-    public function testThePsr16StoreIgnoresAndDropsMalformedEntries(): void
+    /**
+     * @return iterable<string, array{mixed}>
+     */
+    public static function malformedEntries(): iterable
+    {
+        $expires = '2030-01-01T00:00:00+00:00';
+        yield 'token that is not a string' => [['token' => 5, 'expires_at' => $expires]];
+        yield 'empty token' => [['token' => '', 'expires_at' => $expires]];
+        yield 'expiry that is not a string' => [['token' => 't', 'expires_at' => 5]];
+        yield 'expiry that is not a date' => [['token' => 't', 'expires_at' => 'soon']];
+        yield 'reseller id that is not an integer' => [['token' => 't', 'expires_at' => $expires, 'reseller_id' => '7']];
+        yield 'not an array' => ['t'];
+    }
+
+    #[DataProvider('malformedEntries')]
+    public function testThePsr16StoreIgnoresAndDropsMalformedEntries(mixed $entry): void
     {
         $cache = new ArrayCache();
-        $cache->set(Psr16TokenStore::PREFIX . 'k', ['token' => 5]);
+        $cache->set(Psr16TokenStore::PREFIX . 'k', $entry);
         $store = new Psr16TokenStore($cache, $this->clock);
 
         self::assertNull($store->get('k'));
         self::assertFalse($cache->has(Psr16TokenStore::PREFIX . 'k'));
+    }
+
+    public function testThePsr16StoreReadsAnEntryWithoutAResellerId(): void
+    {
+        $cache = new ArrayCache();
+        $cache->set(Psr16TokenStore::PREFIX . 'k', ['token' => 't', 'expires_at' => '2030-01-01T00:00:00+00:00', 'reseller_id' => null]);
+
+        $token = (new Psr16TokenStore($cache, $this->clock))->get('k');
+
+        self::assertSame('t', $token?->token->reveal());
+        self::assertNull($token->resellerId);
     }
 
     public function testThePsr16StoreDoesNotSaveAnExpiredToken(): void

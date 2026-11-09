@@ -86,6 +86,28 @@ final class RequestEncoderTest extends TestCase
         self::assertSame('/domains', $encoded->target);
     }
 
+    public function testNullsAreDroppedInsideListsOfTheBodyToo(): void
+    {
+        $create = self::operation('post', '/x', [['name' => 'body', 'in' => 'body', 'schema' => []]]);
+
+        self::assertSame(
+            '{"items":[{"a":1},[null,2]]}',
+            (new RequestEncoder())->encode($create, ['body' => ['items' => [['a' => 1, 'b' => null], [null, 2]]]])->body,
+        );
+    }
+
+    public function testNumbersAndStringsTakeEveryValueTheyCanSend(): void
+    {
+        $get = self::operation('get', '/x', [
+            ['name' => 'ratio', 'in' => 'query', 'type' => 'number'],
+            ['name' => 'label', 'in' => 'query', 'type' => 'string'],
+        ]);
+        $encoder = new RequestEncoder();
+
+        self::assertSame('/x?ratio=3&label=7', $encoder->encode($get, ['ratio' => 3, 'label' => 7])->target);
+        self::assertSame('/x?ratio=1.5&label=2.5', $encoder->encode($get, ['ratio' => 1.5, 'label' => 2.5])->target);
+    }
+
     public function testAnEmptyBodyIsAnEmptyObject(): void
     {
         $create = self::operation('post', '/x', [['name' => 'body', 'in' => 'body', 'schema' => []]]);
@@ -122,9 +144,13 @@ final class RequestEncoderTest extends TestCase
         $body = self::operation('post', '/x', [['name' => 'body', 'in' => 'body', 'required' => true, 'schema' => []]]);
 
         yield 'camelCase name the API ignores' => [$query, ['lastNamePattern' => 'x'], 'lastNamePattern'];
-        yield 'string for an integer' => [$query, ['limit' => '10'], 'limit'];
-        yield 'int for a boolean' => [$query, ['with_additional_data' => 1], 'with_additional_data'];
-        yield 'bool for a string' => [$query, ['last_name_pattern' => true], 'last_name_pattern'];
+        yield 'string for an integer' => [$query, ['limit' => '10'], 'Parameter "limit" expects an integer, got string'];
+        yield 'int for a boolean' => [$query, ['with_additional_data' => 1], 'Parameter "with_additional_data" expects a boolean, got int'];
+        yield 'bool for a string' => [$query, ['last_name_pattern' => true], 'Parameter "last_name_pattern" expects a string, got bool'];
+        yield 'infinite float for a string' => [$query, ['last_name_pattern' => INF], 'Parameter "last_name_pattern" expects a string, got float'];
+        yield 'string for a number' => [self::operation('get', '/x', [['name' => 'ratio', 'in' => 'query', 'type' => 'number']]), ['ratio' => '1'], 'Parameter "ratio" expects a number, got string'];
+        yield 'missing required query parameter' => [self::operation('get', '/x', [['name' => 'name', 'in' => 'query', 'required' => true, 'type' => 'string']]), [], 'Op requires "name"'];
+        yield 'any argument for an operation without parameters' => [self::operation('get', '/x', []), ['x' => 1], 'Op has no parameter "x"; it accepts: none'];
         yield 'map for an array' => [$query, ['status' => ['a' => 'ACT']], 'status'];
         yield 'nested array item' => [$query, ['status' => [['ACT']]], 'status'];
         yield 'missing path parameter' => [$path, [], 'id'];
@@ -132,7 +158,8 @@ final class RequestEncoderTest extends TestCase
         yield 'missing required body' => [$body, [], 'body'];
         yield 'scalar body' => [$body, ['body' => 'x'], 'body'];
         yield 'invalid utf-8 in body' => [$body, ['body' => ['a' => "\xB1\x31"]], 'body'];
-        yield 'infinite float in body' => [$body, ['body' => ['a' => INF]], 'body'];
+        yield 'infinite float in body' => [$body, ['body' => ['a' => INF]], 'The "body" parameter holds a float JSON cannot represent'];
+        yield 'object in body that is not JSON' => [$body, ['body' => ['at' => new \DateTimeImmutable()]], 'The "body" parameter holds a DateTimeImmutable; pass arrays or JsonSerializable objects'];
     }
 
     /**

@@ -76,6 +76,32 @@ final class ListingPaginatorTest extends TestCase
         ], array_slice($this->http->targets(), 1));
     }
 
+    public function testATotalThatIsNotAnIntegerIsIgnored(): void
+    {
+        $this->http->reply(['code' => 0, 'data' => ['results' => self::zones(1, 1), 'total' => '1']]);
+        $this->http->reply(['code' => 0, 'data' => ['results' => [], 'total' => '1']]);
+
+        $zones = iterator_to_array(Paginator::all($this->openProvider->dns()->listZones(...), pageSize: 1), false);
+
+        self::assertCount(1, $zones);
+        self::assertSame(['GET /v1/dns/zones?limit=1&offset=0', 'GET /v1/dns/zones?limit=1&offset=1'], array_slice($this->http->targets(), 1));
+    }
+
+    public function testAServiceMethodWithoutAnOperationIsRefused(): void
+    {
+        $service = new class ($this->openProvider->client()) extends AbstractService {
+            public function helper(): null
+            {
+                return null;
+            }
+        };
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Paginator::all() takes a service\'s list method');
+
+        Paginator::all($service->helper(...));
+    }
+
     public function testAbsentResultsEndTheWalk(): void
     {
         $this->http->reply(['code' => 0, 'data' => ['total' => 0]]);

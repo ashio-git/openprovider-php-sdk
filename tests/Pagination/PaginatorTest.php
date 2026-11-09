@@ -73,6 +73,58 @@ final class PaginatorTest extends TestCase
         self::assertSame(1, $calls);
     }
 
+    public function testAPageOfOneAndAMaximumOfOneAreValid(): void
+    {
+        $calls = [];
+        $items = iterator_to_array(Paginator::iterate(
+            static function (int $limit, int $offset) use (&$calls): Page {
+                $calls[] = [$limit, $offset];
+
+                return new Page(array_slice([1, 2], $offset, $limit), null);
+            },
+            pageSize: 1,
+            maxLimit: 1,
+        ), false);
+
+        self::assertSame([1, 2], $items);
+        self::assertSame([[1, 0], [1, 1], [1, 2]], $calls);
+    }
+
+    public function testRejectsAMaximumBelowOne(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        iterator_to_array(Paginator::iterate(static fn (): Page => new Page([], null), maxLimit: 0));
+    }
+
+    public function testAPageReadsResultsAndAnIntegerTotalOnly(): void
+    {
+        $page = Page::fromResults(['results' => [1, 2], 'total' => '9']);
+
+        self::assertSame([1, 2], $page->items);
+        self::assertNull($page->total);
+        self::assertSame(9, Page::fromResults(['results' => [], 'total' => 9])->total);
+        self::assertSame([], Page::fromResults([])->items);
+    }
+
+    public function testAnUnreadablePageCarriesTheHttpStatus(): void
+    {
+        try {
+            Page::fromResults('x');
+            self::fail('no exception');
+        } catch (UnexpectedResponseException $e) {
+            self::assertSame(200, $e->httpStatus);
+            self::assertSame(0, $e->getCode());
+        }
+
+        try {
+            Page::fromResults(['results' => ['a' => 1]], 206);
+            self::fail('no exception');
+        } catch (UnexpectedResponseException $e) {
+            self::assertSame(206, $e->httpStatus);
+        }
+    }
+
     public function testRejectsAPageSizeBelowOne(): void
     {
         $this->expectException(InvalidArgumentException::class);

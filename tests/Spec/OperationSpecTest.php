@@ -108,6 +108,53 @@ final class OperationSpecTest extends TestCase
         new OperationSpec('GET', '/x', 'ListX', $parameters, paged: $paged, maxLimit: $maxLimit);
     }
 
+    public function testAPathParameterMustAppearInThePath(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('X: path parameter "id" does not appear in /x');
+
+        new OperationSpec('GET', '/x', 'X', [new ParameterSpec('id', ParameterLocation::Path, true, 'integer')]);
+    }
+
+    public function testOtherParametersDoNotHideASecondBody(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('X: an operation has at most one body parameter');
+
+        new OperationSpec('POST', '/x', 'X', [
+            new ParameterSpec('q', ParameterLocation::Query, false, 'string'),
+            new ParameterSpec('a', ParameterLocation::Body, true),
+            new ParameterSpec('b', ParameterLocation::Body, true),
+        ]);
+    }
+
+    public function testAPagedListingWithoutLimitIsRefusedAndAMaximumOfOneIsValid(): void
+    {
+        $limit = new ParameterSpec('limit', ParameterLocation::Query, false, 'integer');
+        $offset = new ParameterSpec('offset', ParameterLocation::Query, false, 'integer');
+        self::assertSame(1, (new OperationSpec('GET', '/x', 'X', [$limit, $offset], paged: true, maxLimit: 1))->maxLimit);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('X: a paged listing needs the query parameters limit and offset');
+        new OperationSpec('GET', '/x', 'X', [$offset], paged: true);
+    }
+
+    public function testWithoutAnOperationIdTheMethodAndPathNameTheOperation(): void
+    {
+        $operation = OperationSpec::fromSwagger('get', '/x', ['operationId' => 5]);
+
+        self::assertSame('GET /x', $operation->operationId);
+        self::assertFalse((new ParameterSpec('body', ParameterLocation::Body))->required);
+    }
+
+    public function testAParameterNeedsAStringIn(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('X: a parameter needs a string name and in');
+
+        OperationSpec::fromSwagger('get', '/x', ['operationId' => 'X', 'parameters' => [['name' => 'q']]]);
+    }
+
     public function testEveryOperationOfTheMergedSpecBuilds(): void
     {
         $spec = Json::object(Json::decode((string) file_get_contents(__DIR__ . '/../../spec/openprovider.json')), 'spec');

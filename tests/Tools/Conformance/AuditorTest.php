@@ -111,6 +111,15 @@ final class AuditorTest extends TestCase
         self::assertStringContainsString('MAJOR', $report->render());
     }
 
+    /**
+     * The report is what a failing S2 gate shows: every divergence of the broken services, word
+     * for word, in the order the audit finds them, then the counts.
+     */
+    public function testTheBrokenServicesReportReadsExactly(): void
+    {
+        self::assertSame((string) file_get_contents(__DIR__ . '/Fixture/broken-report.txt'), self::broken()->render());
+    }
+
     private static function broken(): Report
     {
         if (self::$broken === null) {

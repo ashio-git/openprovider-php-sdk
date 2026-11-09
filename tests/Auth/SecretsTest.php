@@ -36,6 +36,8 @@ final class SecretsTest extends TestCase
         self::assertNoSecret(self::dump($secret));
         self::assertNoSecret((string) json_encode($secret));
         self::assertNoSecret(print_r((array) $secret, true));
+        self::assertStringContainsString('[value] => ********', print_r($secret, true), 'dumps show the mask in place of the value');
+        self::assertStringContainsString('resellerId=null', (string) new AccessToken($secret, null, new \DateTimeImmutable('2030-01-01')));
     }
 
     public function testASecretCannotBeSerialized(): void

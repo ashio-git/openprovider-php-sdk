@@ -56,10 +56,14 @@ final class ClientConfigTest extends TestCase
     public static function invalidSettings(): iterable
     {
         yield 'base path without slash' => [static fn () => new ClientConfig(Environment::Sandbox, basePath: 'v1')];
+        yield 'base path after something else' => [static fn () => new ClientConfig(Environment::Sandbox, basePath: 'api/v1')];
         yield 'base path with trailing slash' => [static fn () => new ClientConfig(Environment::Sandbox, basePath: '/v1/')];
         yield 'base path with a query' => [static fn () => new ClientConfig(Environment::Sandbox, basePath: '/v1?x=1')];
         yield 'zero timeout' => [static fn () => new ClientConfig(Environment::Sandbox, timeout: 0.0)];
         yield 'negative connect timeout' => [static fn () => new ClientConfig(Environment::Sandbox, connectTimeout: -1.0)];
+        yield 'zero connect timeout' => [static fn () => new ClientConfig(Environment::Sandbox, connectTimeout: 0.0)];
+        yield 'no retry delay' => [static fn () => new ClientConfig(Environment::Sandbox, getRetry: new RetryPolicy(1, []))];
+        yield 'negative retry delay' => [static fn () => new ClientConfig(Environment::Sandbox, getRetry: new RetryPolicy(1, [100, -1]))];
         yield 'user agent with a newline' => [static fn () => new ClientConfig(Environment::Sandbox, userAgent: "sdk\r\nX-Injected: 1")];
         yield 'empty user agent' => [static fn () => new ClientConfig(Environment::Sandbox, userAgent: ' ')];
         yield 'ip that is not an address' => [static fn () => new ClientConfig(Environment::Sandbox, ip: 'localhost')];
@@ -88,7 +92,10 @@ final class ClientConfigTest extends TestCase
     {
         $policy = new RetryPolicy(5, [100, 200]);
 
-        self::assertSame([100, 200, 200, 200, 200], array_map($policy->delayMs(...), [1, 2, 3, 4, 5]));
+        self::assertSame([100, 100, 200, 200, 200, 200], array_map($policy->delayMs(...), [0, 1, 2, 3, 4, 5]));
+        self::assertSame([250, 1000, 4000, 4000], array_map((new RetryPolicy(3))->delayMs(...), [1, 2, 3, 4]), 'the default backoff');
+        self::assertSame(0, (new RetryPolicy(1, [0]))->delayMs(1), 'a zero delay is allowed');
+        self::assertSame(0, RetryPolicy::none()->maxRetries);
 
         $this->expectException(InvalidArgumentException::class);
         new RetryPolicy(-1);

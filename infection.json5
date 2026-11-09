@@ -1,0 +1,19 @@
+{
+    // S4, mutation half: MSI >= 85% over the hand-written code and the generators.
+    // src/Model, src/Service, src/OpenProvider.php and src/Exception/ErrorCatalog.php are generated:
+    // any edit to them fails `composer spec:verify`, so their logic is mutated in tools/src instead.
+    "source": {
+        "directories": ["src", "tools/src"],
+        "excludes": ["Model", "Service", "OpenProvider.php", "Exception/ErrorCatalog.php"]
+    },
+    "timeout": 60,
+    "logs": {
+        "text": "build/infection/infection.log",
+        "summary": "build/infection/summary.log",
+        "github": true
+    },
+    "mutators": {
+        "@default": true
+    },
+    "minMsi": 85
+}
