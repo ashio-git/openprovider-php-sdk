@@ -1,53 +1,33 @@
 ---
-name: Bug Report
-about: Create a report to help us improve
-title: '[BUG] '
+name: Bug report
+about: Something the SDK does differently from the API or from its documentation
+title: '[Bug] '
 labels: bug
 assignees: ''
 ---
 
-## 🐛 Bug Description
+<!-- Never paste a password, a token or a full response with personal data. Mask them first. -->
+<!-- Found a security problem? Do not open an issue: see SECURITY.md. -->
 
-A clear and concise description of what the bug is.
+## What happened
 
-## 📋 Steps to Reproduce
+What you called, what you expected and what you got instead.
 
-1. Go to '...'
-2. Call method '...'
-3. Pass parameters '...'
-4. See error
-
-## ✅ Expected Behavior
-
-A clear and concise description of what you expected to happen.
-
-## ❌ Actual Behavior
-
-A clear and concise description of what actually happened.
-
-## 💻 Code Sample
+## Code
 
 ```php
-// Your code here
-$client = new OpenProvider($credentials);
-$result = $client->domain()->checkDomain('example.com');
+$response = $openProvider->dns()->getZone('example.com');
 ```
 
-## 🔧 Environment
+## Error or response
 
-- PHP Version: [e.g. 8.1.0]
-- SDK Version: [e.g. 1.0.0]
-- OS: [e.g. Ubuntu 22.04]
-- Composer Version: [e.g. 2.5.0]
+The exception class, `apiCode`, `httpStatus` and `desc` of an `ApiException`, or the message of
+any other exception, with the relevant part of the trace.
 
-## 📸 Screenshots
+## Environment
 
-If applicable, add screenshots to help explain your problem.
-
-## 📝 Additional Context
-
-Add any other context about the problem here.
-
-## 🔍 Possible Solution
-
-If you have suggestions on how to fix the bug, please describe them here.
+- SDK version (`Ashio\OpenProvider\Sdk::VERSION`):
+- PHP version:
+- Environment: sandbox / production
+- Base path: `/v1` / `/v1beta`
+- HTTP client, if not the default Guzzle:

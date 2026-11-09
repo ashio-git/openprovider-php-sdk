@@ -19,5 +19,7 @@
 /psalm.xml          export-ignore
 /AGENTS.md          export-ignore
 /CLAUDE.md          export-ignore
-/API_COVERAGE_REPORT.md export-ignore
+/smoke              export-ignore
+/infection.json5    export-ignore
+/phpunit.smoke.xml  export-ignore
 /CONTRIBUTING.md    export-ignore
