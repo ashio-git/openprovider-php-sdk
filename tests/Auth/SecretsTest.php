@@ -18,7 +18,7 @@ use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 
 /**
- * F3 gate: no secret in __toString, var_export or an exception message.
+ * No secret in __toString, var_export or an exception message.
  */
 final class SecretsTest extends TestCase
 {

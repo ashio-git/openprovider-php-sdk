@@ -27,8 +27,8 @@ use Ashio\OpenProvider\Tests\Support\SpecOperations;
 use PHPUnit\Framework\TestCase;
 
 /**
- * The 15 MAJOR findings of the conformance study (docs/study/2026-11-09/conformance.md, section
- * 3), each pinned as the literal request the 2.x SDK got wrong or the response field it lost.
+ * The 15 MAJOR findings of the conformance audit of the 2.x SDK, each pinned as the literal
+ * request 2.x got wrong or the response field it lost.
  */
 final class MajorDivergenceRegressionTest extends TestCase
 {

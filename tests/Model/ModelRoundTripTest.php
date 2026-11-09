@@ -14,7 +14,7 @@ use Random\Engine\Mt19937;
 use Random\Randomizer;
 
 /**
- * F4 gate (S3): every generated model survives fromArray → toArray, and fromArray → JSON, with
+ * Gate S3: every generated model survives fromArray → toArray, and fromArray → JSON, with
  * nothing lost or changed, over 200 payloads built from its schema (fixed seed per model, so a
  * failure replays) plus the edge cases 0, 0.0, false, '', empty lists and objects, explicit nulls,
  * values of another type and unknown keys. Values of the declared type must land in the typed

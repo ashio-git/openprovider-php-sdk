@@ -16,7 +16,7 @@ use Ashio\OpenProvider\Tools\Spec\SpecException;
 
 /**
  * What the README states as a number, read from the code users call and from the gates'
- * configuration, never typed by hand (plan S8): the facade's services and each method's
+ * configuration, never typed by hand (gate S8): the facade's services and each method's
  * #[Operation], the operation registry, the model map, the error catalog, the spec pin, the PHP
  * versions CI tests, and the coverage, mutation and Psalm thresholds the gates enforce.
  */

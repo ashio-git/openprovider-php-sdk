@@ -7,7 +7,6 @@
 
 # Keep development files out of Composer dist archives
 /.github            export-ignore
-/docs               export-ignore
 /tests              export-ignore
 /spec               export-ignore
 /tools              export-ignore

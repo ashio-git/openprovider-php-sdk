@@ -8,7 +8,7 @@ use Ashio\OpenProvider\Tools\Spec\Json;
 use Ashio\OpenProvider\Tools\Spec\SpecException;
 
 /**
- * Writes the operation layer from spec/openprovider.json (plan A8):
+ * Writes the operation layer from spec/openprovider.json:
  *
  * - `Service/<Group>Service.php`: one service per tag group of `x-tagGroups`, with one method
  *   per operation carrying its #[Operation];

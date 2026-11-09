@@ -1,0 +1,28 @@
+Openprovider PHP SDK
+Copyright (c) 2024-2026 Marco Dantas
+
+The code of this project is licensed under the MIT License; see LICENSE.
+
+Third-party content
+-------------------
+
+spec/upstream/ holds API specifications published by Openprovider B.V.:
+
+  - spec/upstream/api-documentation/: files of
+    https://github.com/openprovider/api-documentation at the commit pinned in
+    spec/sources.json. That repository declares no license.
+  - spec/upstream/developer-portal/swagger.spec.js: the specification served
+    by https://developer.openprovider.com.
+
+spec/openprovider.json, spec/conflicts.md and spec/error-codes.json are derived
+from them and from the Openprovider knowledge base (https://openprovider.help).
+The documentation comments of the generated code in src/Model and src/Service
+quote descriptions from these specifications.
+
+These materials are not covered by the MIT License of this project; any rights
+in them remain with their owner. They are included unmodified (spec/SHA256SUMS
+verifies every byte) only to build and test the SDK reproducibly. The spec/
+directory is not part of the Composer package.
+
+"Openprovider" is a trademark of Openprovider B.V. This project is independent
+and is not affiliated with or endorsed by Openprovider B.V.

@@ -11,7 +11,7 @@ use Random\Engine\Mt19937;
 use Random\Randomizer;
 
 /**
- * F3 gate: properties of the encoder over generated inputs (fixed seeds, so failures replay).
+ * Properties of the encoder over generated inputs (fixed seeds, so failures replay).
  */
 final class RequestEncoderPropertyTest extends TestCase
 {

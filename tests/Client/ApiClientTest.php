@@ -85,8 +85,8 @@ final class ApiClientTest extends TestCase
     }
 
     /**
-     * F3 gate: on code 196 the client logs in again exactly once and repeats the call once,
-     * for reads and writes alike (a 196 means the call was not executed; plan decision D10).
+     * On code 196 the client logs in again exactly once and repeats the call once, for reads
+     * and writes alike: a 196 means the call was not executed.
      *
      * @param array<string, mixed> $arguments
      */
@@ -177,7 +177,7 @@ final class ApiClientTest extends TestCase
     }
 
     /**
-     * F3 gate: a write is sent once, whatever fails and whatever the retry policy says.
+     * A write is sent once, whatever fails and whatever the retry policy says.
      */
     public function testWritesAreNeverRepeated(): void
     {

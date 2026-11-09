@@ -8,7 +8,7 @@ use Ashio\OpenProvider\Exception\ErrorCategory;
 use Ashio\OpenProvider\Tools\Spec\SpecException;
 
 /**
- * Fills the generated regions of README.md (plan S8): the badges, the "at a glance" numbers, the
+ * Fills the generated regions of README.md (gate S8): the badges, the "at a glance" numbers, the
  * reference of every operation and the error table. The prose around them is written by hand and
  * kept as it is. A region is delimited by `<!-- generated:NAME -->` and `<!-- /generated:NAME -->`;
  * every region must be there exactly once, and no other may be.

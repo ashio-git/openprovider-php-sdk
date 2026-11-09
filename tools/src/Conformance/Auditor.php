@@ -16,10 +16,10 @@ use Ashio\OpenProvider\Tools\Spec\Json;
 use Psr\Http\Message\RequestInterface;
 
 /**
- * The conformance audit of the study (docs/study/2026-11-09/conformance.md), made a gate (S2).
+ * The conformance audit that measured the 2.x SDK against the spec, made a gate (S2).
  *
  * For each operation of the spec it finds the method that carries its #[Operation] and runs it
- * against a recording transport, the way the study's runtime probe ran the 2.x SDK:
+ * against a recording transport, the way the 2.x SDK was first audited:
  *
  * - once with only the required arguments: the route, the token, the body and how `data` is
  *   read must be what the spec declares;

@@ -6,7 +6,7 @@ namespace Ashio\OpenProvider\Tools\Coverage;
 
 /**
  * tools/coverage: prints the line coverage of a Clover report per top-level directory and in
- * total, then holds the total to the minimum of plan S4 (95% unless --min says otherwise). Exits
+ * total, then holds the total to the minimum of gate S4 (95% unless --min says otherwise). Exits
  * 0 at or above it, 1 below it, 2 on bad usage or an unreadable or invalid report.
  */
 final class CoverageCommand

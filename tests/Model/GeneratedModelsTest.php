@@ -12,7 +12,7 @@ use Ashio\OpenProvider\Tools\Generate\NameMap;
 use PHPUnit\Framework\TestCase;
 
 /**
- * F4 gates on the committed models: regenerating produces no diff, and every definition reachable
+ * The committed models: regenerating produces no diff, and every definition reachable
  * from an operation is generated.
  */
 final class GeneratedModelsTest extends TestCase

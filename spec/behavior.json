@@ -1,5 +1,5 @@
 {
-    "$comment": "API behaviour that the Swagger files do not describe. Each fact carries its sources; all were accessed on the date below. Evidence: docs/study/2026-11-09/sources.md. The SDK core in src/ mirrors these values and tests/Spec/BehaviorTest.php keeps the two in step.",
+    "$comment": "API behaviour that the Swagger files do not describe. Each fact carries its sources; all were accessed on the date below. The SDK core in src/ mirrors these values and tests/Spec/BehaviorTest.php keeps the two in step.",
     "accessed": "2026-11-09",
     "environments": {
         "production": {
@@ -41,7 +41,7 @@
         "sources": [
             "https://developer.openprovider.com/get-started.html",
             "https://openprovider.help/books/api-integrations/page/api-error-codes",
-            "probes of 2026-11-09, docs/study/2026-11-09/sources.md sections 2-3"
+            "probes of the sandbox and production API on 2026-11-09"
         ]
     },
     "authentication": {
@@ -165,7 +165,7 @@
         ]
     },
     "userAgent": {
-        "note": "Openprovider's MCP server reports one rejection (code 10005) of a custom User-Agent. Single source, unverified: the sandbox smoke suite (F6) must confirm the SDK's User-Agent is accepted.",
+        "note": "Openprovider's MCP server reports one rejection (code 10005) of a custom User-Agent. Single source, unverified: the sandbox smoke suite (gate S7) must confirm the SDK's User-Agent is accepted.",
         "sources": [
             "https://github.com/openprovider/openprovider-mcp"
         ]

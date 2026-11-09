@@ -9,7 +9,7 @@ use Ashio\OpenProvider\Tools\Spec\SpecException;
 
 /**
  * Writes src/Model from spec/openprovider.json: an immutable model per reachable object
- * definition (plan A7), a class of constants per reachable string enum, and ModelMap.
+ * definition, a class of constants per reachable string enum, and ModelMap.
  *
  * The output is a pure function of the spec: same spec, same bytes.
  */

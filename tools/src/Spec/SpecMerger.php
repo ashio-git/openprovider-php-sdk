@@ -6,7 +6,7 @@ namespace Ashio\OpenProvider\Tools\Spec;
 
 /**
  * Merges the per-service Swagger files with the developer portal, following the source policy
- * of docs/plans/2026-11-09-sdk-api-v1.md §4:
+ * of spec/PROVENANCE.md (merge policy):
  *
  * 1. Operations: exactly the portal's set. Service-only operations are dropped; portal-only
  *    operations come from the portal and are marked `x-experimental`.

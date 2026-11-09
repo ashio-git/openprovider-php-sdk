@@ -17,7 +17,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * S2: the conformance audit of the study, as a gate. It runs every service method against a
+ * S2: the conformance audit, as a gate. It runs every service method against a
  * recording transport and compares what goes out and what comes back with the spec. The real
  * services must audit clean; services with the 2.x SDK's bugs planted must not.
  */

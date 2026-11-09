@@ -14,7 +14,7 @@ use Ashio\OpenProvider\Spec\Operation;
 use Ashio\OpenProvider\Spec\OperationSpec;
 
 /**
- * Walks a limit/offset listing page by page (plan A9).
+ * Walks a limit/offset listing page by page.
  *
  *     foreach (Paginator::all($openProvider->domain()->listDomains(...), ['status' => 'ACT']) as $domain) {
  *         // one DomainDomain at a time; the next page is fetched when this one runs out

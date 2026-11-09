@@ -1,14 +1,10 @@
 {
-    "$comment": "API error codes from the Openprovider knowledge base. Normalized from docs/study/2026-11-09/error-codes.json: keyed by code, sorted, the duplicated identical row of 25007 kept once. Source of src/Exception/ErrorCatalog.php (tools/generate errors).",
+    "$comment": "API error codes from the Openprovider knowledge base. Parsed from the page's table and normalized: keyed by code, sorted, the duplicated identical row of 25007 kept once. Source of src/Exception/ErrorCatalog.php (tools/generate errors).",
     "source": {
         "url": "https://openprovider.help/books/api-integrations/page/api-error-codes",
         "revision": "#9, updated 2026-08-19",
         "retrieved": "2026-11-09",
-        "study": {
-            "file": "docs/study/2026-11-09/error-codes.json",
-            "sha256": "27f2025843752db3ed5353a2bf8e1506465a58ce79582ee6cf481e3924e26d84",
-            "rows": 609
-        }
+        "rows": 609
     },
     "codes": {
         "0": {

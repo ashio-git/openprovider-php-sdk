@@ -16,7 +16,7 @@ use Ashio\OpenProvider\Tools\Spec\SpecSync;
 use PHPUnit\Framework\TestCase;
 
 /**
- * The F2 gates of docs/plans/2026-11-09-sdk-api-v1.md, on the vendored inputs in spec/.
+ * The merge gates (spec/PROVENANCE.md, merge policy), on the vendored inputs in spec/.
  */
 final class MergedSpecTest extends TestCase
 {

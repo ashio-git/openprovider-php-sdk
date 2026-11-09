@@ -12,7 +12,7 @@ use Ashio\OpenProvider\Tools\Spec\SpecMerger;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Policy of docs/plans/2026-11-09-sdk-api-v1.md §4 on small hand-written inputs.
+ * The merge policy of spec/PROVENANCE.md on small hand-written inputs.
  */
 final class SpecMergerTest extends TestCase
 {

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Ashio\OpenProvider\Spec;
 
 /**
- * Marks the method that implements one operation of spec/openprovider.json (plan A8). The
+ * Marks the method that implements one operation of spec/openprovider.json. The
  * registry test reads it to prove that every operation has exactly one method and that every
  * public method of a service is an operation.
  */

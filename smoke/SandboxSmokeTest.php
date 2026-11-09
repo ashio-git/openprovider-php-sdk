@@ -120,7 +120,7 @@ final class SandboxSmokeTest extends TestCase
             $username = getenv('OPENPROVIDER_SANDBOX_USERNAME');
             $password = getenv('OPENPROVIDER_SANDBOX_PASSWORD');
             if (!is_string($username) || $username === '' || !is_string($password) || $password === '') {
-                self::fail('Set OPENPROVIDER_SANDBOX_USERNAME and OPENPROVIDER_SANDBOX_PASSWORD to run the sandbox smoke suite (plan S7, decision D5).');
+                self::fail('Set OPENPROVIDER_SANDBOX_USERNAME and OPENPROVIDER_SANDBOX_PASSWORD to run the sandbox smoke suite (gate S7).');
             }
             self::$http = new PacedHttpClient(new Client(), new SystemSleeper(), static fn (): float => hrtime(true) / 1e9);
             self::$openProvider = new OpenProvider(ApiClient::create(ClientConfig::sandbox(), new Credentials($username, $password), null, self::$http));

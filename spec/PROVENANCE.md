@@ -1,8 +1,16 @@
 # Spec provenance
 
-Where every input of the 3.0 SDK comes from, pinned by commit and sha256. The policy that turns them into `openprovider.json` is in [docs/plans/2026-11-09-sdk-api-v1.md §4](../docs/plans/2026-11-09-sdk-api-v1.md); the evidence behind it is in [docs/study/2026-11-09/sources.md](../docs/study/2026-11-09/sources.md).
+Where every input of the 3.0 SDK comes from, pinned by commit and sha256, and the policy that turns them into `openprovider.json` ([merge policy](#merge-policy)).
 
-All upstream files are untrusted data. The tools parse them as JSON and never execute them.
+All upstream files are untrusted data. The tools parse them as JSON and never execute them. They are Openprovider's, not covered by this project's license: see [NOTICE](../NOTICE).
+
+## Merge policy
+
+1. **Operations:** exactly the operations of the developer portal (`developer.openprovider.com`), the current reference. Operations that exist only in a newer `api-documentation` release are left out until the portal documents them, and no SDK method exists outside this set.
+2. **Schemas:** from the per-service `swagger/*.swagger.json` files of `openprovider/api-documentation`, at a pinned commit. Each definition is prefixed with its service (`ssl.orderCreateOrderRequest`), so two services can never overwrite each other's schema. What only the portal describes (Mailcow white-label, the reseller signup and their schemas) comes from the portal, prefixed `portal.` and marked `x-experimental`.
+3. **A schema in both sources:** the union of their fields, because the live API already returns the fields of the newer release. Two types for one field are a conflict: the merge fails until `overrides.json` settles it, with a reason, and every decision is listed in `conflicts.md`.
+4. **Behaviour the Swagger files do not describe** (token lifetime, rate limits, paging maxima, time zone, error classes): in `behavior.json`, each fact with its source URL and access date.
+5. **Versioned snapshot:** the inputs live here with `SHA256SUMS` and this file. A weekly job compares them with upstream and opens an issue when anything changed.
 
 ## Files
 
@@ -15,7 +23,7 @@ All upstream files are untrusted data. The tools parse them as JSON and never ex
 | `overrides.json` | hand | justified decisions the merge refuses to take alone |
 | `openprovider.json` | `tools/spec-merge` | the merged Swagger 2.0 spec: 140 operations, `basePath: /v1` |
 | `conflicts.md` | `tools/spec-merge` | every decision of the last merge |
-| `error-codes.json` | once, from the study | the 608 API error codes of the knowledge base |
+| `error-codes.json` | once, from the knowledge base | the 608 API error codes of the knowledge base |
 | `behavior.json` | hand | API behaviour the Swagger files do not describe, each fact with sources |
 
 ## 1. Per-service specs: `openprovider/api-documentation`
@@ -47,14 +55,14 @@ Why these files and not the composed `swagger.json` of the same commit: in the c
 - URL: <https://developer.openprovider.com/data/swagger.spec.js>, a single statement `window.OP_API_SPEC = {…};`. `tools/spec-sync` refuses any other shape.
 - Retrieved: 2026-11-09. `ETag: "6ad68276-a8934"`, `Last-Modified: Mon, 19 Oct 2026 20:49:58 GMT`. Every portal file carries that timestamp, so it is a site deploy date, not a spec date.
 - sha256: `3bfab3f054dff866603f2481e268d437a9d0283171f00aea25949c35960796f1`.
-- Its JSON equals <https://developer.openprovider.com/data/swagger.json> (`ETag: "6ad68276-b2297"`) and the copy the study archived.
-- Content: the core of api-documentation release `29cd544dee` (2025-10-09) with `/v1` paths, plus the Mailcow white-label operations and `POST /resellers/signup`. It is the "new documentation" whose 140 operations define the SDK (decision D9).
+- Its JSON equals <https://developer.openprovider.com/data/swagger.json> (`ETag: "6ad68276-b2297"`).
+- Content: the core of api-documentation release `29cd544dee` (2025-10-09) with `/v1` paths, plus the Mailcow white-label operations and `POST /resellers/signup`. It is the current reference, whose operations define the SDK.
 - What the merge takes from it: the operation set, the operationIds, tags and tag groups, and whatever only it describes (5 operations, 18 definitions, marked `x-experimental`). Fields it shares with the per-service specs are united with them.
 
 ## 3. Error codes: `error-codes.json`
 
 - Source: <https://openprovider.help/books/api-integrations/page/api-error-codes>, revision #9 (updated 2026-08-19), accessed 2026-11-09.
-- Parsed by the study into `docs/study/2026-11-09/error-codes.json` (609 rows, sha256 `27f2025843752db3ed5353a2bf8e1506465a58ce79582ee6cf481e3924e26d84`). Normalised here: keyed by code and sorted; code 25007 appears twice with identical text and is kept once, leaving 608 codes.
+- Parsed from that page's table (609 rows). Normalised here: keyed by code and sorted; code 25007 appears twice with identical text and is kept once, leaving 608 codes.
 
 ## 4. Behaviour: `behavior.json`
 

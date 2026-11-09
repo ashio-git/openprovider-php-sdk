@@ -1,7 +1,7 @@
 name: Sandbox smoke
 
 # S7: the SDK against the real Openprovider sandbox. Manual only: it needs the repository secrets
-# OPENPROVIDER_SANDBOX_USERNAME and OPENPROVIDER_SANDBOX_PASSWORD (decision D5), and it spends
+# OPENPROVIDER_SANDBOX_USERNAME and OPENPROVIDER_SANDBOX_PASSWORD, and it spends
 # rate-limited calls (one second apart, at most 40 per run). Without the secrets the run fails.
 on:
   workflow_dispatch:
