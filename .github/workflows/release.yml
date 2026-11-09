@@ -1,0 +1,68 @@
+name: Release
+
+# Publishes a GitHub release when a version tag (vX.Y.Z) is pushed. The tag must equal
+# Ashio\OpenProvider\Sdk::VERSION and every gate must pass; the release notes are that version's
+# section of CHANGELOG.md. A version with a pre-release suffix (3.1.0-rc.1) is marked as such.
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Release ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: curl, dom, json, mbstring
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress --no-interaction
+
+      - name: The tag is the SDK's version
+        id: version
+        run: |
+          version="$(php -r 'require "vendor/autoload.php"; echo Ashio\OpenProvider\Sdk::VERSION;')"
+          if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "::error::The tag is ${GITHUB_REF_NAME}, but Sdk::VERSION is ${version}"
+            exit 1
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      - name: Gates
+        run: |
+          composer quality
+          composer spec:verify
+          composer conformance
+
+      - name: Release notes from the changelog
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          awk -v heading="## [${VERSION}]" 'index($0, heading) == 1 {found = 1; next} found && /^## / {exit} found {print}' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then
+            echo "::error::CHANGELOG.md has no section for ${VERSION}"
+            exit 1
+          fi
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          prerelease=()
+          case "${VERSION}" in *-*) prerelease=(--prerelease) ;; esac
+          gh release create "${GITHUB_REF_NAME}" --title "${VERSION}" --notes-file notes.md --verify-tag "${prerelease[@]}"

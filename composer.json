@@ -1,14 +1,18 @@
 {
     "name": "ashio/openprovider-php-sdk",
-    "description": "PHP SDK for the Openprovider REST API (/v1)",
+    "description": "Typed PHP SDK for the whole Openprovider REST API (/v1), generated from the official specification",
     "keywords": [
         "openprovider",
         "api",
         "sdk",
+        "api-client",
         "domain",
+        "domains",
+        "registrar",
         "dns",
         "ssl",
-        "php"
+        "mailcow",
+        "psr-18"
     ],
     "homepage": "https://github.com/ashio-git/openprovider-php-sdk",
     "license": "MIT",
@@ -21,7 +25,9 @@
     ],
     "support": {
         "issues": "https://github.com/ashio-git/openprovider-php-sdk/issues",
-        "source": "https://github.com/ashio-git/openprovider-php-sdk"
+        "source": "https://github.com/ashio-git/openprovider-php-sdk",
+        "docs": "https://github.com/ashio-git/openprovider-php-sdk#readme",
+        "security": "https://github.com/ashio-git/openprovider-php-sdk/security/policy"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,

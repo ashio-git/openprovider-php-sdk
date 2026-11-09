@@ -126,9 +126,6 @@ The package is not on Packagist yet. Add the repository to your `composer.json`,
 composer require ashio/openprovider-php-sdk:^3.0
 ```
 
-> [!NOTE]
-> Until `3.0.0` is tagged, require `dev-main` instead of `^3.0`.
-
 ## Quick start
 
 Create the client once. No request is sent at this point: the SDK logs in when the first
@@ -762,5 +759,7 @@ the workflow, and [AGENTS.md](AGENTS.md) has the contract for coding agents.
 
 MIT © Marco Dantas. See [LICENSE](LICENSE).
 
-Openprovider is a trademark of Openprovider B.V. This project is independent and is not
-affiliated with or endorsed by Openprovider.
+The Openprovider specifications in `spec/` are Openprovider's, are not covered by this license and
+are not part of the Composer package; see [NOTICE](NOTICE). Openprovider is a trademark of
+Openprovider B.V. This project is independent and is not affiliated with or endorsed by
+Openprovider.

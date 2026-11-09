@@ -5,7 +5,9 @@ All notable changes to the OpenProvider PHP SDK will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - 3.0.0
+## [Unreleased]
+
+## [3.0.0] - 2026-11-09
 
 3.0 is a rewrite for Openprovider's `/v1` API; `/v1beta` closes on 2027-06-30. It shares no code with 2.x and has no compatibility layer. The namespace is `Ashio\OpenProvider\`.
 
@@ -43,9 +45,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Passwords and tokens are held as `Secret`s. They are masked in strings, dumps, JSON and exception traces, cannot be serialized, and the parameters that take them are marked `#[\SensitiveParameter]`.
 - An unknown environment name throws instead of falling back to production.
 
-## [2.1.1] - not yet tagged
+## [2.1.1] - 2026-11-09
 
-The 2.x baseline (pull request #8).
+The last 2.x release: the 2.x baseline made green, before the 3.0 rewrite. It still talks to `/v1beta`, which Openprovider closes on 2027-06-30.
 
 ### Fixed
 - `EasyDmarcOrder::fromArray()` (used by `EasyDMARC::getEasyDmarc()`) threw a fatal `Error` whenever the response contained `domain`: it called the instance method `Domain::fromArray()` statically. `domain` is now a `DomainName` (`name`, `extension`), matching the spec's `orderDomain`.
@@ -265,3 +267,9 @@ Entries recorded before 2.1.0 was released, kept as they were written. Some of t
 ### Fixed
 - Completed all Response DTOs to mirror 100% of the API specification. Critical models such as `SslOrder` and `Tld` now include all previously missing properties (`vendorOrderId`, `quarantinePeriod`, `levelPrices`, etc.).
 - Resolved inconsistencies in the return types of `listNameserverGroups`, `listTags`, and `listDomainEmailVerifications`, which now use `PaginatedResponse`.
+
+[Unreleased]: https://github.com/ashio-git/openprovider-php-sdk/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/ashio-git/openprovider-php-sdk/compare/v2.1.1...v3.0.0
+[2.1.1]: https://github.com/ashio-git/openprovider-php-sdk/compare/v2.1.0...v2.1.1
+[2.1.0]: https://github.com/ashio-git/openprovider-php-sdk/releases/tag/v2.1.0
+[2.0.0]: https://github.com/ashio-git/openprovider-php-sdk/tree/f1ce0888e6ca606b98accc7e70603830ba31b704

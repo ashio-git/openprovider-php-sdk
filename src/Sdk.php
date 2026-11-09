@@ -6,7 +6,7 @@ namespace Ashio\OpenProvider;
 
 final class Sdk
 {
-    public const VERSION = '3.0.0-dev';
+    public const VERSION = '3.0.0';
 
     public static function userAgent(): string
     {
