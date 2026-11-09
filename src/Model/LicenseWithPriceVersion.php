@@ -20,11 +20,16 @@ class LicenseWithPriceVersion
         public readonly ?int $parent_key_id = null,
         public readonly ?int $period = null,
         public readonly ?string $product = null,
+        /** @var array<string, bool>|null */
         public readonly ?array $sku_values = null,
         public readonly ?string $status = null,
         public readonly ?string $title = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -46,6 +51,9 @@ class LicenseWithPriceVersion
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -64,6 +72,6 @@ class LicenseWithPriceVersion
             'sku_values' => $this->sku_values,
             'status' => $this->status,
             'title' => $this->title,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

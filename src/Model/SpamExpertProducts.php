@@ -20,11 +20,8 @@ class SpamExpertProducts
     public $archiving;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {
@@ -36,12 +33,7 @@ class SpamExpertProducts
     }
 
     /**
-     * @return array<string,mixed>
-     */
-    /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

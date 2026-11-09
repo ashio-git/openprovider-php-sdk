@@ -40,12 +40,8 @@ class SslOrder
 
     /**
      * SslOrder constructor.
-     * @param array $data
-     */
-    /**
-
+     *
      * @param array<string, mixed> $data
-
      */
     public function __construct(array $data = [])
     {
@@ -55,20 +51,15 @@ class SslOrder
     }
 
     /**
-     * @param array<string,mixed> $data
-     * @return self
-     */
-    /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {
+        // Nested objects are mapped explicitly below; assigning their raw arrays here would throw a TypeError.
+        $mappedBelow = ['domain_validation_methods', 'domain_validation_statuses', 'options', 'additional_data'];
         foreach ($data as $key => $value) {
-            if (property_exists($this, $key)) {
+            if (!in_array($key, $mappedBelow, true) && property_exists($this, $key)) {
                 $this->{$key} = $value;
             }
         }

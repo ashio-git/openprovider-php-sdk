@@ -13,8 +13,12 @@ class SslStatisticsByStatus
         public readonly ?int $PEN = null,
         public readonly ?int $REJ = null,
         public readonly ?int $REQ = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -27,6 +31,9 @@ class SslStatisticsByStatus
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -36,6 +43,6 @@ class SslStatisticsByStatus
             'PEN' => $this->PEN,
             'REJ' => $this->REJ,
             'REQ' => $this->REQ,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

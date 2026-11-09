@@ -10,11 +10,8 @@ class StatisticsCustomerStatistics
     public ?int $total = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {
@@ -25,12 +22,10 @@ class StatisticsCustomerStatistics
     }
 
     /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {
-        return array_filter(get_object_vars($this));
+        return array_filter(get_object_vars($this), static fn ($v) => $v !== null);
     }
 }

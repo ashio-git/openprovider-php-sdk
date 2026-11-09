@@ -2,12 +2,12 @@
 
 namespace Ashio\Tests\Model;
 
-use Ashio\Model\SslOrder;
-use Ashio\Model\SslProduct;
-use Ashio\Model\SslOrderCreateRequest;
-use Ashio\Model\SslOrderUpdateRequest;
 use Ashio\Model\CsrCreateRequest;
 use Ashio\Model\CsrDecodeRequest;
+use Ashio\Model\SslOrder;
+use Ashio\Model\SslOrderCreateRequest;
+use Ashio\Model\SslOrderUpdateRequest;
+use Ashio\Model\SslProduct;
 use PHPUnit\Framework\TestCase;
 
 class SslModelsTest extends TestCase
@@ -20,9 +20,9 @@ class SslModelsTest extends TestCase
             'status' => 'active',
             'common_name' => 'example.com',
         ];
-        
+
         $order = (new SslOrder())->fromArray($data);
-        
+
         $this->assertEquals(123, $order->id);
         $this->assertEquals(1, $order->product_id);
         $this->assertEquals('active', $order->status);
@@ -35,9 +35,9 @@ class SslModelsTest extends TestCase
             'id' => 456,
             'product_id' => 2,
         ];
-        
+
         $order = new SslOrder($data);
-        
+
         $this->assertEquals(456, $order->id);
         $this->assertEquals(2, $order->product_id);
     }
@@ -50,9 +50,9 @@ class SslModelsTest extends TestCase
             'brand_name' => 'Sectigo',
             'category' => 'dv',
         ];
-        
+
         $product = (new SslProduct())->fromArray($data);
-        
+
         $this->assertEquals(1, $product->id);
         $this->assertEquals('SSL DV', $product->name);
         $this->assertEquals('Sectigo', $product->brand_name);
@@ -61,9 +61,9 @@ class SslModelsTest extends TestCase
     public function testSslOrderCreateRequest()
     {
         $request = new SslOrderCreateRequest(1, 'CSR_CONTENT', ['example.com'], 12);
-        
+
         $array = $request->toArray();
-        
+
         $this->assertIsArray($array);
         $this->assertEquals(1, $array['product_id']);
         $this->assertEquals('CSR_CONTENT', $array['csr']);
@@ -75,9 +75,9 @@ class SslModelsTest extends TestCase
     {
         $request = new SslOrderUpdateRequest();
         $request->autorenew = 'off';
-        
+
         $array = $request->toArray();
-        
+
         $this->assertIsArray($array);
         $this->assertEquals('off', $array['autorenew']);
     }
@@ -85,9 +85,9 @@ class SslModelsTest extends TestCase
     public function testCsrCreateRequest()
     {
         $request = new CsrCreateRequest('example.com');
-        
+
         $array = $request->toArray();
-        
+
         $this->assertIsArray($array);
         $this->assertEquals('example.com', $array['common_name']);
     }
@@ -95,9 +95,9 @@ class SslModelsTest extends TestCase
     public function testCsrDecodeRequest()
     {
         $request = new CsrDecodeRequest('CSR_CONTENT_HERE');
-        
+
         $array = $request->toArray();
-        
+
         $this->assertIsArray($array);
         $this->assertEquals('CSR_CONTENT_HERE', $array['csr']);
     }
@@ -110,9 +110,9 @@ class SslModelsTest extends TestCase
             'status' => 'pending',
             'common_name' => 'secure.example.com',
         ];
-        
+
         $order = (new SslOrder())->fromArray($data);
-        
+
         $this->assertEquals(789, $order->id);
         $this->assertEquals('pending', $order->status);
         $this->assertEquals('secure.example.com', $order->common_name);
@@ -122,16 +122,16 @@ class SslModelsTest extends TestCase
     {
         $request = new SslOrderCreateRequest(1, 'CSR', ['example.com'], 12);
         $request->approver_email = 'admin@example.com';
-        
+
         $array = $request->toArray();
-        
+
         $this->assertEquals('admin@example.com', $array['approver_email']);
     }
 
     public function testEmptySslOrder()
     {
         $order = new SslOrder();
-        
+
         $this->assertNull($order->id);
         $this->assertNull($order->product_id);
         $this->assertNull($order->status);
@@ -140,7 +140,7 @@ class SslModelsTest extends TestCase
     public function testEmptySslProduct()
     {
         $product = new SslProduct();
-        
+
         $this->assertNull($product->id);
         $this->assertNull($product->name);
     }

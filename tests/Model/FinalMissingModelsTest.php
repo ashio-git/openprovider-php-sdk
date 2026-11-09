@@ -3,6 +3,7 @@
 namespace Ashio\Tests\Model;
 
 use Ashio\Model\DnsActionResponse;
+use Ashio\Model\DomainName;
 use Ashio\Model\DomainSendFoa1Request;
 use Ashio\Model\DomainSuggestNameRequest;
 use Ashio\Model\DomainWhoisPrivacyData;
@@ -18,21 +19,22 @@ class FinalMissingModelsTest extends TestCase
 {
     public function testDnsActionResponseConstructor(): void
     {
-        $response = new DnsActionResponse();
-        $response->success = true;
-        $response->message = 'Zone updated';
+        $response = (new DnsActionResponse())->fromArray(['success' => true]);
 
         $this->assertTrue($response->success);
-        $this->assertEquals('Zone updated', $response->message);
+        $this->assertFalse((new DnsActionResponse())->fromArray(['success' => false])->success);
     }
 
     public function testDomainSendFoa1RequestConstructor(): void
     {
         $request = new DomainSendFoa1Request();
-        $domainName = new \Ashio\Model\DomainName('example', 'com');
-        $request->domain = $domainName;
+        $request->domain = (new DomainName())->fromArray(['name' => 'example', 'extension' => 'com']);
 
-        $this->assertInstanceOf(\Ashio\Model\DomainName::class, $request->domain);
+        $this->assertInstanceOf(DomainName::class, $request->domain);
+        $this->assertSame('example', $request->domain->name);
+        $this->assertSame('com', $request->domain->extension);
+        $this->assertSame(['domain' => ['name' => 'example', 'extension' => 'com']], $request->toArray());
+        $this->assertSame([], (new DomainSendFoa1Request())->toArray());
     }
 
     public function testDomainSuggestNameRequestConstructor(): void
@@ -40,75 +42,107 @@ class FinalMissingModelsTest extends TestCase
         $request = new DomainSuggestNameRequest();
         $request->name = 'example';
         $request->limit = 10;
+        $request->language = 'eng';
+        $request->sensitive = false;
+        $request->tlds = ['com', 'net'];
 
-        $this->assertEquals('example', $request->name);
-        $this->assertEquals(10, $request->limit);
+        $this->assertSame([
+            'language' => 'eng',
+            'limit' => 10,
+            'name' => 'example',
+            'sensitive' => false,
+            'tlds' => ['com', 'net'],
+        ], $request->toArray());
     }
 
     public function testDomainWhoisPrivacyDataConstructor(): void
     {
-        $data = new DomainWhoisPrivacyData();
-        $data->enabled = true;
+        $data = new DomainWhoisPrivacyData(['expiration_date' => '2025-06-30 00:00:00']);
 
-        $this->assertTrue($data->enabled);
+        $this->assertSame('2025-06-30 00:00:00', $data->expiration_date);
+        $this->assertNull((new DomainWhoisPrivacyData())->expiration_date);
+        $this->assertSame(
+            '2026-01-01 00:00:00',
+            (new DomainWhoisPrivacyData())->fromArray(['expiration_date' => '2026-01-01 00:00:00'])->expiration_date
+        );
     }
 
     public function testEasyDmarcDomainConstructor(): void
     {
-        $domain = new EasyDmarcDomain();
-        $domain->name = 'example.com';
-        $domain->status = 'active';
+        $domain = (new EasyDmarcDomain())->fromArray(['name' => 'example', 'extension' => 'com']);
 
-        $this->assertEquals('example.com', $domain->name);
-        $this->assertEquals('active', $domain->status);
+        $this->assertSame('example', $domain->name);
+        $this->assertSame('com', $domain->extension);
     }
 
     public function testEasyDmarcRecentActionConstructor(): void
     {
-        $action = new EasyDmarcRecentAction();
-        $action->action = 'created';
-        $action->timestamp = '2024-01-01';
+        $data = ['recent_action' => 'create', 'message' => 'DMARC record created'];
 
-        $this->assertEquals('created', $action->action);
-        $this->assertEquals('2024-01-01', $action->timestamp);
+        $action = (new EasyDmarcRecentAction())->fromArray($data);
+
+        $this->assertSame('create', $action->recent_action);
+        $this->assertSame('DMARC record created', $action->message);
+        $this->assertSame($data, $action->toArray());
     }
 
     public function testSpamExpertAliasUpdatesConstructor(): void
     {
         $updates = new SpamExpertAliasUpdates();
-        $updates->add = ['alias1@example.com'];
-        $updates->remove = ['alias2@example.com'];
+        $updates->add = ['alias1.example.com'];
+        $updates->remove = ['alias2.example.com'];
 
-        $this->assertIsArray($updates->add);
-        $this->assertIsArray($updates->remove);
+        $this->assertSame([
+            'add' => ['alias1.example.com'],
+            'remove' => ['alias2.example.com'],
+        ], $updates->toArray());
+
+        $addOnly = new SpamExpertAliasUpdates();
+        $addOnly->add = ['alias3.example.com'];
+        $this->assertSame(['add' => ['alias3.example.com']], $addOnly->toArray());
     }
 
     public function testSpamExpertDestinationConstructor(): void
     {
-        $destination = new SpamExpertDestination();
-        $destination->destination = 'mail.example.com';
-        $destination->port = 25;
+        $data = ['hostname' => 'mail.example.com', 'port' => 25];
 
-        $this->assertEquals('mail.example.com', $destination->destination);
-        $this->assertEquals(25, $destination->port);
+        $destination = (new SpamExpertDestination())->fromArray($data);
+
+        $this->assertSame('mail.example.com', $destination->hostname);
+        $this->assertSame(25, $destination->port);
+        $this->assertSame($data, $destination->toArray());
     }
 
     public function testSpamExpertProductsConstructor(): void
     {
-        $products = new SpamExpertProducts();
-        $products->incoming = true;
-        $products->outgoing = false;
+        $data = ['incoming' => true, 'outgoing' => false, 'archiving' => true];
+
+        $products = (new SpamExpertProducts())->fromArray($data);
 
         $this->assertTrue($products->incoming);
         $this->assertFalse($products->outgoing);
+        $this->assertTrue($products->archiving);
+        // false is a real value and must survive the null filter.
+        $this->assertSame($data, $products->toArray());
     }
 
     public function testSpamExpertRecordsConstructor(): void
     {
-        $records = new SpamExpertRecords();
-        $records->mx = ['mx1.spamexperts.com'];
+        $records = (new SpamExpertRecords())->fromArray([
+            'aliases' => ['alias.example.com'],
+            'destinations' => [
+                ['hostname' => 'mx1.example.com', 'port' => 25],
+                ['hostname' => 'mx2.example.com', 'port' => 587],
+            ],
+            'outgoing_user_ips' => ['192.0.2.25'],
+        ]);
 
-        $this->assertIsArray($records->mx);
+        $this->assertSame(['alias.example.com'], $records->aliases);
+        $this->assertSame(['192.0.2.25'], $records->outgoing_user_ips);
+        $this->assertCount(2, $records->destinations);
+        $this->assertInstanceOf(SpamExpertDestination::class, $records->destinations[1]);
+        $this->assertSame('mx2.example.com', $records->destinations[1]->hostname);
+        $this->assertSame(587, $records->destinations[1]->port);
     }
 
     public function testEmptyDnsActionResponse(): void
@@ -116,6 +150,6 @@ class FinalMissingModelsTest extends TestCase
         $response = new DnsActionResponse();
 
         $this->assertNull($response->success);
-        $this->assertNull($response->message);
+        $this->assertNull((new DnsActionResponse())->fromArray([])->success);
     }
 }

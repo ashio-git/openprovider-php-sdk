@@ -18,9 +18,7 @@ class TldPrices
     public ?TldPrice $update_price = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      */
     public function __construct(array $data = [])
     {

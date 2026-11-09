@@ -44,8 +44,12 @@ class PaymentMethodLimit
         public readonly ?float $TRY = null,
         public readonly ?float $USD = null,
         public readonly ?float $ZAR = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -89,6 +93,9 @@ class PaymentMethodLimit
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -129,6 +136,6 @@ class PaymentMethodLimit
             'TRY' => $this->TRY,
             'USD' => $this->USD,
             'ZAR' => $this->ZAR,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

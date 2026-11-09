@@ -172,7 +172,7 @@ class Domain
             $domains[] = new DomainModel($domainData);
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $domains);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $domains);
     }
 
     /**
@@ -358,7 +358,8 @@ class Domain
     }
 
     /**
-     * Get the authorization code for a domain.
+     * Get authorization code for a domain
+     *
      * @param int $id The ID of the domain.
      * @return \Ashio\Model\AuthCode
      * @throws ApiException
@@ -366,10 +367,6 @@ class Domain
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * Get authorization code for a domain
-     * @return \Ashio\Model\AuthCode
      */
     public function getAuthCode(int $id): \Ashio\Model\AuthCode
     {
@@ -458,7 +455,7 @@ class Domain
 
     /**
      * List TLDs with optional filtering and data enrichment.
-     * 
+     *
      * @param int $limit Number of results per page (max 500).
      * @param int $offset Pagination offset.
      * @param string|null $namePattern Filter by TLD name pattern.
@@ -488,12 +485,12 @@ class Domain
             'limit' => $limit,
             'offset' => $offset,
         ];
-        
+
         // Add optional string/nullable params
         if ($namePattern !== null) {
             $params['name_pattern'] = $namePattern;
         }
-        
+
         // Add boolean params (only when true, as API treats absence as false)
         if ($withPrice) {
             $params['with_price'] = true;
@@ -507,7 +504,7 @@ class Domain
         if ($withUsageCount) {
             $params['with_usage_count'] = true;
         }
-        
+
         // is_active can be explicitly true or false
         if ($isActive !== null) {
             $params['is_active'] = $isActive;
@@ -519,7 +516,7 @@ class Domain
             $tlds[] = new Tld($tldData);
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $tlds);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $tlds);
     }
 
     /**

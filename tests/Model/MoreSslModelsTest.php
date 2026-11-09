@@ -2,8 +2,8 @@
 
 namespace Ashio\Tests\Model;
 
-use Ashio\Model\SslProductReseller;
 use Ashio\Model\SslOrderAdditionalData;
+use Ashio\Model\SslProductReseller;
 use PHPUnit\Framework\TestCase;
 
 class MoreSslModelsTest extends TestCase

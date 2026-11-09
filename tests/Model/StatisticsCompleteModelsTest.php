@@ -5,6 +5,7 @@ namespace Ashio\Tests\Model;
 use Ashio\Model\StatisticsCurrencyStatistics;
 use Ashio\Model\StatisticsDnsStatistics;
 use Ashio\Model\StatisticsDomainStatistics;
+use Ashio\Model\StatisticsDomainStatisticsByStatus;
 use Ashio\Model\StatisticsLicenseStatistics;
 use Ashio\Model\StatisticsSslStatistics;
 use Ashio\Model\StatisticsSslStatisticsByStatus;
@@ -14,69 +15,81 @@ class StatisticsCompleteModelsTest extends TestCase
 {
     public function testStatisticsCurrencyStatisticsConstructor(): void
     {
-        $stats = new StatisticsCurrencyStatistics();
-        $stats->currency = 'USD';
-        $stats->total = 10000.00;
+        $stats = (new StatisticsCurrencyStatistics())->fromArray(['modified' => '2024-05-01 12:00:00']);
 
-        $this->assertEquals('USD', $stats->currency);
-        $this->assertEquals(10000.00, $stats->total);
+        $this->assertSame('2024-05-01 12:00:00', $stats->modified);
+        $this->assertSame(['modified' => '2024-05-01 12:00:00'], $stats->toArray());
     }
 
     public function testStatisticsDnsStatisticsConstructor(): void
     {
-        $stats = new StatisticsDnsStatistics();
-        $stats->totalZones = 100;
-        $stats->activeZones = 95;
+        $stats = (new StatisticsDnsStatistics())->fromArray(['total' => 100]);
 
-        $this->assertEquals(100, $stats->totalZones);
-        $this->assertEquals(95, $stats->activeZones);
+        $this->assertSame(100, $stats->total);
+        $this->assertSame(['total' => 100], $stats->toArray());
     }
 
     public function testStatisticsDomainStatisticsConstructor(): void
     {
-        $stats = new StatisticsDomainStatistics();
-        $stats->total = 500;
-        $stats->active = 450;
+        $stats = (new StatisticsDomainStatistics())->fromArray([
+            'total' => 500,
+            'by_status' => ['ACT' => 450, 'PEN' => 30, 'REQ' => 20],
+        ]);
 
-        $this->assertEquals(500, $stats->total);
-        $this->assertEquals(450, $stats->active);
+        $this->assertSame(500, $stats->total);
+        $this->assertInstanceOf(StatisticsDomainStatisticsByStatus::class, $stats->byStatus);
+        $this->assertSame(450, $stats->byStatus->ACT);
+        $this->assertSame(30, $stats->byStatus->PEN);
+        $this->assertSame(20, $stats->byStatus->REQ);
+        $this->assertNull($stats->byStatus->FAI);
+        $this->assertSame([
+            'total' => 500,
+            'by_status' => ['ACT' => 450, 'PEN' => 30, 'REQ' => 20],
+        ], $stats->toArray());
     }
 
     public function testStatisticsLicenseStatisticsConstructor(): void
     {
-        $stats = new StatisticsLicenseStatistics();
-        $stats->total = 50;
-        $stats->active = 45;
+        $stats = (new StatisticsLicenseStatistics())->fromArray(['total' => 50]);
 
-        $this->assertEquals(50, $stats->total);
-        $this->assertEquals(45, $stats->active);
+        $this->assertSame(50, $stats->total);
+        $this->assertSame(['total' => 50], $stats->toArray());
     }
 
     public function testStatisticsSslStatisticsConstructor(): void
     {
-        $stats = new StatisticsSslStatistics();
-        $stats->total = 200;
-        $stats->active = 180;
+        $stats = (new StatisticsSslStatistics())->fromArray([
+            'total' => 200,
+            'by_status' => ['ACT' => 180, 'REQ' => 20],
+        ]);
 
-        $this->assertEquals(200, $stats->total);
-        $this->assertEquals(180, $stats->active);
+        $this->assertSame(200, $stats->total);
+        $this->assertInstanceOf(StatisticsSslStatisticsByStatus::class, $stats->byStatus);
+        $this->assertSame(180, $stats->byStatus->ACT);
+        $this->assertSame(20, $stats->byStatus->REQ);
+        $this->assertSame(['total' => 200, 'by_status' => ['ACT' => 180, 'REQ' => 20]], $stats->toArray());
     }
 
     public function testStatisticsSslStatisticsByStatusConstructor(): void
     {
-        $stats = new StatisticsSslStatisticsByStatus();
-        $stats->active = 100;
-        $stats->pending = 10;
+        $data = ['ACT' => 100, 'FAI' => 2, 'NSR' => 1, 'PEN' => 10, 'REJ' => 3, 'REQ' => 4];
 
-        $this->assertEquals(100, $stats->active);
-        $this->assertEquals(10, $stats->pending);
+        $stats = (new StatisticsSslStatisticsByStatus())->fromArray($data);
+
+        $this->assertSame(100, $stats->ACT);
+        $this->assertSame(2, $stats->FAI);
+        $this->assertSame(1, $stats->NSR);
+        $this->assertSame(10, $stats->PEN);
+        $this->assertSame(3, $stats->REJ);
+        $this->assertSame(4, $stats->REQ);
+        $this->assertSame($data, $stats->toArray());
     }
 
     public function testEmptyStatisticsCurrencyStatistics(): void
     {
         $stats = new StatisticsCurrencyStatistics();
 
-        $this->assertNull($stats->currency);
-        $this->assertNull($stats->total);
+        $this->assertNull($stats->modified);
+        $this->assertSame([], $stats->toArray());
     }
 }

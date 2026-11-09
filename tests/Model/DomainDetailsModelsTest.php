@@ -3,13 +3,10 @@
 namespace Ashio\Tests\Model;
 
 use Ashio\Model\DomainAbuseDetails;
-use Ashio\Model\DomainApproveTransferRequest;
 use Ashio\Model\DomainDnssecKey;
 use Ashio\Model\DomainOwner;
 use Ashio\Model\DomainRegistryStatus;
 use Ashio\Model\DomainRegistryStatuses;
-use Ashio\Model\DomainResetAuthCodeRequest;
-use Ashio\Model\DomainTryAgainLastOperationRequest;
 use PHPUnit\Framework\TestCase;
 
 class DomainDetailsModelsTest extends TestCase

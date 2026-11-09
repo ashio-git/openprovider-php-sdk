@@ -10,8 +10,12 @@ class Phone
         public readonly ?string $area_code = null,
         public readonly ?string $country_code = null,
         public readonly ?string $subscriber_number = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -21,12 +25,15 @@ class Phone
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
             'area_code' => $this->area_code,
             'country_code' => $this->country_code,
             'subscriber_number' => $this->subscriber_number,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

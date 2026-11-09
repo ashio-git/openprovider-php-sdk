@@ -89,11 +89,8 @@ class SslProduct
     public $warranty;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {

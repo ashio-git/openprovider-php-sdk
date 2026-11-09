@@ -11,11 +11,8 @@ class Nameserver
     public ?string $ip6 = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {
@@ -27,9 +24,7 @@ class Nameserver
     }
 
     /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

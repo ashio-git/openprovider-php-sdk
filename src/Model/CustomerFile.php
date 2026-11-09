@@ -24,15 +24,8 @@ class CustomerFile
     /**
      * Populates the CustomerFile object from an array.
      *
-     * @param array<string, mixed> $data The data to populate from.
-     * @return self
-     */
-    /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {
@@ -47,11 +40,6 @@ class CustomerFile
      * Converts the CustomerFile object to an array.
      *
      * @return array<string, mixed>
-     */
-    /**
-
-     * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

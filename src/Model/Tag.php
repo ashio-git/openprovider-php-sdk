@@ -10,11 +10,8 @@ class Tag
     public ?string $value = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {
@@ -25,9 +22,7 @@ class Tag
     }
 
     /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

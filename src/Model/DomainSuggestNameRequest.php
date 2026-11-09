@@ -15,12 +15,7 @@ class DomainSuggestNameRequest
     public ?array $tlds = null;
 
     /**
-     * @return array<string,mixed>
-     */
-    /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

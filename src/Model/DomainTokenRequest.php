@@ -43,12 +43,8 @@ class DomainTokenRequest
 
     /**
      * Convert to array for API request
+     *
      * @return array<string, mixed>
-     */
-    /**
-
-     * @return array<string, mixed>
-
      */
     public function toArray(): array
     {
@@ -71,15 +67,9 @@ class DomainTokenRequest
 
     /**
      * Create from array
+     *
      * @param array<string, mixed> $data
      * @return self
-     */
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
      */
     public function fromArray(array $data): self
     {

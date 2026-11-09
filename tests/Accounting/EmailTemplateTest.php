@@ -54,7 +54,7 @@ class EmailTemplateTest extends TestCase
             new Response(200, [], json_encode($listPayload)),
         ]);
 
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new EmailTemplateHandler($api);
         $resp = $handler->listEmails();
 
@@ -71,7 +71,7 @@ class EmailTemplateTest extends TestCase
             new Response(422, [], json_encode(['desc' => 'Invalid'])),
         ]);
 
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new EmailTemplateHandler($api);
 
         $this->expectException(ValidationException::class);
@@ -84,7 +84,7 @@ class EmailTemplateTest extends TestCase
             $this->loginOk(),
             new Response(404, [], json_encode(['desc' => 'Not found'])),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new EmailTemplateHandler($api);
 
         $this->expectException(NotFoundException::class);

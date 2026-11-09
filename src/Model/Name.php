@@ -12,8 +12,12 @@ class Name
         public readonly ?string $initials = null,
         public readonly ?string $last_name = null,
         public readonly ?string $prefix = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -25,6 +29,9 @@ class Name
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -33,6 +40,6 @@ class Name
             'initials' => $this->initials,
             'last_name' => $this->last_name,
             'prefix' => $this->prefix,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

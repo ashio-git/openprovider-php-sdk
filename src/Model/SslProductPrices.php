@@ -11,8 +11,12 @@ class SslProductPrices
         public readonly ?SslProductPriceGroup $extra_wildcard_domain_price = null,
         public readonly ?int $period = null,
         public readonly ?SslProductPriceGroup $price = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -23,6 +27,9 @@ class SslProductPrices
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -30,6 +37,6 @@ class SslProductPrices
             'extra_wildcard_domain_price' => $this->extra_wildcard_domain_price?->toArray(),
             'period' => $this->period,
             'price' => $this->price?->toArray(),
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

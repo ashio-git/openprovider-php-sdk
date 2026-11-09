@@ -10,9 +10,7 @@ class TldPrice
     public ?array $reseller = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      */
     public function __construct(array $data = [])
     {

@@ -9,12 +9,7 @@ class DomainSendFoa1Request
     public ?DomainName $domain = null;
 
     /**
-     * @return array<string,mixed>
-     */
-    /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

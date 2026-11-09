@@ -17,8 +17,12 @@ class SpamExpertsStatistics
         public readonly ?int $outgoing_limit = null,
         public readonly ?string $status = null,
         public readonly ?bool $with_outgoing_filter = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -35,6 +39,9 @@ class SpamExpertsStatistics
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -48,6 +55,6 @@ class SpamExpertsStatistics
             'outgoing_limit' => $this->outgoing_limit,
             'status' => $this->status,
             'with_outgoing_filter' => $this->with_outgoing_filter,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

@@ -13,8 +13,12 @@ class TransactionFee
         public readonly ?float $paypal = null,
         public readonly ?float $western_union = null,
         public readonly ?float $yandex = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -27,6 +31,9 @@ class TransactionFee
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -36,6 +43,6 @@ class TransactionFee
             'paypal' => $this->paypal,
             'western_union' => $this->western_union,
             'yandex' => $this->yandex,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

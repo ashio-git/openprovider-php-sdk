@@ -11,8 +11,12 @@ class SslOrderDomainValidationStatuses
         public readonly ?string $ca_order_status = null,
         public readonly ?string $ca_status = null,
         public readonly ?string $status = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -23,6 +27,9 @@ class SslOrderDomainValidationStatuses
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -30,6 +37,6 @@ class SslOrderDomainValidationStatuses
             'ca_order_status' => $this->ca_order_status,
             'ca_status' => $this->ca_status,
             'status' => $this->status,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

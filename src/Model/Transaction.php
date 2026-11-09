@@ -12,9 +12,7 @@ class Transaction
     public ?array $total = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      */
     public function __construct(array $data = [])
     {

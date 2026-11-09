@@ -15,9 +15,7 @@ class Payment
     public ?array $amount = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      */
     public function __construct(array $data = [])
     {

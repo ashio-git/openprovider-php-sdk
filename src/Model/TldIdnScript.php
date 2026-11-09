@@ -10,15 +10,8 @@ class TldIdnScript
     public ?string $value = null;
 
     /**
-     * @param array<string,mixed> $data
-     * @return self
-     */
-    /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {

@@ -9,8 +9,12 @@ class SslProductPriceGroup
     public function __construct(
         public readonly ?SslProductPrice $product = null,
         public readonly ?SslProductReseller $reseller = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -19,11 +23,14 @@ class SslProductPriceGroup
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
             'product' => $this->product?->toArray(),
             'reseller' => $this->reseller?->toArray(),
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

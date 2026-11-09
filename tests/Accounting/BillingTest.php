@@ -87,7 +87,7 @@ class BillingTest extends TestCase
             new \GuzzleHttp\Psr7\Response(401, [], json_encode(['desc' => 'Unauthorized'])),
         ])), 'http_errors' => false]);
 
-        $op = new \Ashio\OpenProvider('u', 'p', $client);
+        $op = new \Ashio\OpenProvider('u', 'p', httpClient: $client);
         $billing = new Billing($op);
         $this->expectException(\Ashio\Exception\AuthenticationException::class);
         $billing->listInvoices();

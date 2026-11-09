@@ -18,8 +18,12 @@ class CreateVirtuozzoLicenseRequest
         public readonly ?int $period = null,
         public readonly ?bool $restrict_ip_binding = null,
         public readonly ?string $title = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -35,6 +39,9 @@ class CreateVirtuozzoLicenseRequest
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -47,6 +54,6 @@ class CreateVirtuozzoLicenseRequest
             'period' => $this->period,
             'restrict_ip_binding' => $this->restrict_ip_binding,
             'title' => $this->title,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

@@ -4,11 +4,8 @@ namespace Ashio\Tests\Model;
 
 use Ashio\Model\DnsRecord;
 use Ashio\Model\DnsRecordUpdates;
-use Ashio\Model\DnsRecordWithOriginal;
 use Ashio\Model\DnsTemplate;
 use Ashio\Model\DnsTemplateRecord;
-use Ashio\Model\DnsPremiumDnsData;
-use Ashio\Model\DnsSectigoData;
 use PHPUnit\Framework\TestCase;
 
 class MoreDnsModelsTest extends TestCase
@@ -77,7 +74,7 @@ class MoreDnsModelsTest extends TestCase
         $updates = new DnsRecordUpdates();
         $record1 = new DnsRecord(['type' => 'A', 'name' => 'test', 'value' => '1.2.3.4']);
         $record2 = new DnsRecord(['type' => 'CNAME', 'name' => 'www', 'value' => '@']);
-        
+
         $updates->add = [$record1];
         $updates->remove = [$record2];
 

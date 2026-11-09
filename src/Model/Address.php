@@ -14,8 +14,12 @@ class Address
         public readonly ?string $street = null,
         public readonly ?string $suffix = null,
         public readonly ?string $zipcode = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -29,6 +33,9 @@ class Address
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -39,6 +46,6 @@ class Address
             'street' => $this->street,
             'suffix' => $this->suffix,
             'zipcode' => $this->zipcode,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

@@ -23,22 +23,20 @@ class Billing
 
     /**
      * List all invoices with optional filters.
+     *
      * @param int $limit
      * @param int $offset
      * @param string|null $order
      * @param string|null $startCreationDate
      * @param string|null $endCreationDate
-     * @return array
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<InvoiceModel>
+     * @psalm-return \Ashio\Model\PaginatedResponse<InvoiceModel>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * @return \Ashio\Model\PaginatedResponse
-     * @phpstan-return \Ashio\Model\PaginatedResponse<InvoiceModel>
-     * @psalm-return \Ashio\Model\PaginatedResponse<InvoiceModel>
      */
     public function listInvoices(int $limit = 100, int $offset = 0, ?string $order = null, ?string $startCreationDate = null, ?string $endCreationDate = null): \Ashio\Model\PaginatedResponse
     {
@@ -58,26 +56,24 @@ class Billing
             }
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $invoices);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $invoices);
     }
 
     /**
      * List all payments with optional filters.
+     *
      * @param int $limit
      * @param int $offset
      * @param string|null $order
      * @param string|null $status
-     * @return array
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<PaymentModel>
+     * @psalm-return \Ashio\Model\PaginatedResponse<PaymentModel>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * @return \Ashio\Model\PaginatedResponse
-     * @phpstan-return \Ashio\Model\PaginatedResponse<PaymentModel>
-     * @psalm-return \Ashio\Model\PaginatedResponse<PaymentModel>
      */
     public function listPayments(int $limit = 100, int $offset = 0, ?string $order = null, ?string $status = null): \Ashio\Model\PaginatedResponse
     {
@@ -96,25 +92,23 @@ class Billing
             }
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $payments);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $payments);
     }
 
     /**
      * List all transactions with optional filters.
+     *
      * @param int $limit
      * @param int $offset
      * @param string|null $order
-     * @return array
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<TransactionModel>
+     * @psalm-return \Ashio\Model\PaginatedResponse<TransactionModel>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * @return \Ashio\Model\PaginatedResponse
-     * @phpstan-return \Ashio\Model\PaginatedResponse<TransactionModel>
-     * @psalm-return \Ashio\Model\PaginatedResponse<TransactionModel>
      */
     public function listTransactions(int $limit = 100, int $offset = 0, ?string $order = null): \Ashio\Model\PaginatedResponse
     {
@@ -132,6 +126,6 @@ class Billing
             }
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $transactions);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $transactions);
     }
 }

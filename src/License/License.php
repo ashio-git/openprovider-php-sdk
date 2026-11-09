@@ -22,21 +22,19 @@ class License
 
     /**
      * List all licenses with optional filters.
+     *
      * @param int $limit
      * @param int $offset
      * @param string|null $status
      * @param string|null $product
-     * @return array
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<LicenseModel>
+     * @psalm-return \Ashio\Model\PaginatedResponse<LicenseModel>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * @return \Ashio\Model\PaginatedResponse
-     * @phpstan-return \Ashio\Model\PaginatedResponse<LicenseModel>
-     * @psalm-return \Ashio\Model\PaginatedResponse<LicenseModel>
      */
     public function listLicenses(int $limit = 100, int $offset = 0, ?string $status = null, ?string $product = null): \Ashio\Model\PaginatedResponse
     {
@@ -55,7 +53,7 @@ class License
             }
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $licenses);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $licenses);
     }
 
     /**
@@ -91,23 +89,12 @@ class License
             }
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $licenses);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $licenses);
     }
 
     /**
      * Reset the Hardware ID (HWID) for a license.
-     * @param string $product
-     * @param int $keyId
-     * @param LicenseResetHwidRequest $request
-     * @return \Ashio\Model\ActionResponse
-     * @throws ApiException
-     * @throws AuthenticationException
-     * @throws GuzzleException
-     * @throws NotFoundException
-     * @throws ValidationException
-     */
-    /**
-     * Reset the Hardware ID (HWID) for a license.
+     *
      * @param string $product
      * @param int $keyId
      * @param LicenseResetHwidRequest $request
@@ -127,18 +114,15 @@ class License
 
     /**
      * List all license items with optional filters.
-     * @param array $params
-     * @return bool
+     *
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<\Ashio\Model\LicenseItem>
+     * @psalm-return \Ashio\Model\PaginatedResponse<\Ashio\Model\LicenseItem>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * @return \Ashio\Model\PaginatedResponse
-     * @phpstan-return \Ashio\Model\PaginatedResponse<\Ashio\Model\LicenseItem>
-     * @psalm-return \Ashio\Model\PaginatedResponse<\Ashio\Model\LicenseItem>
      */
     public function listItems(
         int $limit = 100,
@@ -165,23 +149,20 @@ class License
             $items[] = (new \Ashio\Model\LicenseItem())->fromArray($row);
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $items);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $items);
     }
 
     /**
      * List all Plesk licenses with optional filters.
-     * @param array $params
-     * @return array
+     *
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<LicenseModel>
+     * @psalm-return \Ashio\Model\PaginatedResponse<LicenseModel>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * @return \Ashio\Model\PaginatedResponse
-     * @phpstan-return \Ashio\Model\PaginatedResponse<LicenseModel>
-     * @psalm-return \Ashio\Model\PaginatedResponse<LicenseModel>
      */
     public function listPleskLicenses(
         int $limit = 100,
@@ -210,7 +191,7 @@ class License
             }
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $licenses);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $licenses);
     }
 
     /**
@@ -232,17 +213,14 @@ class License
 
     /**
      * Get a specific Plesk license key.
+     *
      * @param int $keyId
-     * @return bool
+     * @return \Ashio\Model\LicenseKey
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * Get a specific Plesk license key.
-     * @return \Ashio\Model\LicenseKey
      */
     public function getPleskKey(int $keyId): \Ashio\Model\LicenseKey
     {
@@ -288,17 +266,14 @@ class License
 
     /**
      * Delete a Plesk license.
+     *
      * @param int $keyId
-     * @return \Ashio\Model\LicenseKey
+     * @return \Ashio\Model\ActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * Delete a Plesk license.
-     * @return \Ashio\Model\ActionResponse
      */
     public function deletePleskLicense(int $keyId): \Ashio\Model\ActionResponse
     {
@@ -309,18 +284,15 @@ class License
 
     /**
      * List all Virtuozzo licenses with optional filters.
-     * @param array $params
-     * @return array
+     *
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<LicenseModel>
+     * @psalm-return \Ashio\Model\PaginatedResponse<LicenseModel>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * @return \Ashio\Model\PaginatedResponse
-     * @phpstan-return \Ashio\Model\PaginatedResponse<LicenseModel>
-     * @psalm-return \Ashio\Model\PaginatedResponse<LicenseModel>
      */
     public function listVirtuozzoLicenses(
         int $limit = 100,
@@ -349,7 +321,7 @@ class License
             }
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $licenses);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $licenses);
     }
 
     /**
@@ -406,15 +378,13 @@ class License
 
     /**
      * Delete a Virtuozzo license.
+     *
+     * @return \Ashio\Model\ActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * Delete a Virtuozzo license.
-     * @return \Ashio\Model\ActionResponse
      */
     public function deleteVirtuozzoLicense(int $keyId): \Ashio\Model\ActionResponse
     {
@@ -425,15 +395,13 @@ class License
 
     /**
      * Get a specific Virtuozzo license key.
+     *
+     * @return \Ashio\Model\LicenseKey
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * Get a specific Virtuozzo license key.
-     * @return \Ashio\Model\LicenseKey
      */
     public function getVirtuozzoKey(int $keyId): \Ashio\Model\LicenseKey
     {

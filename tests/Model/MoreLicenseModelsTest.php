@@ -3,9 +3,6 @@
 namespace Ashio\Tests\Model;
 
 use Ashio\Model\LicenseItem;
-use Ashio\Model\CreatePleskLicenseRequest;
-use Ashio\Model\CreateVirtuozzoLicenseRequest;
-use Ashio\Model\UpdateVirtuozzoLicenseRequest;
 use PHPUnit\Framework\TestCase;
 
 class MoreLicenseModelsTest extends TestCase

@@ -28,11 +28,8 @@ class Reseller
     public ?float $vatperc = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {
@@ -78,9 +75,7 @@ class Reseller
     }
 
     /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

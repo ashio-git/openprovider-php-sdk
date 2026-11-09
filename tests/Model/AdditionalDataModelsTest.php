@@ -6,8 +6,8 @@ use Ashio\Model\AdditionalDataSelectOption;
 use Ashio\Model\AdditionalDataSpecification;
 use Ashio\Model\ContactAdditionalData;
 use Ashio\Model\CustomerAdditionalData;
-use Ashio\Model\CustomerExtensionAdditionalData;
 use Ashio\Model\CustomerExtensionData;
+use Ashio\Model\File;
 use PHPUnit\Framework\TestCase;
 
 class AdditionalDataModelsTest extends TestCase
@@ -70,16 +70,27 @@ class AdditionalDataModelsTest extends TestCase
     public function testCustomerAdditionalDataFromArray(): void
     {
         $data = [
+            'attached_files' => [
+                ['description' => 'Passport scan', 'doc_type' => 'passport', 'path' => '/uploads/passport.pdf'],
+            ],
             'birth_city' => 'New York',
             'birth_date' => '1980-12-25',
             'passport_number' => 'AB123456',
         ];
 
-        $customerData = (new CustomerAdditionalData())->fromArray($data);
+        $customerData = CustomerAdditionalData::fromArray($data);
 
-        $this->assertEquals('New York', $customerData->birthCity);
-        $this->assertEquals('1980-12-25', $customerData->birthDate);
-        $this->assertEquals('AB123456', $customerData->passportNumber);
+        $this->assertSame('New York', $customerData->birth_city);
+        $this->assertSame('1980-12-25', $customerData->birth_date);
+        $this->assertSame('AB123456', $customerData->passport_number);
+        $this->assertNull($customerData->trading_name);
+        $this->assertCount(1, $customerData->attached_files);
+        $this->assertInstanceOf(File::class, $customerData->attached_files[0]);
+        $this->assertSame('passport', $customerData->attached_files[0]->doc_type);
+        $this->assertSame('/uploads/passport.pdf', $customerData->attached_files[0]->path);
+
+        // toArray() drops null fields and serialises nested files back to API arrays.
+        $this->assertSame($data, $customerData->toArray());
     }
 
     public function testCustomerExtensionDataFromArray(): void
@@ -109,7 +120,14 @@ class AdditionalDataModelsTest extends TestCase
     {
         $data = new ContactAdditionalData();
 
-        $this->assertNull($data->name);
-        $this->assertNull($data->value);
+        $this->assertNull($data->birthDate);
+        $this->assertNull($data->birthCity);
+        $this->assertNull($data->socialSecurityNumber);
+        // ContactAdditionalData::toArray() keeps null keys (no filtering).
+        $this->assertSame([
+            'birth_date' => null,
+            'birth_city' => null,
+            'social_security_number' => null,
+        ], $data->toArray());
     }
 }

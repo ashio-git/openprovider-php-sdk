@@ -29,11 +29,8 @@ class EmailTemplate
     public $tags;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {

@@ -55,7 +55,7 @@ class EmailTemplate
             $items[] = (new EmailTemplateModel())->fromArray($row);
         }
 
-        return new PaginatedResponse((int)($response['data']['total'] ?? 0), $items);
+        return new PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $items);
     }
 
     /**

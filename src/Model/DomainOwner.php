@@ -10,15 +10,8 @@ class DomainOwner
     public ?string $full_name = null;
 
     /**
-     * @param array<string,mixed> $data
-     * @return self
-     */
-    /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {

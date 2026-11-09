@@ -28,22 +28,20 @@ class ResellerCustomer
 
     /**
      * List all contacts with optional filters.
+     *
      * @param int $limit The number of contacts to return.
      * @param int $offset The offset to start from.
      * @param string|null $emailPattern A pattern to filter by email address.
      * @param string|null $lastNamePattern A pattern to filter by last name.
      * @param string|null $companyNamePattern A pattern to filter by company name.
-     * @return array{total: int, results: array<int, Contact>} An array containing the total number of contacts and a list of Contact objects.
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<Contact>
+     * @psalm-return \Ashio\Model\PaginatedResponse<Contact>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * @return \Ashio\Model\PaginatedResponse
-     * @phpstan-return \Ashio\Model\PaginatedResponse<Contact>
-     * @psalm-return \Ashio\Model\PaginatedResponse<Contact>
      */
     public function listContacts(int $limit = 100, int $offset = 0, ?string $emailPattern = null, ?string $lastNamePattern = null, ?string $companyNamePattern = null): \Ashio\Model\PaginatedResponse
     {
@@ -72,7 +70,7 @@ class ResellerCustomer
             }
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $contacts);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $contacts);
     }
 
     /**
@@ -212,7 +210,7 @@ class ResellerCustomer
             }
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $customers);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $customers);
     }
 
     /**
@@ -343,7 +341,7 @@ class ResellerCustomer
             }
         }
 
-        return new PaginatedResponse((int)($response['data']['total'] ?? 0), $verifications);
+        return new PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $verifications);
     }
 
     /**
@@ -494,7 +492,7 @@ class ResellerCustomer
             }
         }
 
-        return new PaginatedResponse((int)($response['data']['total'] ?? 0), $tags);
+        return new PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $tags);
     }
 
     /**

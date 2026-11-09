@@ -38,7 +38,7 @@ class LicenseAdvancedTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $lic = new License($api);
         $key = $lic->getPleskKey(1);
         $this->assertInstanceOf(LicenseKeyModel::class, $key);
@@ -54,7 +54,7 @@ class LicenseAdvancedTest extends TestCase
             new Response(200, [], json_encode($create)),
             new Response(200, [], json_encode($listItems)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $lic = new License($api);
         $created = $lic->createPleskLicense(new \Ashio\Model\CreatePleskLicenseRequest(items: ['ITEM1'], period: 1, title: 'My License'));
         $this->assertInstanceOf(LicenseModel::class, $created);
@@ -71,7 +71,7 @@ class LicenseAdvancedTest extends TestCase
             $this->loginOk(),
             new Response(404, [], json_encode(['desc' => 'Not found'])),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $lic = new License($api);
         $this->expectException(NotFoundException::class);
         $lic->updatePleskLicense(999, new \Ashio\Model\UpdatePleskLicenseRequest());
@@ -83,7 +83,7 @@ class LicenseAdvancedTest extends TestCase
             $this->loginOk(),
             new Response(422, [], json_encode(['desc' => 'Invalid'])),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $lic = new License($api);
         $this->expectException(ValidationException::class);
         $lic->createVirtuozzoLicense(new \Ashio\Model\CreateVirtuozzoLicenseRequest(items: ['ITEM']));
@@ -95,7 +95,7 @@ class LicenseAdvancedTest extends TestCase
             $this->loginOk(),
             new Response(401, [], json_encode(['desc' => 'Unauthorized'])),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $lic = new License($api);
         $this->expectException(\Ashio\Exception\AuthenticationException::class);
         $lic->getPleskLicense(1);

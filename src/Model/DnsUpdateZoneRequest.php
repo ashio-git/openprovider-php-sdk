@@ -17,12 +17,7 @@ class DnsUpdateZoneRequest
     public ?string $type = null;
 
     /**
-     * @return array<string,mixed>
-     */
-    /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

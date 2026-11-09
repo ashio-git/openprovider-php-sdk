@@ -17,11 +17,8 @@ class CustomerExtensionAdditionalData
     public ?string $name = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {
@@ -34,9 +31,7 @@ class CustomerExtensionAdditionalData
     }
 
     /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

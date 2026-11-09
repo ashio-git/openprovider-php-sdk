@@ -27,12 +27,16 @@ class CustomerAdditionalData
         public readonly ?string $passport_number = null,
         public readonly ?string $social_security_number = null,
         public readonly ?string $trading_name = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
-            attached_files: isset($data['attached_files']) ? array_map(fn(array $item) => File::fromArray($item), $data['attached_files']) : null,
+            attached_files: isset($data['attached_files']) ? array_map(fn (array $item) => File::fromArray($item), $data['attached_files']) : null,
             birth_address: $data['birth_address'] ?? null,
             birth_city: $data['birth_city'] ?? null,
             birth_country: $data['birth_country'] ?? null,
@@ -54,10 +58,13 @@ class CustomerAdditionalData
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
-            'attached_files' => $this->attached_files !== null ? array_map(fn(File $item) => $item->toArray(), $this->attached_files) : null,
+            'attached_files' => $this->attached_files !== null ? array_map(fn (File $item) => $item->toArray(), $this->attached_files) : null,
             'birth_address' => $this->birth_address,
             'birth_city' => $this->birth_city,
             'birth_country' => $this->birth_country,
@@ -76,6 +83,6 @@ class CustomerAdditionalData
             'passport_number' => $this->passport_number,
             'social_security_number' => $this->social_security_number,
             'trading_name' => $this->trading_name,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

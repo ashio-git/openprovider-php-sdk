@@ -14,8 +14,12 @@ class CsrSubject
         public readonly ?string $organization = null,
         public readonly ?string $state = null,
         public readonly ?string $unit = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -29,6 +33,9 @@ class CsrSubject
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -39,6 +46,6 @@ class CsrSubject
             'organization' => $this->organization,
             'state' => $this->state,
             'unit' => $this->unit,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

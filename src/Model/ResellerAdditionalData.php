@@ -10,8 +10,12 @@ class ResellerAdditionalData
         public readonly ?string $cif_nif_number = null,
         public readonly ?string $gstin = null,
         public readonly ?string $internal_reference = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -21,12 +25,15 @@ class ResellerAdditionalData
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
             'cif_nif_number' => $this->cif_nif_number,
             'gstin' => $this->gstin,
             'internal_reference' => $this->internal_reference,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

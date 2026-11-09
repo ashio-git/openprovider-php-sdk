@@ -3,11 +3,11 @@
 namespace Ashio\Tests\Model;
 
 use Ashio\Model\Domain;
+use Ashio\Model\DomainAbuseDetails;
+use Ashio\Model\DomainDnssecKey;
 use Ashio\Model\DomainName;
 use Ashio\Model\DomainOwner;
 use Ashio\Model\Nameserver;
-use Ashio\Model\DomainDnssecKey;
-use Ashio\Model\DomainAbuseDetails;
 use PHPUnit\Framework\TestCase;
 
 class DomainTest extends TestCase
@@ -15,7 +15,7 @@ class DomainTest extends TestCase
     public function testConstructorWithEmptyArray()
     {
         $domain = new Domain([]);
-        
+
         $this->assertInstanceOf(Domain::class, $domain);
         $this->assertNull($domain->id);
     }
@@ -35,9 +35,9 @@ class DomainTest extends TestCase
             ],
             'abuse_details' => ['abuse_id' => 1, 'is_domain_held' => false],
         ];
-        
+
         $domain = new Domain($data);
-        
+
         $this->assertEquals(123, $domain->id);
         $this->assertInstanceOf(DomainName::class, $domain->domain);
         $this->assertEquals('example', $domain->domain->name);
@@ -53,9 +53,9 @@ class DomainTest extends TestCase
     public function testFromArrayWithMinimalData()
     {
         $data = ['id' => 456];
-        
+
         $domain = (new Domain())->fromArray($data);
-        
+
         $this->assertEquals(456, $domain->id);
         $this->assertNull($domain->domain);
         $this->assertNull($domain->owner);
@@ -68,9 +68,9 @@ class DomainTest extends TestCase
             'domain' => ['name' => 'test', 'extension' => 'org'],
             'owner' => ['full_name' => 'Jane Smith'],
         ];
-        
+
         $domain = (new Domain())->fromArray($data);
-        
+
         $this->assertInstanceOf(DomainName::class, $domain->domain);
         $this->assertEquals('test', $domain->domain->name);
         $this->assertInstanceOf(DomainOwner::class, $domain->owner);
@@ -86,9 +86,9 @@ class DomainTest extends TestCase
                 ['name' => 'ns3.test.com'],
             ],
         ];
-        
+
         $domain = (new Domain())->fromArray($data);
-        
+
         $this->assertIsArray($domain->name_servers);
         $this->assertCount(3, $domain->name_servers);
         foreach ($domain->name_servers as $ns) {
@@ -105,9 +105,9 @@ class DomainTest extends TestCase
                 ['alg' => 13, 'flags' => 256],
             ],
         ];
-        
+
         $domain = (new Domain())->fromArray($data);
-        
+
         $this->assertIsArray($domain->dnssec_keys);
         $this->assertCount(2, $domain->dnssec_keys);
         foreach ($domain->dnssec_keys as $key) {
@@ -118,7 +118,7 @@ class DomainTest extends TestCase
     public function testFromArrayChaining()
     {
         $domain = (new Domain())->fromArray(['id' => 999]);
-        
+
         $this->assertInstanceOf(Domain::class, $domain);
         $this->assertEquals(999, $domain->id);
     }
@@ -126,7 +126,7 @@ class DomainTest extends TestCase
     public function testEmptyDomain()
     {
         $domain = new Domain();
-        
+
         $this->assertNull($domain->id);
         $this->assertNull($domain->domain);
         $this->assertNull($domain->owner);
@@ -142,9 +142,9 @@ class DomainTest extends TestCase
                 'message' => 'Abuse detected',
             ],
         ];
-        
+
         $domain = (new Domain())->fromArray($data);
-        
+
         $this->assertInstanceOf(DomainAbuseDetails::class, $domain->abuse_details);
         $this->assertEquals(5, $domain->abuse_details->abuse_id);
     }
@@ -161,9 +161,9 @@ class DomainTest extends TestCase
             'status' => 'active',
             'autorenew' => 'on',
         ];
-        
+
         $domain = (new Domain())->fromArray($data);
-        
+
         $this->assertEquals(400, $domain->id);
         $this->assertInstanceOf(DomainName::class, $domain->domain);
         $this->assertInstanceOf(DomainOwner::class, $domain->owner);

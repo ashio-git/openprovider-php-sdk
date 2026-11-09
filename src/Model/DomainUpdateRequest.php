@@ -14,12 +14,7 @@ class DomainUpdateRequest
     public ?array $additional_data = null;
 
     /**
-     * @return array<string,mixed>
-     */
-    /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

@@ -10,11 +10,8 @@ class StatisticsDomainStatistics
     public ?int $total = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {
@@ -27,9 +24,7 @@ class StatisticsDomainStatistics
     }
 
     /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

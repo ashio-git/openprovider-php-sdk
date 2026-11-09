@@ -15,11 +15,8 @@ class EmailField
     public $value;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {

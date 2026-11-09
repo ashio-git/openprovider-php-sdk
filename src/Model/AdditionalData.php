@@ -47,8 +47,12 @@ class AdditionalData
         public readonly ?string $verification_code = null,
         public readonly ?string $vote_acceptance = null,
         public readonly ?string $voto_acceptance = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -94,6 +98,9 @@ class AdditionalData
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -136,6 +143,6 @@ class AdditionalData
             'verification_code' => $this->verification_code,
             'vote_acceptance' => $this->vote_acceptance,
             'voto_acceptance' => $this->voto_acceptance,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

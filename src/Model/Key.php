@@ -9,10 +9,15 @@ class Key
     public function __construct(
         public readonly ?string $item = null,
         public readonly ?string $product = null,
+        /** @var array<string, bool>|null */
         public readonly ?array $sku_values = null,
         public readonly ?string $title = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -23,6 +28,9 @@ class Key
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -30,6 +38,6 @@ class Key
             'product' => $this->product,
             'sku_values' => $this->sku_values,
             'title' => $this->title,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

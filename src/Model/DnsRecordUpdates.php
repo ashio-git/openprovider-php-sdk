@@ -16,24 +16,19 @@ class DnsRecordUpdates
     public ?array $update = null;
 
     /**
-     * @return array<string,mixed>
-     */
-    /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {
         $data = [];
         if ($this->add) {
-            $data['add'] = array_map([self::class, 'recordToArray'], $this->add);
+            $data['add'] = array_map(static fn (DnsRecord $r): array => self::recordToArray($r), $this->add);
         }
         if ($this->remove) {
-            $data['remove'] = array_map([self::class, 'recordToArray'], $this->remove);
+            $data['remove'] = array_map(static fn (DnsRecord $r): array => self::recordToArray($r), $this->remove);
         }
         if ($this->replace) {
-            $data['replace'] = array_map([self::class, 'recordToArray'], $this->replace);
+            $data['replace'] = array_map(static fn (DnsRecord $r): array => self::recordToArray($r), $this->replace);
         }
         if ($this->update) {
             $data['update'] = array_map(static fn (DnsRecordWithOriginal $r) => $r->toArray(), $this->update);

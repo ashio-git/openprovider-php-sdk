@@ -2,11 +2,11 @@
 
 namespace Ashio\Tests\Model;
 
+use Ashio\Model\DomainName;
 use Ashio\Model\DomainTradeRequest;
 use Ashio\Model\DomainTransferRequest;
 use Ashio\Model\EmailTemplateCreateRequest;
 use Ashio\Model\EmailTemplateUpdateRequest;
-use Ashio\Model\DomainName;
 use PHPUnit\Framework\TestCase;
 
 class AbsoluteFinalModelsTest extends TestCase

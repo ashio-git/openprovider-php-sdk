@@ -18,11 +18,8 @@ class StatisticsSpamExpertsStatistics
     public ?bool $withOutgoingFilter = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {
@@ -41,12 +38,21 @@ class StatisticsSpamExpertsStatistics
     }
 
     /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {
-        return array_filter(get_object_vars($this));
+        return array_filter([
+            'activated_at' => $this->activatedAt,
+            'created_at' => $this->createdAt,
+            'exists' => $this->exists,
+            'expired_at' => $this->expiredAt,
+            'incoming_count' => $this->incomingCount,
+            'incoming_limit' => $this->incomingLimit,
+            'outgoing_count' => $this->outgoingCount,
+            'outgoing_limit' => $this->outgoingLimit,
+            'status' => $this->status,
+            'with_outgoing_filter' => $this->withOutgoingFilter,
+        ], static fn ($v) => $v !== null);
     }
 }

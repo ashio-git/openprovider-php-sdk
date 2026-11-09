@@ -15,11 +15,8 @@ class EasyDmarcRecentAction
     public $message;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {
@@ -27,5 +24,16 @@ class EasyDmarcRecentAction
         $this->message = $data['message'] ?? null;
 
         return $this;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return array_filter([
+            'recent_action' => $this->recent_action,
+            'message' => $this->message,
+        ], static fn ($v) => $v !== null);
     }
 }

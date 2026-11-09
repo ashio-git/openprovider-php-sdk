@@ -9,8 +9,12 @@ class SslStatistics
     public function __construct(
         public readonly ?SslStatisticsByStatus $by_status = null,
         public readonly ?int $total = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -19,11 +23,14 @@ class SslStatistics
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
             'by_status' => $this->by_status?->toArray(),
             'total' => $this->total,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

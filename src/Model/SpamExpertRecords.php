@@ -20,11 +20,8 @@ class SpamExpertRecords
     public $outgoing_user_ips;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {

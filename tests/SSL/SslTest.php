@@ -41,7 +41,7 @@ class SslTest extends TestCase
             new Response(200, [], json_encode($decodePayload)),
         ]);
 
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
 
         $create = $ssl->createCsr(new \Ashio\Model\CsrCreateRequest('example.com'));
@@ -60,7 +60,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode(['data' => ['id' => 123, 'success' => true]])),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $req = new \Ashio\Model\SslOrderUpdateRequest();
         $req->autorenew = 'off';
@@ -76,7 +76,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode(['data' => ['id' => 9, 'product_id' => 1, 'status' => 'new']])),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $req = new \Ashio\Model\SslOrderCreateRequest(1, 'CSR', ['example.com'], 12);
         $req->approver_email = 'admin@example.com';
@@ -92,7 +92,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $resp = $ssl->listProducts(limit: 1);
         $this->assertInstanceOf(PaginatedResponse::class, $resp);
@@ -105,7 +105,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(422, [], json_encode(['desc' => 'Invalid'])),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $this->expectException(ValidationException::class);
         $ssl->createCsr(new \Ashio\Model\CsrCreateRequest('example.com'));
@@ -117,7 +117,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(401, [], json_encode(['desc' => 'Unauthorized'])),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $this->expectException(\Ashio\Exception\AuthenticationException::class);
         $ssl->getProduct(1);
@@ -130,7 +130,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $result = $ssl->listOrders();
         $this->assertInstanceOf(PaginatedResponse::class, $result);
@@ -144,7 +144,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $result = $ssl->getOrder(123);
         $this->assertInstanceOf(\Ashio\Model\SslOrder::class, $result);
@@ -157,7 +157,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $result = $ssl->getProduct(1);
         $this->assertInstanceOf(\Ashio\Model\SslProduct::class, $result);
@@ -170,7 +170,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $req = new \Ashio\Model\SslOrderCancelRequest();
         $result = $ssl->cancelOrder(123, $req);
@@ -184,7 +184,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $req = new \Ashio\Model\SslOrderReissueRequest();
         $result = $ssl->reissueOrder(123, $req);
@@ -198,7 +198,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $req = new \Ashio\Model\SslOrderRenewRequest();
         $result = $ssl->renewOrder(123, $req);
@@ -212,7 +212,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $req = new \Ashio\Model\ApproverEmailUpdateRequest('admin@example.com');
         $result = $ssl->updateApproverEmailAddress(123, $req);
@@ -226,7 +226,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $req = new \Ashio\Model\SslOrderResendApproverEmailRequest();
         $result = $ssl->resendApproverEmail(123, $req);
@@ -240,7 +240,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $req = new \Ashio\Model\SslOrderOtpTokenRequest();
         $result = $ssl->createOtpToken(123, $req);
@@ -254,7 +254,7 @@ class SslTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $ssl = new SSL($api);
         $result = $ssl->listApproverEmails(['domain' => 'example.com']);
         $this->assertIsArray($result);

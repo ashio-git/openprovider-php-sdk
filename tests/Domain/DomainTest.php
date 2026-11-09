@@ -78,7 +78,7 @@ class DomainTest extends TestCase
             ])),
             'http_errors' => false,
         ]);
-        $op = new OpenProvider('u', 'p', $client);
+        $op = new OpenProvider('u', 'p', httpClient: $client);
         $domain = new Domain($op);
         $this->expectException(\Ashio\Exception\AuthenticationException::class);
         $domain->getDomain(1);
@@ -198,15 +198,23 @@ class DomainTest extends TestCase
     public function testRenewDomain(): void
     {
         $mockApi = $this->createMock(OpenProvider::class);
-        $mockApi->method('post')
-            ->willReturn(['data' => ['id' => 10, 'renewed' => true]]);
+        $mockApi->expects($this->once())
+            ->method('post')
+            ->with('domains/10/renew', [
+                'domain' => ['name' => 'example', 'extension' => 'com'],
+                'period' => 1,
+            ])
+            ->willReturn(['code' => 0, 'data' => ['status' => 'ACT']]);
 
         $domain = new Domain($mockApi);
-        $req = new \Ashio\Model\RenewDomainRequest();
-        $req->period = 1;
+        $req = new \Ashio\Model\RenewDomainRequest(
+            domain: (new \Ashio\Model\DomainName())->fromArray(['name' => 'example', 'extension' => 'com']),
+            period: 1,
+        );
         $result = $domain->renewDomain(10, $req);
 
         $this->assertInstanceOf(\Ashio\Model\RenewDomainResponse::class, $result);
+        $this->assertSame('ACT', $result->status);
     }
 
     public function testRestoreDomain(): void

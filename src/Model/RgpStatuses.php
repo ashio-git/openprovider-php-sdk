@@ -9,8 +9,12 @@ class RgpStatuses
     public function __construct(
         public readonly ?string $add_period = null,
         public readonly ?string $auto_renew_period = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -19,11 +23,14 @@ class RgpStatuses
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
             'add_period' => $this->add_period,
             'auto_renew_period' => $this->auto_renew_period,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

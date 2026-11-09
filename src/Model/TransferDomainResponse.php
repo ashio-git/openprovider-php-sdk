@@ -55,11 +55,8 @@ class TransferDomainResponse
     public $type;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {

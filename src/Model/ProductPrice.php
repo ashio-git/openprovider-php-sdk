@@ -15,11 +15,8 @@ class ProductPrice
     public $price;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {
@@ -27,5 +24,16 @@ class ProductPrice
         $this->price = $data['price'] ?? null;
 
         return $this;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return array_filter([
+            'currency' => $this->currency,
+            'price' => $this->price,
+        ], static fn ($v) => $v !== null);
     }
 }

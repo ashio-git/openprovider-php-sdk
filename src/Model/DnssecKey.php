@@ -12,8 +12,12 @@ class DnssecKey
         public readonly ?int $protocol = null,
         public readonly ?string $pub_key = null,
         public readonly ?int $readonly = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -25,6 +29,9 @@ class DnssecKey
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -33,6 +40,6 @@ class DnssecKey
             'protocol' => $this->protocol,
             'pub_key' => $this->pub_key,
             'readonly' => $this->readonly,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

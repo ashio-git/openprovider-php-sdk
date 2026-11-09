@@ -13,11 +13,8 @@ class DnsTemplate
     public ?array $records = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {
@@ -35,9 +32,7 @@ class DnsTemplate
     }
 
     /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

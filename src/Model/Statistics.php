@@ -15,8 +15,12 @@ class Statistics
         public readonly ?LicenseStatistics $license = null,
         public readonly ?SpamExpertsStatistics $spam_experts = null,
         public readonly ?SslStatistics $ssl = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -31,6 +35,9 @@ class Statistics
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -42,6 +49,6 @@ class Statistics
             'license' => $this->license?->toArray(),
             'spam_experts' => $this->spam_experts?->toArray(),
             'ssl' => $this->ssl?->toArray(),
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

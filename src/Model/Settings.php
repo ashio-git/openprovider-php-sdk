@@ -52,8 +52,12 @@ class Settings
         public readonly ?array $tags = null,
         public readonly ?TransactionFee $transaction_fee = null,
         public readonly ?string $type = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -88,9 +92,9 @@ class Settings
             minimum_payment: $data['minimum_payment'] ?? null,
             minimum_western_union_payment: $data['minimum_western_union_payment'] ?? null,
             pay_methods: $data['pay_methods'] ?? null,
-            payment_methods: isset($data['payment_methods']) ? array_map(fn(array $item) => PaymentMethods::fromArray($item), $data['payment_methods']) : null,
+            payment_methods: isset($data['payment_methods']) ? array_map(fn (array $item) => PaymentMethods::fromArray($item), $data['payment_methods']) : null,
             preregistered_domain_priorities: $data['preregistered_domain_priorities'] ?? null,
-            recurring_payment_methods: isset($data['recurring_payment_methods']) ? array_map(fn(array $item) => PaymentMethods::fromArray($item), $data['recurring_payment_methods']) : null,
+            recurring_payment_methods: isset($data['recurring_payment_methods']) ? array_map(fn (array $item) => PaymentMethods::fromArray($item), $data['recurring_payment_methods']) : null,
             renew_notification_days: $data['renew_notification_days'] ?? null,
             renew_notification_every_week: $data['renew_notification_every_week'] ?? null,
             tac_contract: isset($data['tac_contract']) ? TacContract::fromArray($data['tac_contract']) : null,
@@ -100,6 +104,9 @@ class Settings
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -134,15 +141,15 @@ class Settings
             'minimum_payment' => $this->minimum_payment,
             'minimum_western_union_payment' => $this->minimum_western_union_payment,
             'pay_methods' => $this->pay_methods,
-            'payment_methods' => $this->payment_methods !== null ? array_map(fn(PaymentMethods $item) => $item->toArray(), $this->payment_methods) : null,
+            'payment_methods' => $this->payment_methods !== null ? array_map(fn (PaymentMethods $item) => $item->toArray(), $this->payment_methods) : null,
             'preregistered_domain_priorities' => $this->preregistered_domain_priorities,
-            'recurring_payment_methods' => $this->recurring_payment_methods !== null ? array_map(fn(PaymentMethods $item) => $item->toArray(), $this->recurring_payment_methods) : null,
+            'recurring_payment_methods' => $this->recurring_payment_methods !== null ? array_map(fn (PaymentMethods $item) => $item->toArray(), $this->recurring_payment_methods) : null,
             'renew_notification_days' => $this->renew_notification_days,
             'renew_notification_every_week' => $this->renew_notification_every_week,
             'tac_contract' => $this->tac_contract?->toArray(),
             'tags' => $this->tags,
             'transaction_fee' => $this->transaction_fee?->toArray(),
             'type' => $this->type,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

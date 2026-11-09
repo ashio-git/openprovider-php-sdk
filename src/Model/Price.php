@@ -35,11 +35,8 @@ class Price
     public $tier_price;
 
     /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {

@@ -42,7 +42,7 @@ class SpamExpertTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new SpamExpert($api);
         $domain = $handler->getDomain('example.com');
         $this->assertInstanceOf(SpamExpertDomain::class, $domain);
@@ -55,7 +55,7 @@ class SpamExpertTest extends TestCase
             $this->loginOk(),
             new Response(422, [], json_encode(['desc' => 'Invalid'])),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new SpamExpert($api);
         $this->expectException(ValidationException::class);
         $handler->createDomain(new SpamExpertCreateDomainRequest(''));
@@ -67,7 +67,7 @@ class SpamExpertTest extends TestCase
             $this->loginOk(),
             new Response(404, [], json_encode(['desc' => 'Not found'])),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new SpamExpert($api);
         $this->expectException(NotFoundException::class);
         $handler->getDomain('missing.com');
@@ -80,7 +80,7 @@ class SpamExpertTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new SpamExpert($api);
         $req = new SpamExpertCreateDomainRequest('example.com');
         $result = $handler->createDomain($req);
@@ -94,7 +94,7 @@ class SpamExpertTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new SpamExpert($api);
         $req = new \Ashio\Model\SpamExpertUpdateDomainRequest();
         $result = $handler->updateDomain('example.com', $req);
@@ -108,7 +108,7 @@ class SpamExpertTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new SpamExpert($api);
         $result = $handler->deleteDomain('example.com');
         $this->assertTrue($result);
@@ -121,7 +121,7 @@ class SpamExpertTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new SpamExpert($api);
         $req = new \Ashio\Model\SpamExpertGenerateLoginUrlRequest('example.com');
         $result = $handler->generateLoginUrl($req);

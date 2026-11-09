@@ -17,11 +17,6 @@ class Zone
     /**
      * @param array<string, mixed> $data
      */
-    /**
-
-     * @param array<string, mixed> $data
-
-     */
     public function __construct(array $data = [])
     {
         foreach ($data as $key => $value) {

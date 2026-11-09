@@ -62,9 +62,7 @@ class Domain
     public ?bool $use_domicile = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      */
     public function __construct(array $data = [])
     {
@@ -74,15 +72,8 @@ class Domain
     }
 
     /**
-     * @param array<string,mixed> $data
-     * @return self
-     */
-    /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {

@@ -7,7 +7,7 @@ namespace Ashio\Model;
 class UpdateZoneRequest
 {
     public function __construct(
-        public readonly ?Domain $domain = null,
+        public readonly ?DomainName $domain = null,
         public readonly ?int $id = null,
         public readonly ?bool $is_spamexperts_enabled = null,
         public readonly ?string $master_ip = null,
@@ -16,12 +16,16 @@ class UpdateZoneRequest
         public readonly ?string $provider = null,
         public readonly ?RecordUpdates $records = null,
         public readonly ?string $type = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
-            domain: isset($data['domain']) ? Domain::fromArray($data['domain']) : null,
+            domain: isset($data['domain']) ? (new DomainName())->fromArray($data['domain']) : null,
             id: $data['id'] ?? null,
             is_spamexperts_enabled: $data['is_spamexperts_enabled'] ?? null,
             master_ip: $data['master_ip'] ?? null,
@@ -33,6 +37,9 @@ class UpdateZoneRequest
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -45,6 +52,6 @@ class UpdateZoneRequest
             'provider' => $this->provider,
             'records' => $this->records?->toArray(),
             'type' => $this->type,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

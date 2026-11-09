@@ -13,9 +13,7 @@ class DnsRecord
     public ?string $modification_date = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      */
     public function __construct(array $data = [])
     {

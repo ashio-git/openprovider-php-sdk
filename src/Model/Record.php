@@ -12,8 +12,12 @@ class Record
         public readonly ?int $ttl = null,
         public readonly ?string $type = null,
         public readonly ?string $value = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -25,6 +29,9 @@ class Record
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -33,6 +40,6 @@ class Record
             'ttl' => $this->ttl,
             'type' => $this->type,
             'value' => $this->value,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

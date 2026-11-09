@@ -60,12 +60,8 @@ class ResellerStatistics
 
     /**
      * Constructor
+     *
      * @param array<string, mixed> $data
-     */
-    /**
-
-     * @param array<string, mixed> $data
-
      */
     public function __construct(array $data = [])
     {
@@ -76,15 +72,9 @@ class ResellerStatistics
 
     /**
      * Create from array
+     *
      * @param array<string, mixed> $data
      * @return self
-     */
-    /**
-
-     * @param array<string, mixed> $data
-
-     * @return self
-
      */
     public function fromArray(array $data): self
     {
@@ -105,12 +95,8 @@ class ResellerStatistics
 
     /**
      * Convert to array
+     *
      * @return array<string, mixed>
-     */
-    /**
-
-     * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

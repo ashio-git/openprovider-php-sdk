@@ -14,8 +14,12 @@ class DomainEmailVerification
         public readonly ?string $handle = null,
         public readonly ?bool $is_suspended = null,
         public readonly ?string $status = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -29,6 +33,9 @@ class DomainEmailVerification
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -39,6 +46,6 @@ class DomainEmailVerification
             'handle' => $this->handle,
             'is_suspended' => $this->is_suspended,
             'status' => $this->status,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

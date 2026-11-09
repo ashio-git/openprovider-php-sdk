@@ -78,10 +78,10 @@ class OpenProvider
     private function authenticate(string $username, string $password, string $environment = 'production'): void
     {
         // Determine API URL based on environment
-        $baseUrl = $environment === 'test' 
+        $baseUrl = $environment === 'test'
             ? 'http://api.sandbox.openprovider.nl:8480/v1beta/'
             : 'https://api.openprovider.eu/v1beta/';
-        
+
         $response = $this->httpClient->post($baseUrl . 'auth/login', [
             'json' => [
                 'username' => $username,
@@ -130,9 +130,11 @@ class OpenProvider
                 if (is_bool($v)) {
                     return $v ? 'true' : 'false';
                 }
+
                 return $v;
             }, $params);
             $options['query'] = $queryParams;
+
             return $this->httpClient->get($url, $options);
         }
 

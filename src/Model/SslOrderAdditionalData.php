@@ -22,8 +22,12 @@ class SslOrderAdditionalData
         public readonly ?string $sha256 = null,
         public readonly ?string $token = null,
         public readonly ?string $url = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -44,6 +48,9 @@ class SslOrderAdditionalData
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -61,6 +68,6 @@ class SslOrderAdditionalData
             'sha256' => $this->sha256,
             'token' => $this->token,
             'url' => $this->url,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

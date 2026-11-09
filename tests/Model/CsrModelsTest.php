@@ -2,11 +2,11 @@
 
 namespace Ashio\Tests\Model;
 
+use Ashio\Model\ApproverEmailUpdateRequest;
 use Ashio\Model\CsrCreateRequest;
 use Ashio\Model\CsrCreateResponse;
 use Ashio\Model\CsrDecodeRequest;
 use Ashio\Model\CsrDecodeResponse;
-use Ashio\Model\ApproverEmailUpdateRequest;
 use PHPUnit\Framework\TestCase;
 
 class CsrModelsTest extends TestCase

@@ -13,9 +13,7 @@ class Invoice
     public ?string $attachment_url = null;
 
     /**
-
      * @param array<string, mixed> $data
-
      */
     public function __construct(array $data = [])
     {

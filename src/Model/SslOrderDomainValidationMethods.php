@@ -9,8 +9,12 @@ class SslOrderDomainValidationMethods
     public function __construct(
         public readonly ?string $host_name = null,
         public readonly ?string $method = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -19,11 +23,14 @@ class SslOrderDomainValidationMethods
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
             'host_name' => $this->host_name,
             'method' => $this->method,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

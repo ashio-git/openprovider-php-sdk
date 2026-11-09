@@ -10,8 +10,12 @@ class PaymentMethodSettings
         public readonly ?PaymentMethodLimits $limit = null,
         public readonly ?float $transaction_fee = null,
         public readonly ?float $transaction_fee_absolute = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -21,12 +25,15 @@ class PaymentMethodSettings
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
             'limit' => $this->limit?->toArray(),
             'transaction_fee' => $this->transaction_fee,
             'transaction_fee_absolute' => $this->transaction_fee_absolute,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

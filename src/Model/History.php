@@ -13,8 +13,12 @@ class History
         public readonly ?string $subject = null,
         public readonly ?string $timestamp = null,
         public readonly ?string $type = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -27,6 +31,9 @@ class History
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -36,6 +43,6 @@ class History
             'subject' => $this->subject,
             'timestamp' => $this->timestamp,
             'type' => $this->type,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

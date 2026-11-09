@@ -2,13 +2,13 @@
 
 namespace Ashio\Tests\Model;
 
-use Ashio\Model\EasyDmarcOrder;
 use Ashio\Model\EasyDmarcCreateRequest;
+use Ashio\Model\EasyDmarcOrder;
 use Ashio\Model\EasyDmarcRetryRequest;
-use Ashio\Model\SpamExpertDomain;
 use Ashio\Model\SpamExpertCreateDomainRequest;
-use Ashio\Model\SpamExpertUpdateDomainRequest;
+use Ashio\Model\SpamExpertDomain;
 use Ashio\Model\SpamExpertGenerateLoginUrlRequest;
+use Ashio\Model\SpamExpertUpdateDomainRequest;
 use PHPUnit\Framework\TestCase;
 
 class EasyDmarcSpamExpertTest extends TestCase
@@ -20,9 +20,9 @@ class EasyDmarcSpamExpertTest extends TestCase
             'domain' => ['name' => 'example', 'extension' => 'com'],
             'status' => 'active',
         ];
-        
+
         $order = (new EasyDmarcOrder())->fromArray($data);
-        
+
         $this->assertEquals(123, $order->id);
         $this->assertEquals('active', $order->status);
     }
@@ -31,9 +31,9 @@ class EasyDmarcSpamExpertTest extends TestCase
     {
         $domainName = (new \Ashio\Model\DomainName())->fromArray(['name' => 'test', 'extension' => 'com']);
         $request = new EasyDmarcCreateRequest($domainName, 'OWNER123');
-        
+
         $array = $request->toArray();
-        
+
         $this->assertIsArray($array);
         $this->assertArrayHasKey('domain', $array);
         $this->assertEquals('OWNER123', $array['owner_handle']);
@@ -42,7 +42,7 @@ class EasyDmarcSpamExpertTest extends TestCase
     public function testEasyDmarcRetryRequest()
     {
         $request = new EasyDmarcRetryRequest();
-        
+
         $this->assertInstanceOf(EasyDmarcRetryRequest::class, $request);
     }
 
@@ -52,9 +52,9 @@ class EasyDmarcSpamExpertTest extends TestCase
             'domain_name' => 'example.com',
             'is_active' => true,
         ];
-        
+
         $domain = (new SpamExpertDomain())->fromArray($data);
-        
+
         $this->assertEquals('example.com', $domain->domain_name);
         $this->assertTrue($domain->is_active);
     }
@@ -62,9 +62,9 @@ class EasyDmarcSpamExpertTest extends TestCase
     public function testSpamExpertCreateDomainRequest()
     {
         $request = new SpamExpertCreateDomainRequest('example.com');
-        
+
         $array = $request->toArray();
-        
+
         $this->assertIsArray($array);
         $this->assertEquals('example.com', $array['domain_name']);
     }
@@ -72,7 +72,7 @@ class EasyDmarcSpamExpertTest extends TestCase
     public function testSpamExpertUpdateDomainRequest()
     {
         $request = new SpamExpertUpdateDomainRequest();
-        
+
         $this->assertInstanceOf(SpamExpertUpdateDomainRequest::class, $request);
     }
 
@@ -80,9 +80,9 @@ class EasyDmarcSpamExpertTest extends TestCase
     {
         $request = new SpamExpertGenerateLoginUrlRequest('example.com');
         $request->bundle = true;
-        
+
         $array = $request->toArray();
-        
+
         $this->assertIsArray($array);
         $this->assertEquals('example.com', $array['domain_or_email']);
         $this->assertTrue($array['bundle']);
@@ -91,7 +91,7 @@ class EasyDmarcSpamExpertTest extends TestCase
     public function testEmptyEasyDmarcOrder()
     {
         $order = new EasyDmarcOrder();
-        
+
         $this->assertNull($order->id);
         $this->assertNull($order->status);
     }
@@ -99,7 +99,7 @@ class EasyDmarcSpamExpertTest extends TestCase
     public function testEmptySpamExpertDomain()
     {
         $domain = new SpamExpertDomain();
-        
+
         $this->assertNull($domain->domain_name);
         $this->assertNull($domain->is_active);
     }
@@ -112,9 +112,9 @@ class EasyDmarcSpamExpertTest extends TestCase
             'status' => 'pending',
             'product_name' => 'premium',
         ];
-        
+
         $order = (new EasyDmarcOrder())->fromArray($data);
-        
+
         $this->assertEquals(456, $order->id);
         $this->assertEquals('pending', $order->status);
     }
@@ -126,9 +126,9 @@ class EasyDmarcSpamExpertTest extends TestCase
             'is_active' => false,
             'products' => ['incoming' => true, 'outgoing' => false],
         ];
-        
+
         $domain = (new SpamExpertDomain())->fromArray($data);
-        
+
         $this->assertEquals('complete.com', $domain->domain_name);
         $this->assertFalse($domain->is_active);
     }

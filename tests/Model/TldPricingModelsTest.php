@@ -2,10 +2,9 @@
 
 namespace Ashio\Tests\Model;
 
-use Ashio\Model\TldPrice;
-use Ashio\Model\PremiumPrice;
 use Ashio\Model\CheckDomainResult;
 use Ashio\Model\DeleteDomainResponse;
+use Ashio\Model\TldPrice;
 use PHPUnit\Framework\TestCase;
 
 class TldPricingModelsTest extends TestCase

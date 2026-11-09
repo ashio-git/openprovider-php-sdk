@@ -48,7 +48,7 @@ class EasyDmarcTest extends TestCase
             new Response(200, [], json_encode($payload)),
         ]);
 
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new EasyDMARC($api);
         $resp = $handler->listEasyDmarc();
         $this->assertInstanceOf(PaginatedResponse::class, $resp);
@@ -63,7 +63,7 @@ class EasyDmarcTest extends TestCase
             $this->loginOk(),
             new Response(422, [], json_encode(['desc' => 'Invalid'])),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new EasyDMARC($api);
         $this->expectException(ValidationException::class);
         $domain = new \Ashio\Model\DomainName();
@@ -77,7 +77,7 @@ class EasyDmarcTest extends TestCase
             $this->loginOk(),
             new Response(404, [], json_encode(['desc' => 'Not found'])),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new EasyDMARC($api);
         $this->expectException(NotFoundException::class);
         $handler->getEasyDmarcSso(999);
@@ -90,7 +90,7 @@ class EasyDmarcTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new EasyDMARC($api);
         $result = $handler->getEasyDmarc(['id' => 123]);
         $this->assertInstanceOf(EasyDmarcOrder::class, $result);
@@ -104,7 +104,7 @@ class EasyDmarcTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new EasyDMARC($api);
         $result = $handler->deleteEasyDmarc(123);
         $this->assertTrue($result);
@@ -117,7 +117,7 @@ class EasyDmarcTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new EasyDMARC($api);
         $req = new \Ashio\Model\EasyDmarcRetryRequest();
         $result = $handler->retryEasyDmarc(123, $req);
@@ -132,7 +132,7 @@ class EasyDmarcTest extends TestCase
             $this->loginOk(),
             new Response(200, [], json_encode($payload)),
         ]);
-        $api = new OpenProvider('u', 'p', $client);
+        $api = new OpenProvider('u', 'p', httpClient: $client);
         $handler = new EasyDMARC($api);
         $result = $handler->getEasyDmarcSso(123);
         $this->assertIsString($result);

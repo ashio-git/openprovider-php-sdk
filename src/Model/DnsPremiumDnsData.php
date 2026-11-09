@@ -9,12 +9,7 @@ class DnsPremiumDnsData
     public ?DnsSectigoData $sectigo = null;
 
     /**
-     * @return array<string,mixed>
-     */
-    /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

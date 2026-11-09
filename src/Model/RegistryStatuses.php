@@ -9,8 +9,12 @@ class RegistryStatuses
     public function __construct(
         public readonly ?RegistryStatus $client_hold = null,
         public readonly ?RegistryStatus $client_transfer_prohibited = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -19,11 +23,14 @@ class RegistryStatuses
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
             'client_hold' => $this->client_hold?->toArray(),
             'client_transfer_prohibited' => $this->client_transfer_prohibited?->toArray(),
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

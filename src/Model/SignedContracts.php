@@ -15,8 +15,12 @@ class SignedContracts
         public readonly ?string $title = null,
         public readonly ?string $type = null,
         public readonly ?int $version_id = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -31,6 +35,9 @@ class SignedContracts
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -42,6 +49,6 @@ class SignedContracts
             'title' => $this->title,
             'type' => $this->type,
             'version_id' => $this->version_id,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

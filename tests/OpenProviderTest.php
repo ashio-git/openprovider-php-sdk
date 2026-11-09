@@ -23,7 +23,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('testuser', 'testpass', $client);
+        $op = new OpenProvider('testuser', 'testpass', httpClient: $client);
 
         $this->assertInstanceOf(OpenProvider::class, $op);
     }
@@ -39,7 +39,7 @@ class OpenProviderTest extends TestCase
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage('Invalid credentials');
 
-        new OpenProvider('baduser', 'badpass', $client);
+        new OpenProvider('baduser', 'badpass', httpClient: $client);
     }
 
     public function testConstructorThrowsAuthenticationExceptionOnMissingToken()
@@ -53,7 +53,7 @@ class OpenProviderTest extends TestCase
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage('Authentication failed');
 
-        new OpenProvider('user', 'pass', $client);
+        new OpenProvider('user', 'pass', httpClient: $client);
     }
 
     public function testGetMethodReturnsData()
@@ -65,7 +65,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('user', 'pass', $client);
+        $op = new OpenProvider('user', 'pass', httpClient: $client);
         $result = $op->get('test/endpoint');
 
         $this->assertIsArray($result);
@@ -81,7 +81,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('user', 'pass', $client);
+        $op = new OpenProvider('user', 'pass', httpClient: $client);
         $result = $op->post('test/endpoint', ['name' => 'test']);
 
         $this->assertIsArray($result);
@@ -97,7 +97,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('user', 'pass', $client);
+        $op = new OpenProvider('user', 'pass', httpClient: $client);
         $result = $op->put('test/endpoint/789', ['name' => 'updated']);
 
         $this->assertIsArray($result);
@@ -113,7 +113,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('user', 'pass', $client);
+        $op = new OpenProvider('user', 'pass', httpClient: $client);
         $result = $op->delete('test/endpoint/123');
 
         $this->assertIsArray($result);
@@ -129,7 +129,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('user', 'pass', $client);
+        $op = new OpenProvider('user', 'pass', httpClient: $client);
 
         $this->expectException(NotFoundException::class);
         $this->expectExceptionMessage('Resource not found');
@@ -146,7 +146,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('user', 'pass', $client);
+        $op = new OpenProvider('user', 'pass', httpClient: $client);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Validation failed');
@@ -163,7 +163,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('user', 'pass', $client);
+        $op = new OpenProvider('user', 'pass', httpClient: $client);
 
         $this->expectException(ApiException::class);
         $this->expectExceptionMessage('Internal server error');
@@ -179,7 +179,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('user', 'pass', $client);
+        $op = new OpenProvider('user', 'pass', httpClient: $client);
         $billing = $op->billing();
 
         $this->assertInstanceOf(\Ashio\Accounting\Billing::class, $billing);
@@ -193,7 +193,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('user', 'pass', $client);
+        $op = new OpenProvider('user', 'pass', httpClient: $client);
         $emailTemplate = $op->emailTemplate();
 
         $this->assertInstanceOf(\Ashio\Accounting\EmailTemplate::class, $emailTemplate);
@@ -207,7 +207,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('user', 'pass', $client);
+        $op = new OpenProvider('user', 'pass', httpClient: $client);
         $resellerCustomer = $op->resellerCustomer();
 
         $this->assertInstanceOf(\Ashio\Accounting\ResellerCustomer::class, $resellerCustomer);
@@ -221,7 +221,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('user', 'pass', $client);
+        $op = new OpenProvider('user', 'pass', httpClient: $client);
         $domain = $op->domain();
 
         $this->assertInstanceOf(\Ashio\Domain\Domain::class, $domain);
@@ -235,7 +235,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('user', 'pass', $client);
+        $op = new OpenProvider('user', 'pass', httpClient: $client);
         $license = $op->license();
 
         $this->assertInstanceOf(\Ashio\License\License::class, $license);
@@ -249,7 +249,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('user', 'pass', $client);
+        $op = new OpenProvider('user', 'pass', httpClient: $client);
         $ssl = $op->ssl();
 
         $this->assertInstanceOf(\Ashio\SSL\SSL::class, $ssl);
@@ -263,7 +263,7 @@ class OpenProviderTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack, 'http_errors' => false]);
 
-        $op = new OpenProvider('user', 'pass', $client);
+        $op = new OpenProvider('user', 'pass', httpClient: $client);
 
         $billing1 = $op->billing();
         $billing2 = $op->billing();

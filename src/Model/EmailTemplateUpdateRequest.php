@@ -18,12 +18,7 @@ class EmailTemplateUpdateRequest
     public ?array $tags = null;
 
     /**
-     * @return array<string,mixed>
-     */
-    /**
-
      * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

@@ -2,69 +2,103 @@ name: CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main]
   pull_request:
-    branches: [ main, develop ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   tests:
-    name: Tests PHP ${{ matrix.php-version }}
+    name: Tests (PHP ${{ matrix.php }}, ${{ matrix.dependencies }} deps)
     runs-on: ubuntu-latest
-    
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
-    
+        php: ['8.1', '8.2', '8.3', '8.4', '8.5']
+        dependencies: [highest]
+        include:
+          - php: '8.1'
+            dependencies: lowest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-      
+        uses: actions/checkout@v4
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
-          extensions: json, mbstring
-          coverage: xdebug
-      
+          php-version: ${{ matrix.php }}
+          extensions: curl, dom, json, mbstring
+          coverage: none
+
       - name: Validate composer.json
         run: composer validate --strict
-      
+
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
-      
+        run: composer update --prefer-dist --no-progress --no-interaction ${{ matrix.dependencies == 'lowest' && '--prefer-lowest --prefer-stable' || '' }}
+
       - name: Run tests
         run: composer test
-      
-      - name: Upload coverage to Codecov
-        if: matrix.php-version == '8.2'
-        uses: codecov/codecov-action@v3
-        with:
-          files: ./coverage.xml
-          fail_ci_if_error: false
 
-  code-quality:
-    name: Code Quality
+  quality:
+    name: Code quality
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-      
+        uses: actions/checkout@v4
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
-          extensions: json, mbstring
-      
+          php-version: '8.4'
+          extensions: curl, dom, json, mbstring
+          coverage: none
+
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
-      
+        run: composer update --prefer-dist --no-progress --no-interaction
+
       - name: Check code style
         run: composer cs:check
-      
+
       - name: Run PHPStan
         run: composer analyse
-      
+
       - name: Run Psalm
         run: composer psalm
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: curl, dom, json, mbstring
+          coverage: pcov
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress --no-interaction
+
+      - name: Run tests with coverage
+        run: |
+          composer test:coverage | tee coverage.txt
+          {
+            echo '### Coverage'
+            echo '```'
+            grep -A4 'Summary:' coverage.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml

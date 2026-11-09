@@ -87,7 +87,7 @@ class DnsTest extends TestCase
             ])),
             'http_errors' => false,
         ]);
-        $op = new OpenProvider('u', 'p', $client);
+        $op = new OpenProvider('u', 'p', httpClient: $client);
         $dns = new DNS($op);
         $this->expectException(\Ashio\Exception\AuthenticationException::class);
         $dns->getZone('example.com');

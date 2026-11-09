@@ -111,7 +111,7 @@ class SSL
             $orders[] = new SslOrderModel($orderData);
         }
 
-        return new PaginatedResponse((int)($response['data']['total'] ?? 0), $orders);
+        return new PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $orders);
     }
 
     /**
@@ -150,17 +150,7 @@ class SSL
 
     /**
      * Update an existing SSL order.
-     * @param int $id The ID of the SSL order to update.
-     * @param array $body The data to update.
-     * @return \Ashio\Model\SslActionResponse
-     * @throws ApiException
-     * @throws AuthenticationException
-     * @throws GuzzleException
-     * @throws NotFoundException
-     * @throws ValidationException
-     */
-    /**
-     * Update an existing SSL order.
+     *
      * @param int $id
      * @param \Ashio\Model\SslOrderUpdateRequest $request
      * @return \Ashio\Model\SslActionResponse
@@ -178,19 +168,15 @@ class SSL
     }
 
     /**
-     * Update the approver email address for an SSL order.
+     * Update approver email address.
+     *
      * @param int $id The ID of the SSL order.
-     * @param array $body The data for the email update.
      * @return \Ashio\Model\SslActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * Update approver email address.
-     * @return \Ashio\Model\SslActionResponse
      */
     public function updateApproverEmailAddress(int $id, \Ashio\Model\ApproverEmailUpdateRequest $request): \Ashio\Model\SslActionResponse
     {
@@ -200,19 +186,15 @@ class SSL
     }
 
     /**
-     * Resend the approver email for an SSL order.
+     * Resend approver email.
+     *
      * @param int $id The ID of the SSL order.
-     * @param array $body The request body.
      * @return \Ashio\Model\SslActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * Resend approver email.
-     * @return \Ashio\Model\SslActionResponse
      */
     public function resendApproverEmail(int $id, \Ashio\Model\SslOrderResendApproverEmailRequest $request): \Ashio\Model\SslActionResponse
     {
@@ -222,19 +204,15 @@ class SSL
     }
 
     /**
-     * Cancel an SSL order.
+     * Cancel SSL order.
+     *
      * @param int $id The ID of the SSL order to cancel.
-     * @param array $body The cancellation data.
      * @return \Ashio\Model\SslActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * Cancel SSL order.
-     * @return \Ashio\Model\SslActionResponse
      */
     public function cancelOrder(int $id, \Ashio\Model\SslOrderCancelRequest $request): \Ashio\Model\SslActionResponse
     {
@@ -244,19 +222,15 @@ class SSL
     }
 
     /**
-     * Create a one-time password (OTP) token for an SSL order.
+     * Create OTP token for order.
+     *
      * @param int $id The ID of the SSL order.
-     * @param array $body The request body.
      * @return \Ashio\Model\SslActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * Create OTP token for order.
-     * @return \Ashio\Model\SslActionResponse
      */
     public function createOtpToken(int $id, \Ashio\Model\SslOrderOtpTokenRequest $request): \Ashio\Model\SslActionResponse
     {
@@ -266,19 +240,15 @@ class SSL
     }
 
     /**
-     * Reissue an SSL order.
+     * Reissue SSL order.
+     *
      * @param int $id The ID of the SSL order to reissue.
-     * @param array $body The reissue data.
      * @return \Ashio\Model\SslActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * Reissue SSL order.
-     * @return \Ashio\Model\SslActionResponse
      */
     public function reissueOrder(int $id, \Ashio\Model\SslOrderReissueRequest $request): \Ashio\Model\SslActionResponse
     {
@@ -288,19 +258,15 @@ class SSL
     }
 
     /**
-     * Renew an SSL order.
+     * Renew SSL order.
+     *
      * @param int $id The ID of the SSL order to renew.
-     * @param array $body The renewal data.
      * @return \Ashio\Model\SslActionResponse
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * Renew SSL order.
-     * @return \Ashio\Model\SslActionResponse
      */
     public function renewOrder(int $id, \Ashio\Model\SslOrderRenewRequest $request): \Ashio\Model\SslActionResponse
     {
@@ -343,7 +309,7 @@ class SSL
             $products[] = (new SslProductModel())->fromArray($row);
         }
 
-        return new PaginatedResponse((int)($response['data']['total'] ?? 0), $products);
+        return new PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $products);
     }
 
     /**

@@ -11,8 +11,12 @@ class ClientIpList
         public readonly ?array $allow = null,
         /** @var string[]|null */
         public readonly ?array $deny = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -21,11 +25,14 @@ class ClientIpList
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
             'allow' => $this->allow,
             'deny' => $this->deny,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

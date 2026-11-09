@@ -10,8 +10,12 @@ class AbuseDetails
         public readonly ?int $abuse_id = null,
         public readonly ?bool $is_domain_held = null,
         public readonly ?string $message = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -21,12 +25,15 @@ class AbuseDetails
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
             'abuse_id' => $this->abuse_id,
             'is_domain_held' => $this->is_domain_held,
             'message' => $this->message,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

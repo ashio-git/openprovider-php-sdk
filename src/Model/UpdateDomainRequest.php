@@ -16,7 +16,7 @@ class UpdateDomainRequest
         public readonly ?string $comments = null,
         /** @var DnssecKey[]|null */
         public readonly ?array $dnssec_keys = null,
-        public readonly ?Domain $domain = null,
+        public readonly ?DomainName $domain = null,
         public readonly ?bool $force_registry_update = null,
         public readonly ?int $id = null,
         public readonly ?bool $is_dnssec_enabled = null,
@@ -36,8 +36,12 @@ class UpdateDomainRequest
         public readonly ?string $scheduled_at = null,
         public readonly ?string $tech_handle = null,
         public readonly ?bool $use_domicile = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -48,8 +52,8 @@ class UpdateDomainRequest
             autorenew: $data['autorenew'] ?? null,
             billing_handle: $data['billing_handle'] ?? null,
             comments: $data['comments'] ?? null,
-            dnssec_keys: isset($data['dnssec_keys']) ? array_map(fn(array $item) => DnssecKey::fromArray($item), $data['dnssec_keys']) : null,
-            domain: isset($data['domain']) ? Domain::fromArray($data['domain']) : null,
+            dnssec_keys: isset($data['dnssec_keys']) ? array_map(fn (array $item) => DnssecKey::fromArray($item), $data['dnssec_keys']) : null,
+            domain: isset($data['domain']) ? (new DomainName())->fromArray($data['domain']) : null,
             force_registry_update: $data['force_registry_update'] ?? null,
             id: $data['id'] ?? null,
             is_dnssec_enabled: $data['is_dnssec_enabled'] ?? null,
@@ -57,7 +61,7 @@ class UpdateDomainRequest
             is_private_whois_enabled: $data['is_private_whois_enabled'] ?? null,
             is_sectigo_dns_enabled: $data['is_sectigo_dns_enabled'] ?? null,
             is_spamexperts_enabled: $data['is_spamexperts_enabled'] ?? null,
-            name_servers: isset($data['name_servers']) ? array_map(fn(array $item) => Nameserver::fromArray($item), $data['name_servers']) : null,
+            name_servers: isset($data['name_servers']) ? array_map(fn (array $item) => (new Nameserver())->fromArray($item), $data['name_servers']) : null,
             ns_group: $data['ns_group'] ?? null,
             ns_template_id: $data['ns_template_id'] ?? null,
             ns_template_name: $data['ns_template_name'] ?? null,
@@ -71,6 +75,9 @@ class UpdateDomainRequest
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -81,7 +88,7 @@ class UpdateDomainRequest
             'autorenew' => $this->autorenew,
             'billing_handle' => $this->billing_handle,
             'comments' => $this->comments,
-            'dnssec_keys' => $this->dnssec_keys !== null ? array_map(fn(DnssecKey $item) => $item->toArray(), $this->dnssec_keys) : null,
+            'dnssec_keys' => $this->dnssec_keys !== null ? array_map(fn (DnssecKey $item) => $item->toArray(), $this->dnssec_keys) : null,
             'domain' => $this->domain?->toArray(),
             'force_registry_update' => $this->force_registry_update,
             'id' => $this->id,
@@ -90,7 +97,7 @@ class UpdateDomainRequest
             'is_private_whois_enabled' => $this->is_private_whois_enabled,
             'is_sectigo_dns_enabled' => $this->is_sectigo_dns_enabled,
             'is_spamexperts_enabled' => $this->is_spamexperts_enabled,
-            'name_servers' => $this->name_servers !== null ? array_map(fn(Nameserver $item) => $item->toArray(), $this->name_servers) : null,
+            'name_servers' => $this->name_servers !== null ? array_map(fn (Nameserver $item) => $item->toArray(), $this->name_servers) : null,
             'ns_group' => $this->ns_group,
             'ns_template_id' => $this->ns_template_id,
             'ns_template_name' => $this->ns_template_name,
@@ -101,6 +108,6 @@ class UpdateDomainRequest
             'scheduled_at' => $this->scheduled_at,
             'tech_handle' => $this->tech_handle,
             'use_domicile' => $this->use_domicile,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }

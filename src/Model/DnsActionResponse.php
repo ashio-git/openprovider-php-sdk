@@ -9,15 +9,8 @@ class DnsActionResponse
     public ?bool $success = null;
 
     /**
-     * @param array<string,mixed> $data
-     * @return self
-     */
-    /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {

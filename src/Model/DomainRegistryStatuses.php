@@ -8,9 +8,7 @@ class DomainRegistryStatuses
     public array $statuses = [];
 
     /**
-
      * @param array<string, mixed> $data
-
      */
     public function __construct(array $data = [])
     {
@@ -20,15 +18,8 @@ class DomainRegistryStatuses
     }
 
     /**
-     * @param array<string,mixed> $data
-     * @return self
-     */
-    /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {

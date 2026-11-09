@@ -34,15 +34,8 @@ class ContactName
     /**
      * Populates the ContactName object from an array.
      *
-     * @param array<string, mixed> $data The data to populate from.
-     * @return self
-     */
-    /**
-
      * @param array<string, mixed> $data
-
      * @return self
-
      */
     public function fromArray(array $data): self
     {
@@ -59,11 +52,6 @@ class ContactName
      * Converts the ContactName object to an array.
      *
      * @return array<string, mixed>
-     */
-    /**
-
-     * @return array<string, mixed>
-
      */
     public function toArray(): array
     {

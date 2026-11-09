@@ -48,6 +48,7 @@ class DNS
 
     /**
      * List all nameservers with optional filters.
+     *
      * @param int $limit
      * @param int $offset
      * @param string|null $name
@@ -57,16 +58,13 @@ class DNS
      * @param string $order
      * @param string $order_by
      * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<Nameserver>
+     * @psalm-return \Ashio\Model\PaginatedResponse<Nameserver>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * @return \Ashio\Model\PaginatedResponse
-     * @phpstan-return \Ashio\Model\PaginatedResponse<Nameserver>
-     * @psalm-return \Ashio\Model\PaginatedResponse<Nameserver>
      */
     public function listNameservers(int $limit = 100, int $offset = 0, ?string $name = null, ?string $ip = null, ?string $ip6 = null, ?string $pattern = null, string $order = 'asc', string $order_by = 'name'): \Ashio\Model\PaginatedResponse
     {
@@ -89,7 +87,7 @@ class DNS
             }
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $nameservers);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $nameservers);
     }
 
     /**
@@ -191,7 +189,7 @@ class DNS
             }
         }
 
-        return new PaginatedResponse((int)($response['data']['total'] ?? 0), $groups);
+        return new PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $groups);
     }
 
     /**
@@ -265,20 +263,18 @@ class DNS
 
     /**
      * List all DNS templates with optional filters.
+     *
      * @param int $limit
      * @param int $offset
      * @param string|null $namePattern
-     * @return array
+     * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<DnsTemplate>
+     * @psalm-return \Ashio\Model\PaginatedResponse<DnsTemplate>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * @return \Ashio\Model\PaginatedResponse
-     * @phpstan-return \Ashio\Model\PaginatedResponse<DnsTemplate>
-     * @psalm-return \Ashio\Model\PaginatedResponse<DnsTemplate>
      */
     public function listTemplates(int $limit = 100, int $offset = 0, ?string $namePattern = null): \Ashio\Model\PaginatedResponse
     {
@@ -296,7 +292,7 @@ class DNS
             }
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $templates);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $templates);
     }
 
     /**
@@ -352,20 +348,18 @@ class DNS
 
     /**
      * List all DNS zones with optional filters.
+     *
      * @param int $limit
      * @param int $offset
      * @param string|null $namePattern
      * @return \Ashio\Model\PaginatedResponse
+     * @phpstan-return \Ashio\Model\PaginatedResponse<ZoneModel>
+     * @psalm-return \Ashio\Model\PaginatedResponse<ZoneModel>
      * @throws ApiException
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * @return \Ashio\Model\PaginatedResponse
-     * @phpstan-return \Ashio\Model\PaginatedResponse<ZoneModel>
-     * @psalm-return \Ashio\Model\PaginatedResponse<ZoneModel>
      */
     public function listZones(int $limit = 100, int $offset = 0, ?string $namePattern = null): \Ashio\Model\PaginatedResponse
     {
@@ -383,7 +377,7 @@ class DNS
             }
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $zones);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $zones);
     }
 
     /**
@@ -423,6 +417,7 @@ class DNS
 
     /**
      * Update an existing DNS zone.
+     *
      * @param string $name
      * @param DnsUpdateZoneRequest $request
      * @return \Ashio\Model\DnsActionResponse
@@ -431,9 +426,6 @@ class DNS
      * @throws GuzzleException
      * @throws NotFoundException
      * @throws ValidationException
-     */
-    /**
-     * @return \Ashio\Model\DnsActionResponse
      */
     public function updateZone(string $name, DnsUpdateZoneRequest $request): \Ashio\Model\DnsActionResponse
     {
@@ -481,6 +473,6 @@ class DNS
             }
         }
 
-        return new \Ashio\Model\PaginatedResponse((int)($response['data']['total'] ?? 0), $records);
+        return new \Ashio\Model\PaginatedResponse((int)(is_array($response) ? ($response['data']['total'] ?? 0) : 0), $records);
     }
 }

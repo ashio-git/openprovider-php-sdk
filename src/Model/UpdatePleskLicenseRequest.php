@@ -19,8 +19,12 @@ class UpdatePleskLicenseRequest
         public readonly ?bool $restrict_ip_binding = null,
         public readonly ?bool $suspended = null,
         public readonly ?string $title = null,
-    ) {}
+    ) {
+    }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -37,6 +41,9 @@ class UpdatePleskLicenseRequest
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -50,6 +57,6 @@ class UpdatePleskLicenseRequest
             'restrict_ip_binding' => $this->restrict_ip_binding,
             'suspended' => $this->suspended,
             'title' => $this->title,
-        ], fn($v) => $v !== null);
+        ], fn ($v) => $v !== null);
     }
 }
