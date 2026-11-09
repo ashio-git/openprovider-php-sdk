@@ -1,0 +1,2012 @@
+{
+    "$comment": "API error codes from the Openprovider knowledge base. Normalized from docs/study/2026-11-09/error-codes.json: keyed by code, sorted, the duplicated identical row of 25007 kept once. Source of src/Exception/ErrorCatalog.php (tools/generate errors).",
+    "source": {
+        "url": "https://openprovider.help/books/api-integrations/page/api-error-codes",
+        "revision": "#9, updated 2026-08-19",
+        "retrieved": "2026-11-09",
+        "study": {
+            "file": "docs/study/2026-11-09/error-codes.json",
+            "sha256": "27f2025843752db3ed5353a2bf8e1506465a58ce79582ee6cf481e3924e26d84",
+            "rows": 609
+        }
+    },
+    "codes": {
+        "0": {
+            "description": "No errors",
+            "resolution": "Indicates successful operation."
+        },
+        "1": {
+            "description": "No changes in the data",
+            "resolution": "Edit your request, it contains no changes."
+        },
+        "10": {
+            "description": "The registry currently not reachable",
+            "resolution": "Please wait for a while, then retry, the registry is on maintenance."
+        },
+        "11": {
+            "description": "ERROR CODA response error",
+            "resolution": "An \"error coda response\" indicates that there's a problem with a specific internal system, and to understand the specific nature of the error, we would need to check the accompanying details, error codes, or logs provided by the system. Please contact Openprovider support with details, request/screenshot(s) of the operation you attempted."
+        },
+        "12": {
+            "description": "This is not an error. Everything went as it is supposed to.",
+            "resolution": "No further action needed here."
+        },
+        "15": {
+            "description": "EU registration currently closed. See www.eurid.eu for more information.",
+            "resolution": "This indicates that EU registration system is temporarily unavailable, most probably due to maintenance. You may check https://twitter.com/OPNotifications and https://statuspage.openprovider.eu for more details."
+        },
+        "16": {
+            "description": "The domain is blocked or reserved by EURid"
+        },
+        "17": {
+            "description": "Error while getting information from the registry",
+            "resolution": "Please wait for a while, then retry, the registry is on maintenance."
+        },
+        "18": {
+            "description": "Data is already up-to-date, no updates necessary"
+        },
+        "19": {
+            "description": "Invalid locale specified",
+            "resolution": "'locale' means customer's language. This is anoptional parameter for creating a customer/handle. Please use combinations of ISO language code and ISO country code (language_COUNTRY). Example, \"en_US\" for American English, \"en_GB\" British English, \"es_ES\" for Spanish, \"de_DE\" for German, \"fr_FR\" for French, etc."
+        },
+        "50": {
+            "description": "Calls limit has been reached",
+            "resolution": "Please see the limits at Openprovider API calls limits ."
+        },
+        "60": {
+            "description": "Search request limit value exceeded",
+            "resolution": "The maximum value for \" limit \" is 1000 for searchDomainRequest (XML API)/ ListDomains (REST API)."
+        },
+        "70": {
+            "description": "Command deprecated"
+        },
+        "80": {
+            "description": "Invalid request",
+            "resolution": "This error typically indicates that the request made does not meet the necessary criteria or is not recognized as acceptable. Please review your request based on the API documentation, XML API Documentation REST API Documentation"
+        },
+        "81": {
+            "description": "Method is not implemented",
+            "resolution": "This usually indicates that you are using the wrong HTTP method for API endpoints or when trying to use the base URL for transactions. For example, when using POST instead of GET or GET instead of PUT. Please review your request based on the API documentation ( XML API or REST API )."
+        },
+        "98": {
+            "description": "Requested data not in data-set",
+            "resolution": "This error indicates that at this moment we are not able to match the data you need with the data corresponding to your account. Please, try once more. If the issue persists, please contact Openprovider support with details, request/screenshot(s) of the operation you attempted."
+        },
+        "99": {
+            "description": "No data returned",
+            "resolution": "This error indicates that a query or request made to our system, database, or service did not return any results. If the issue persists, please contact Openprovider support with details, request/screenshot(s) of the operation you attempted."
+        },
+        "100": {
+            "description": "Empty initials!",
+            "resolution": "Please be sure the initials field contains data."
+        },
+        "101": {
+            "description": "Invalid initials!",
+            "resolution": "Please be sure the initials field contains the correct data."
+        },
+        "102": {
+            "description": "Empty first name!",
+            "resolution": "Please be sure the first name field contains data."
+        },
+        "103": {
+            "description": "Invalid first name!",
+            "resolution": "Check and edit the first name field."
+        },
+        "104": {
+            "description": "Invalid insertion!",
+            "resolution": "This error indicates that invalid data were inserted to our system, database, or service. Please review the data in your request."
+        },
+        "105": {
+            "description": "Empty last name field!",
+            "resolution": "Please be sure the last name field contains data."
+        },
+        "106": {
+            "description": "Invalid lastname!",
+            "resolution": "Check and edit the last name field."
+        },
+        "107": {
+            "description": "Empty gender field!",
+            "resolution": "Please be sure the gender field contains data."
+        },
+        "108": {
+            "description": "Invalid gender field!",
+            "resolution": "Please be sure gender is set up correctly."
+        },
+        "110": {
+            "description": "Empty street name field!",
+            "resolution": "Please be sure the street name field contains data."
+        },
+        "111": {
+            "description": "Invalid street name!",
+            "resolution": "Please be sure the street name field contains the correct data."
+        },
+        "112": {
+            "description": "Empty address-number",
+            "resolution": "Please be sure the house number field contains data."
+        },
+        "113": {
+            "description": "Invalid address-number",
+            "resolution": "Please be sure the house number field contains the correct data."
+        },
+        "114": {
+            "description": "Invalid suffix field!",
+            "resolution": "Please be sure the suffix field contains the correct/valid data."
+        },
+        "115": {
+            "description": "Empty zipcode field!",
+            "resolution": "Please be sure the zipcode field contains data."
+        },
+        "116": {
+            "description": "Invalid zipcode!",
+            "resolution": "Please be sure the zipcode field contains the correct/valid data."
+        },
+        "117": {
+            "description": "Empty city field!",
+            "resolution": "Please be sure the city field contains data."
+        },
+        "118": {
+            "description": "Invalid city!",
+            "resolution": "Please be sure the city field contains the correct/valid data."
+        },
+        "119": {
+            "description": "Invalid state!",
+            "resolution": "Please be sure the state field contains the correct/valid data."
+        },
+        "120": {
+            "description": "Empty country field!",
+            "resolution": "Please be sure the country field contains data."
+        },
+        "121": {
+            "description": "Invalid country code!",
+            "resolution": "Please be sure the country code field contains valid data. Please refer to the list of supported country codes: https://openprovider.help/books/domains/page/supported-country-codes-for-registration"
+        },
+        "122": {
+            "description": "Contact data contains non-latin data",
+            "resolution": "Handle has non-latin symbols"
+        },
+        "123": {
+            "description": "Country code for the contact doesn't correspond to the tld requirements.",
+            "resolution": "Please check the error description"
+        },
+        "124": {
+            "description": "Incorrect State/Province code.",
+            "resolution": "When Canada, Ireland, United States, United Kingdom is the country of contact, the state must be specified in ISO-3166-2. Codes for IE,GB,US,CA: in this doc ."
+        },
+        "126": {
+            "description": "Empty state field!",
+            "resolution": "Please check and ensure all contact handles (owner/tech/admin/billing) used has a valid state."
+        },
+        "130": {
+            "description": "Empty telephone country code field!",
+            "resolution": "This refers to a situation where a telephone number field lacks the required country code. Please insert the country code of the telephone number in the correct format."
+        },
+        "131": {
+            "description": "Invalid telephone country code!"
+        },
+        "132": {
+            "description": "Empty telephone regioncode field!",
+            "resolution": "This refers to a situation where a telephone number field lacks the required regional or area code. Please insert the region code of the telephone number in the correct format."
+        },
+        "133": {
+            "description": "Invalid telephone region code number!"
+        },
+        "134": {
+            "description": "Empty telephone subscribers number!"
+        },
+        "135": {
+            "description": "Invalid telephone subscribers number!"
+        },
+        "136": {
+            "description": "Incomplete telephone number!"
+        },
+        "137": {
+            "description": "Invalid mobile country code!",
+            "resolution": "Please insert the country code of the mobile number in the correct format."
+        },
+        "138": {
+            "description": "Invalid mobile region code!",
+            "resolution": "Please insert the region code of the mobile number in the correct format."
+        },
+        "139": {
+            "description": "Invalid mobile subscribers number!"
+        },
+        "140": {
+            "description": "Incomplete mobile number!"
+        },
+        "141": {
+            "description": "Invalid fax country code!"
+        },
+        "142": {
+            "description": "Invalid region code. Check the fax number, and correct the region code.",
+            "resolution": "This refers to a situation where a specified code, typically associated with a geographical region, is not in the expected or valid format. Please insert the region code part of the FAX number in the correct format."
+        },
+        "143": {
+            "description": "Invalid fax subscribers number!"
+        },
+        "144": {
+            "description": "Incomplete fax number!"
+        },
+        "145": {
+            "description": "Empty e-mail address!"
+        },
+        "146": {
+            "description": "Invalid e-mail!"
+        },
+        "147": {
+            "description": "Restricted e-mail domain. Please change your email to non-Openprovider address."
+        },
+        "150": {
+            "description": "Invalid fiscal number!"
+        },
+        "151": {
+            "description": "Invalid birthdate!",
+            "resolution": "This additional data is required for some TLDs, please put in your birthdate in format: YYYY-MM-DD and ensure that you are of legal age."
+        },
+        "152": {
+            "description": "Invalid birthcity!",
+            "resolution": "This additional data is required for some TLDs, please review and update the birth city entered."
+        },
+        "160": {
+            "description": "Empty companyname field!"
+        },
+        "161": {
+            "description": "Invalid company name!"
+        },
+        "162": {
+            "description": "Invalid vat number!"
+        },
+        "163": {
+            "description": "Invalid Chambre of Commerce number!"
+        },
+        "164": {
+            "description": "Invalid Chambre of Commerce region!"
+        },
+        "165": {
+            "description": "Invalid Chambre of Commerce date!"
+        },
+        "166": {
+            "description": "Empty mainoffice!"
+        },
+        "167": {
+            "description": "Invalid mainoffice!"
+        },
+        "168": {
+            "description": "Empty website field!"
+        },
+        "169": {
+            "description": "Invalid website field!"
+        },
+        "170": {
+            "description": "Empty type field!"
+        },
+        "171": {
+            "description": "A contact person with this type already exists!",
+            "resolution": "This error indicates that an attempt has been made to create or add a contact person within a system, database, or application, and a contact with the same type (admin/tech/billing) already exists in the records."
+        },
+        "172": {
+            "description": "Invalid customer type",
+            "resolution": "It implies that the specified type (admin/tech/billing) for the customer is not recognized or allowed according to the predefined criteria."
+        },
+        "173": {
+            "description": "ERROR while saving contact data"
+        },
+        "174": {
+            "description": "ERROR requesting external contactdata"
+        },
+        "175": {
+            "description": "Owner is not a citizen of an .EU member-state"
+        },
+        "176": {
+            "description": "Customer handle not found"
+        },
+        "177": {
+            "description": "External customer handle not found"
+        },
+        "178": {
+            "description": "Updating customer data with Registry Failed"
+        },
+        "179": {
+            "description": "You can not create more than one contact of this type",
+            "resolution": "You can not add more than one billing or admin contact."
+        },
+        "180": {
+            "description": "Empty search field!"
+        },
+        "181": {
+            "description": "Choose a search type!"
+        },
+        "182": {
+            "description": "Companyname already exists!"
+        },
+        "183": {
+            "description": "Customer is not an individual one please perform the action with a contact person"
+        },
+        "184": {
+            "description": "Customer is not a contact person please perform the action with an individual"
+        },
+        "185": {
+            "description": "You cannot delete yourself as a reseller!",
+            "resolution": "Be sure you are not removing yourself as reseller cause operation is not possible."
+        },
+        "186": {
+            "description": "Company is still connected to handles!",
+            "resolution": "Looks like you're trying to remove a Company that is connected to handles. Remove handles first."
+        },
+        "187": {
+            "description": "Customer is still attached to some domains!",
+            "resolution": "Looks like you're trying to remove a customer/handle that is connected to domains. Please update the handles of the connected domains before trying to remove to remove the customer/handle."
+        },
+        "188": {
+            "description": "Customer is still attached to some SSL orders!",
+            "resolution": "Looks like you're trying to remove a customer/handle that is connected to SSL orders."
+        },
+        "190": {
+            "description": "Invalid username!",
+            "resolution": "Please check the username and make sure it contains the correct data."
+        },
+        "191": {
+            "description": "This username already exists! Please choose a different username and try again.",
+            "resolution": "Select another username as it already exists in the system."
+        },
+        "192": {
+            "description": "Password doesn't match verification!",
+            "resolution": "Please be sure you're using a strong password that matches the verification pattern(s)."
+        },
+        "193": {
+            "description": "Handle is not recognized by the Openprovider system",
+            "resolution": "Please check the handle ID used in your request."
+        },
+        "194": {
+            "description": "Company is not known within the Openprovider system!",
+            "resolution": "Please check the company you're indicating."
+        },
+        "195": {
+            "description": "Invalid handle",
+            "resolution": "Indicate the correct handle."
+        },
+        "196": {
+            "description": "Authentication/Authorization Failed",
+            "resolution": "Authorization failed due to incorrect credentials/invalid token, make sure correct data is used."
+        },
+        "197": {
+            "description": "Account is blocked because of non-signed agreement. Log in to the control panel for more information.",
+            "resolution": "Please check and sign the 'Processor Agreement' at https://cp.openprovider.eu/documentation/contracts.php"
+        },
+        "199": {
+            "description": "An unknown error has occurred!",
+            "resolution": "No immediate resolution, contact support@openprovider.com please."
+        },
+        "200": {
+            "description": "Empty or invalid nameserver group name field!",
+            "resolution": "Please review your request and specify a valid nameserver group name."
+        },
+        "201": {
+            "description": "Nameserver group name not found in Openprovider system!",
+            "resolution": "The nameserver group specified in the request doesn't exist in your Openprovider account. Please re-try the operation (except for delete nameserver group request) after creating the nameserver group. You can create new nameserver groups via RCP or XML API or REST API ."
+        },
+        "202": {
+            "description": "Nameserver group name already exists!",
+            "resolution": "The nameserver group you are trying to create already exists."
+        },
+        "203": {
+            "description": "The nameservergroup is attached to some domains",
+            "resolution": "You can not delete the nameserver group as it is being used by some domains in your account. Please update nameserver groups for the domains if you really want to delete the nameserver group."
+        },
+        "220": {
+            "description": "Choose a group or individual nameservers!"
+        },
+        "221": {
+            "description": "You must enter minimum 2 nameserver name and IP address or a groupname!",
+            "resolution": "Not enough nameservers given"
+        },
+        "222": {
+            "description": "Invalid or double nameserver, nameserver must be unique!",
+            "resolution": "Nameserver Hostname is given twice"
+        },
+        "223": {
+            "description": "Empty nameservers/nameserver group name",
+            "resolution": "Please re-try the request with either nameservers or a nameserver group name"
+        },
+        "224": {
+            "description": "Nameserver not found in the Openprovider system",
+            "resolution": "The nameserver specified in your request doesn't exist in Openprovider. It was either deleted or is not created yet. You can create nameservers (for domains registered through Openprovider) via RCP or XML API or REST API ."
+        },
+        "225": {
+            "description": "Empty nameserver name NS-1 field!"
+        },
+        "226": {
+            "description": "Invalid nameserver hostname",
+            "resolution": "Please check the error description (data section) for details (Eg: Wrong hostname format)"
+        },
+        "227": {
+            "description": "Invalid nameserver IPv4 address",
+            "resolution": "Please check the error description (data section) for details (Eg: Wrong IPv4 param)"
+        },
+        "228": {
+            "description": "Invalid nameserver IPv6 address"
+        },
+        "229": {
+            "description": "Enter at least one IP address IPv4 or IPv6 for nameserver%s",
+            "resolution": "Neither IPv4 nor IPv6 are specified"
+        },
+        "230": {
+            "description": "Nameserver is already present in your account",
+            "resolution": "The same nameserver you're trying to use is already present in the system, change values and retry."
+        },
+        "231": {
+            "description": "IP is not specified",
+            "resolution": "IP address is mandatory for nameservers. Please make sure you indicate the IP for the nameservers used."
+        },
+        "234": {
+            "description": "Can't resolve IP address from host!",
+            "resolution": "The system can not match IP and host used. Make sure correct data used."
+        },
+        "235": {
+            "description": "Please acknowledge compliance by ticking the checkbox"
+        },
+        "240": {
+            "description": "This is an Openprovider system nameserver group, it can't be removed",
+            "resolution": "You cannot change/delete this name servers group"
+        },
+        "244": {
+            "description": "The nameserver-check returned errors"
+        },
+        "245": {
+            "description": "Nameserver-update failed",
+            "resolution": "Please review the nameserver entries in your request and correct any typos, remove any empty spaces, null/empty nameserver entries, dot(.) at the end of nameservers."
+        },
+        "246": {
+            "description": "Removing of nameservers is failed"
+        },
+        "247": {
+            "description": "Removing of nameservers is prohibited"
+        },
+        "250": {
+            "description": "Nameserver addresses are automatically resolved by system (Nameserver IP addresses are only saved for glue records).",
+            "resolution": "This is an informational message, no action required."
+        },
+        "290": {
+            "description": "Domain forwarding provisioning request has been received and will be processed shortly. Once provisioning is complete please assign A-record in domain DNS zone to 34.90.130.132 manually to complete service configuration."
+        },
+        "299": {
+            "description": "An unknown nameserver error has occurred",
+            "resolution": "Please contact Openprovider support with details, request/screenshot(s) of the operation you attempted."
+        },
+        "300": {
+            "description": "Your domain request contains an empty domain name!"
+        },
+        "301": {
+            "description": "Your domain request contains only numbers!"
+        },
+        "302": {
+            "description": "Your domain request has more than 63 characters!",
+            "resolution": "Domain name maximum length exceeded. Please try with a shorter name."
+        },
+        "303": {
+            "description": "Your domain request contains invalid characters!",
+            "resolution": "Please check the allowed characters for the TLD."
+        },
+        "304": {
+            "description": "Your domain request begins with an -",
+            "resolution": "Hyphen/dash (-) is not allowed at the start of the domain name. You may use it in the middle."
+        },
+        "305": {
+            "description": "Your domain request ends with an -",
+            "resolution": "Hyphen/dash (-) is not allowed at the end of the domain name. You may use it in the middle."
+        },
+        "306": {
+            "description": "Your domain request contains an empty extension!",
+            "resolution": "Check if the extension indicated is correct."
+        },
+        "307": {
+            "description": "Your domain request contains an invalid extension!",
+            "resolution": "The extension used does not exist. Be sure an existing one is used."
+        },
+        "308": {
+            "description": "Openprovider doesn't have your digital signature",
+            "resolution": "Please return to the RCP login page and sign up for the contact."
+        },
+        "309": {
+            "description": "You have not signed the latest version of the contract for registering this domain",
+            "resolution": "You have not signed the latest version of the contract for registering this extension. After signing the contract , please try ordering the domain again."
+        },
+        "310": {
+            "description": "Credit is not enough!",
+            "resolution": "Balance is insufficient, please increase balance."
+        },
+        "311": {
+            "description": "The domain you want to register is not free!",
+            "resolution": "The domain you are trying to register is already registered or reserved."
+        },
+        "312": {
+            "description": "The domain you want to register is free!"
+        },
+        "313": {
+            "description": "The domain you want to transfer is free",
+            "resolution": "The domain that you tried to transfer is not yet registered. Please register it."
+        },
+        "314": {
+            "description": "The domain you want to trade is free",
+            "resolution": "The domain that you tried to trade is not yet registered. Please register it."
+        },
+        "315": {
+            "description": "Empty period!",
+            "resolution": "Please check your request and ensure to specify a valid period (years for registration)"
+        },
+        "316": {
+            "description": "Invalid period!",
+            "resolution": "Please check your request and ensure to specify a valid period (years for registration)"
+        },
+        "317": {
+            "description": "Empty authorization code!",
+            "resolution": "Re-try the transfer/trade with the domain's authorization code."
+        },
+        "318": {
+            "description": "The authorization code is incorrect or missing",
+            "resolution": "Your transfer/trade request doesn't contain an authorisation code or it is invalid. Please re-try domain transfer/trade with correct authorization code."
+        },
+        "319": {
+            "description": "Authorization code for this extension cannot be requested",
+            "resolution": "API call requestAuthCodeDomainRequest (XML API) / GetAuthCode (REST API) is not available for some TLDs. Try resetAuthCodeDomainRequest (XML API) or ResetAuthCode (REST API) instead, if the registry allows it."
+        },
+        "320": {
+            "description": "The domain is not in your account; please transfer it to your account first.",
+            "resolution": "The response indicates that domain either transferred out (internal/external transfer) or deleted after expiration."
+        },
+        "321": {
+            "description": "Domains with this extension cannot be traded",
+            "resolution": "Trade is not supported for the extension, please try another extension."
+        },
+        "322": {
+            "description": "Domains with this extension cannot be transferred",
+            "resolution": "Transfers are not supported for the extension."
+        },
+        "323": {
+            "description": "This is an internal transfer",
+            "resolution": "The transfer is an internal one"
+        },
+        "324": {
+            "description": "This domain cannot be renewed yet",
+            "resolution": "This domain TLD has special limitations in terms of its renewal. Please search for this TLD here"
+        },
+        "325": {
+            "description": "This domain is already renewed",
+            "resolution": "No need to renew the domain name, it's already renewed."
+        },
+        "326": {
+            "description": "This domain is already in your account"
+        },
+        "327": {
+            "description": "This domain already exists in Openprovider but NOT active",
+            "resolution": "The error is typically returned when trying to perform an action on a non-active domain. Example scenarios:1. Trying to renew a domain via API that is in hard quarantine. Try restore request instead. 2. Trying to transfer a domain that expired under a different Openprovider reseller account. Only active domains can be transferred. Renew/restore the domain before attempting transfer. 3. Trying to request or reset auth code of an expired domain. Reactivate the domain if you would like to request or reset auth code of the domain."
+        },
+        "328": {
+            "description": "This domain is locked",
+            "resolution": "Please unlock the domain at the current provider and re-try the transfer."
+        },
+        "329": {
+            "description": "Locking not possible for extension",
+            "resolution": "Domain locking is not supported for the extension."
+        },
+        "330": {
+            "description": "Empty owner handle!",
+            "resolution": "Be sure the owner handle is present in the request."
+        },
+        "331": {
+            "description": "Invalid owner handle!",
+            "resolution": "Be sure the owner handle in the request is correct."
+        },
+        "332": {
+            "description": "Empty admin handle!",
+            "resolution": "Be sure the admin handle is present in the request."
+        },
+        "333": {
+            "description": "Invalid admin handle!",
+            "resolution": "Be sure the admin handle in the request is correct."
+        },
+        "334": {
+            "description": "Empty tech handle!",
+            "resolution": "Be sure the tech handle is present in the request."
+        },
+        "335": {
+            "description": "Invalid tech handle!",
+            "resolution": "Be sure the owner handle in the request is correct."
+        },
+        "336": {
+            "description": "The owner-data differs too much with the current registration-data!",
+            "resolution": "Owner data differs too much (internal transfer). Please check and update the owner handle before retrying the operation."
+        },
+        "337": {
+            "description": "The entered owner does not equal the owner in the whois",
+            "resolution": "The owner given in the transfer is not the legitimate owner"
+        },
+        "338": {
+            "description": "Authorization code for this extension cannot be resetted",
+            "resolution": "Please try requesting auth code via RCP or XML API or REST API"
+        },
+        "339": {
+            "description": "Not all external handles are created please wait for several minutes and try again"
+        },
+        "340": {
+            "description": "The registry is unavailable due to maintainance",
+            "resolution": "Registry temporary unreachable. Wait for a while and retry again."
+        },
+        "341": {
+            "description": "ERROR saving domain data",
+            "resolution": "This error indicates that the changes made aren't saved successfully. Please contact the Openprovider Support team with details (domain name, change you tried to make, error message/screenshot)."
+        },
+        "342": {
+            "description": "Domain cannot be renewed again within 10 seconds after the last renewal",
+            "resolution": "The domain you are trying to renew was already renewed within the last 10 seconds."
+        },
+        "343": {
+            "description": "You cannot renew this domain for chosen period"
+        },
+        "344": {
+            "description": "Invalid format of date",
+            "resolution": "Wrong transfer date"
+        },
+        "345": {
+            "description": "Bad provider specified"
+        },
+        "346": {
+            "description": "Reseller cannot add duplicate domain",
+            "resolution": "This domain is already in your account"
+        },
+        "347": {
+            "description": "Wrong auto renew value",
+            "resolution": "Please review and correct the auto-renew value in the request."
+        },
+        "348": {
+            "description": "Can not reset authorization code for domain using registrar domicile",
+            "resolution": "<p>The domain %s uses the <i>local presence</i> of Openprovider. For that reason, an authorization code can not be set. Please update the domain registration first in order to remove the local presence of Openprovider. Afterward, you can request the authorization code.<br/ ><br />The domain owner or the new provider should be able to provide you with details about their local presence.</p>"
+        },
+        "349": {
+            "description": "Current method is not supported, connect to support please",
+            "resolution": "Please check the error description (data section) for details. (Eg: Domain update is not supported by registry)"
+        },
+        "350": {
+            "description": "This domain is already present in Openprovider system"
+        },
+        "351": {
+            "description": "Authorization code type parameter can not be an array"
+        },
+        "352": {
+            "description": "Authorization code validity has expired",
+            "resolution": "Based on the TLD you can request a new auth code or reset the existing one. Then re-try the operation."
+        },
+        "353": {
+            "description": "Domain is not known by registry",
+            "resolution": "If you are attempting an operation on an active domain, please Contact Openprovider Support"
+        },
+        "354": {
+            "description": "There is no a transfer to approve or you are not permited to",
+            "resolution": "Make sure your input is correct. This response indicates there is no pending transfer for you to approve."
+        },
+        "355": {
+            "description": "Incorrect domain deletion type specified"
+        },
+        "356": {
+            "description": "Domain is not known by 3rd party registrar",
+            "resolution": "If you are attempting an operation on an active domain, please Contact Openprovider Support"
+        },
+        "357": {
+            "description": "Bad routeId on domain during transfer action",
+            "resolution": "Please Contact Openprovider Support for assistance."
+        },
+        "358": {
+            "description": "Provided authorization code is incorrect",
+            "resolution": "Please check and ensure the entered authorization code is correct. If you entered the correct code and the transfer failed with this status, the Auth/EPP code held by your current Registrar may not be in sync with the code at the Registry. In this case, you must request that your current Registrar/provider synchronize the code with the Registry."
+        },
+        "359": {
+            "description": "Invalid domain type specified"
+        },
+        "360": {
+            "description": "German domain should have IP-addresses in different subnets",
+            "resolution": "For a .de domain, nameservers should have IP-addresses in different subnets."
+        },
+        "361": {
+            "description": "German domain should a German owner or admin",
+            "resolution": "For a .de domain, it is required that the owner or administrative contact be located in Germany."
+        },
+        "362": {
+            "description": "Domain has already been registered in Openprovider"
+        },
+        "363": {
+            "description": "Domain has not been registered in Openprovider"
+        },
+        "364": {
+            "description": "Owner handle must differ from current one"
+        },
+        "365": {
+            "description": "This domain is not under your account"
+        },
+        "366": {
+            "description": "This action is prohibitted for current domain status."
+        },
+        "367": {
+            "description": "This domain cannot be locked because of its status"
+        },
+        "368": {
+            "description": "This domain cannot be deleted because renewal date is too close."
+        },
+        "369": {
+            "description": "Transfer is prohibited by the current domain owner",
+            "resolution": "Transfer is prohibited, the domain appears to be locked against transfer. Please unlock the domain and retry the transfer."
+        },
+        "370": {
+            "description": "Empty application mode!",
+            "resolution": "You can find supported application modes for an extension using ListTlds or GetTld API call and look for \"supported_application_mode\" in the response."
+        },
+        "371": {
+            "description": "application mode is out of the current date",
+            "resolution": "You can find supported application modes for an extension using ListTlds or GetTld API call and look for \"supported_application_mode\" in the response."
+        },
+        "372": {
+            "description": "Wrong default billing handle",
+            "resolution": "Please review the billing handle used."
+        },
+        "373": {
+            "description": "Invalid billing handle!",
+            "resolution": "Please review the billing handle used and use a valid one."
+        },
+        "374": {
+            "description": "Domain `additionalData` parameter is missing",
+            "resolution": "The error indicates that the TLD requires additional data. Please review the data part of the API response for details or check TLD's additional data requirements via REST API or XML API ."
+        },
+        "375": {
+            "description": "Domain `additionalData` parameter is invalid",
+            "resolution": "The error indicates that the additional data provided is invalid. Please review the data part of the API response for details or check TLD's additional data requirements via REST API or XML API ."
+        },
+        "376": {
+            "description": "Restore operation is not allowed for this domain",
+            "resolution": "It indicates that restores are not possible for this zone at this point. TLDs like .tk doesn't have restore option available."
+        },
+        "377": {
+            "description": "Wrong application mode",
+            "resolution": "You can find supported application modes for an extension using ListTlds or GetTld API call and look for \"supported_application_mode\" in the response."
+        },
+        "378": {
+            "description": "domain preregistration is closed for this TLD",
+            "resolution": "You can find supported application modes for an extension using ListTlds or GetTld API call and look for \"supported_application_mode\" in the response."
+        },
+        "379": {
+            "description": "You are about to register the premium domain. If you accept this registration fee, re-send the request and add the parameters \"acceptPremiumFee\" with the value of a premium fee, which can be found in the `data` block of this command output."
+        },
+        "380": {
+            "description": "Missing first name to register an .it domain"
+        },
+        "381": {
+            "description": "Missing state to register an .it domain"
+        },
+        "382": {
+            "description": "Missing fiscal number to register an .it domain"
+        },
+        "383": {
+            "description": "Missing birthdate to register an .it domain"
+        },
+        "384": {
+            "description": "Missing birthcity to register an .it domain"
+        },
+        "385": {
+            "description": "Missing vatnumber to register an .it domain"
+        },
+        "386": {
+            "description": "Missing Chambre of Commerce number to register an .it domain"
+        },
+        "387": {
+            "description": "Missing Chambre of Commerce region to register an .it domain"
+        },
+        "388": {
+            "description": "Missing Chambre of Commerce date to register an .it domain"
+        },
+        "389": {
+            "description": "Owner should match the administrative contact in case of a company"
+        },
+        "390": {
+            "description": "The entered owner does not match the whois consider a trade instead of a transfer"
+        },
+        "391": {
+            "description": "The entered owner does match the whois consider doing a transfer instead of a trade"
+        },
+        "392": {
+            "description": "The form could not be found",
+            "resolution": "This error is related to EURid's pre-populated transfer form. We could not find the information."
+        },
+        "393": {
+            "description": "The authorisation code has been sent to the owner"
+        },
+        "394": {
+            "description": "The authorisation code could not be sent see the FAQ for more information"
+        },
+        "395": {
+            "description": "Domain name is in Early Access Program state",
+            "resolution": "This stage enables you to acquire a domain before it becomes accessible to the general public. Read more at: https://www.openprovider.com/blog/how-do-new-gtld-launch-phases-work"
+        },
+        "396": {
+            "description": "This extension is locked to prepare the domains for the General Availability. Try again after the General Availability opens"
+        },
+        "397": {
+            "description": "Domain status transition is not allowed"
+        },
+        "398": {
+            "description": "Invalid queue status set"
+        },
+        "399": {
+            "description": "An error has occurred; for more details, please refer to the registry message below. For more information please check https://openprovider.help/books/quick-start/page/whoops-an-error-has-occurred",
+            "resolution": "Please check the error description (data section) for details."
+        },
+        "400": {
+            "description": "Empty support name",
+            "resolution": "This error occurs when you fill out the support contact form and you leave the name field blank, please ensure that it's filled out."
+        },
+        "401": {
+            "description": "Invalid support name",
+            "resolution": "This error occurs when you fill out the support contact form and you type in an invalid specific context or character, please ensure that you fill it out accordingly."
+        },
+        "402": {
+            "description": "Empty support email",
+            "resolution": "This error occurs when you fill out the support contact form and you leave the email field empty, please ensure to fill it out."
+        },
+        "403": {
+            "description": "Invalid support email",
+            "resolution": "This error occurs when you fill out the support contact form and you enter an incorrect email address, please ensure that you fill it out accordingly."
+        },
+        "404": {
+            "description": "Empty support subject",
+            "resolution": "This error occurs when you fill out the support contact form and you leave the subject field blank, please fill out the form completely."
+        },
+        "405": {
+            "description": "Empty support question",
+            "resolution": "This error occurs when you fill out the support contact form and you left the issue description/question field empty. Please include the inquiry and submit it again."
+        },
+        "420": {
+            "description": "Name is mandatory"
+        },
+        "421": {
+            "description": "Name is invalid"
+        },
+        "422": {
+            "description": "E-mail is mandatory"
+        },
+        "423": {
+            "description": "E-mail is invalid"
+        },
+        "424": {
+            "description": "Sender is mandatory"
+        },
+        "425": {
+            "description": "Sender is invalid"
+        },
+        "500": {
+            "description": "Domain is not registered with Openprovider check whois",
+            "resolution": "Domain may have been transferred away, or transfer in may have failed. Check whois to identify the registrar of record for this domain."
+        },
+        "501": {
+            "description": "The domainname contains less than the minimum allowed number of characters"
+        },
+        "502": {
+            "description": "An database error has occurred. Please contact Openprovider.",
+            "resolution": "This error occurs if you are trying to delete a duplicate domain in the database. It won't be deleted as a precaution. As such, you may contact our support team for assistance."
+        },
+        "503": {
+            "description": "Could not retreive whois information"
+        },
+        "504": {
+            "description": "Application Pending"
+        },
+        "505": {
+            "description": "You can only register 1 .EU domain at a time an not combined with an other extension",
+            "resolution": "This indicates that you are allowed to register only one .EU domain at a time, and it cannot be combined with any other extension."
+        },
+        "506": {
+            "description": "Registration right is invalid",
+            "resolution": "This error suggests that the eligibility requirement in registering this extension isn't met."
+        },
+        "507": {
+            "description": "Richt on name is invalid"
+        },
+        "508": {
+            "description": "Supplier of documentary evidence is invalid"
+        },
+        "509": {
+            "description": "Prior right country is invalid",
+            "resolution": "This could mean that the country specified in the prior rights claim is not recognized, is improperly formatted."
+        },
+        "510": {
+            "description": "Document language is invalid"
+        },
+        "511": {
+            "description": "3rd party emailaddress in invalid"
+        },
+        "512": {
+            "description": "Domain is blocked"
+        },
+        "513": {
+            "description": "Domain is reserved"
+        },
+        "514": {
+            "description": "The domain is already being transferred"
+        },
+        "515": {
+            "description": "Invalid status for domain"
+        },
+        "517": {
+            "description": "Empty billing handle!"
+        },
+        "540": {
+            "description": "Mobile phone must be verified"
+        },
+        "541": {
+            "description": "Cannot do this operation because administrative data of .ru/.xn--p1ai domain-s was changed less than 30 days ago"
+        },
+        "542": {
+            "description": "This domain cannot be transferred because expiration date is too close"
+        },
+        "545": {
+            "description": "Incorrect sending type for auth code",
+            "resolution": "There are multiple options for sending auth code for different TLDs. If the provided auth code type didn't match to any of the allowed types for the TLD, it will return this error message. Default: 'email' (if sending type is not specified)Options: ['email', 'sms', 'letter']"
+        },
+        "546": {
+            "description": "Incorrect type for phone confirmation",
+            "resolution": "This error indicates that the phone number entered is not in the correct format (e.g., missing area code or country code) or that the information provided is not recognized as a valid phone number. Try adding carefully a valid number."
+        },
+        "547": {
+            "description": "Registration/transfer is prohibited for current domain name"
+        },
+        "548": {
+            "description": "Cannot trade domain to unverified contact"
+        },
+        "549": {
+            "description": "Cannot modify administrative fields of .ru/.xn--p1ai domains' owner. Please use trade command for it."
+        },
+        "550": {
+            "description": "Operation is invalid"
+        },
+        "560": {
+            "description": "Cannot delete domain on registry side"
+        },
+        "561": {
+            "description": "Cannot delete domain because it has glue records"
+        },
+        "570": {
+            "description": "Auth code sending is denied to unverified phone. Please go to owner's details page and click button 'Get code', complete phone verification."
+        },
+        "571": {
+            "description": "Auth code sending is denied to unverified email. Please go to owner's details page and click button 'Start verification', complete email verification."
+        },
+        "701": {
+            "description": "The domains limit is exceeded.Please send less domains in one request",
+            "resolution": "There is a limit of 15 domains per request for checkDomainRequest."
+        },
+        "800": {
+            "description": "Unknown DNS zone"
+        },
+        "801": {
+            "description": "Invalid domain name"
+        },
+        "802": {
+            "description": "Invalid extension"
+        },
+        "803": {
+            "description": "Invalid record type"
+        },
+        "804": {
+            "description": "Invalid IPv4 IP address"
+        },
+        "805": {
+            "description": "A zone already exists for this domain"
+        },
+        "806": {
+            "description": "You did not enter all data"
+        },
+        "807": {
+            "description": "A slave zone can only contain 1 record of the type"
+        },
+        "808": {
+            "description": "Invalid record type"
+        },
+        "810": {
+            "description": "Record can not be deleted"
+        },
+        "811": {
+            "description": "SOA record can not be deleted"
+        },
+        "812": {
+            "description": "Name of record not entered",
+            "resolution": "Please make sure you are entering a valid record name, and try again."
+        },
+        "813": {
+            "description": "Type of record not entered",
+            "resolution": "Please enter a valid DNS record type. Examples are: A, CNAME, MX, TXT etc."
+        },
+        "814": {
+            "description": "Value of record not entered",
+            "resolution": "Please enter a value for the DNS record you want to create/update."
+        },
+        "815": {
+            "description": "Invalid value for TTL numerical, minimum value of 600",
+            "resolution": "Please review TTL specified in the request and ensure to set a value equal to 600 (seconds) or higher."
+        },
+        "816": {
+            "description": "Invalid value for priority",
+            "resolution": "Please specify a priority for MX record. The 'priority' number for MX records indicate preference; the lower 'priority' value is preferred. That is, if you have a couple of MX records with priority 10 and 20, the one with priority value 10 will be preferred."
+        },
+        "817": {
+            "description": "Duplicate record",
+            "resolution": "You are attempting to add a duplicate DNS record. Please review the existing DNS records."
+        },
+        "820": {
+            "description": "Invalid A record"
+        },
+        "821": {
+            "description": "Invalid CNAME record"
+        },
+        "822": {
+            "description": "Invalid MX record"
+        },
+        "823": {
+            "description": "Invalid NS record"
+        },
+        "824": {
+            "description": "Invalid SOA record"
+        },
+        "825": {
+            "description": "Invalid PTR record"
+        },
+        "826": {
+            "description": "Invalid AAAA record"
+        },
+        "827": {
+            "description": "Invalid TXT record"
+        },
+        "828": {
+            "description": "Invalid SPF record"
+        },
+        "829": {
+            "description": "Invalid record name"
+        },
+        "830": {
+            "description": "IP address of the PTR record is not equal to the A record of this domain"
+        },
+        "831": {
+            "description": "Invalid MX record the record should point to an existing A record"
+        },
+        "832": {
+            "description": "Invalid SRV record"
+        },
+        "833": {
+            "description": "Invalid SRV weight"
+        },
+        "834": {
+            "description": "Invalid SRV port"
+        },
+        "835": {
+            "description": "Invalid SRV address"
+        },
+        "836": {
+            "description": "Invalid TLSA record"
+        },
+        "837": {
+            "description": "Invalid SSHFP record"
+        },
+        "850": {
+            "description": "You did not choose a valid zone type",
+            "resolution": "Seems no valid DNS zone type ('master' or 'slave') was entered. Please, choose a valid type ('master' or 'slave') and try again. Please refer to DNSQuickstart for example requests."
+        },
+        "851": {
+            "description": "You did not yet define your mail servers"
+        },
+        "852": {
+            "description": "Enter at least 1 mail server"
+        },
+        "853": {
+            "description": "Invalid value for mail server"
+        },
+        "854": {
+            "description": "Enter both the subdomain, as where to point to IP or URL"
+        },
+        "855": {
+            "description": "Invalid value for the subdomain"
+        },
+        "856": {
+            "description": "Invalid value for the subdomain"
+        },
+        "857": {
+            "description": "You entered duplicate subdomains"
+        },
+        "858": {
+            "description": "You entered duplicate mail servers"
+        },
+        "860": {
+            "description": "DNS zone could not be added"
+        },
+        "870": {
+            "description": "Invalid name for the template"
+        },
+        "871": {
+            "description": "Wrong orderBy field."
+        },
+        "872": {
+            "description": "Zone specified is not found.",
+            "resolution": "Please ensure the zone name is correct and the zone is active (not disabled)."
+        },
+        "873": {
+            "description": "Template specified is not found."
+        },
+        "874": {
+            "description": "Template ID is empty."
+        },
+        "876": {
+            "description": "Please insert DNS records"
+        },
+        "877": {
+            "description": "It is not possible to use MX records that point to an IP address in the range 79.99.129.0/24."
+        },
+        "891": {
+            "description": "DNSSEC is not supported by this extension"
+        },
+        "895": {
+            "description": "DNSSEC keys and digests should be BASE64 encoded"
+        },
+        "896": {
+            "description": "DNSSEC processing failed."
+        },
+        "900": {
+            "description": "Login failed"
+        },
+        "901": {
+            "description": "Empty username field!"
+        },
+        "902": {
+            "description": "Empty password field!"
+        },
+        "910": {
+            "description": "The form you sent was not recognized by the Openprovider system"
+        },
+        "911": {
+            "description": "The version of the command sent is not or no longer valid"
+        },
+        "920": {
+            "description": "Your balance is insufficient"
+        },
+        "921": {
+            "description": "Invalid characters in amount!"
+        },
+        "922": {
+            "description": "The amount is too small!"
+        },
+        "923": {
+            "description": "Amounts larger than ¡ 1000,00 can only be payed by wire transfer!"
+        },
+        "924": {
+            "description": "Invalid currency."
+        },
+        "927": {
+            "description": "Increase balance payment failed"
+        },
+        "950": {
+            "description": "Payment ID is invalid"
+        },
+        "951": {
+            "description": "Confirmation code is invalid"
+        },
+        "952": {
+            "description": "The confirmation checkbox is not checked"
+        },
+        "953": {
+            "description": "The payment could not be found"
+        },
+        "954": {
+            "description": "The payment is already confirmed"
+        },
+        "955": {
+            "description": "Amount is empty"
+        },
+        "956": {
+            "description": "Payment method is empty"
+        },
+        "957": {
+            "description": "Payment method is not supported"
+        },
+        "958": {
+            "description": "Payment method is not allowed to reseller"
+        },
+        "960": {
+            "description": "You have already selected your account currency"
+        },
+        "999": {
+            "description": "An unknown error occurred please contact Openprovider"
+        },
+        "1000": {
+            "description": "Empty field for the type SSL cerificate!"
+        },
+        "1001": {
+            "description": "Empty field for the number of servers on the PremiumSSL Wildcard!"
+        },
+        "1002": {
+            "description": "Empty field for the years for the SSL certificate!"
+        },
+        "1003": {
+            "description": "Empty field for the CSR!"
+        },
+        "1004": {
+            "description": "Empty field for the servers software for the SSL certificate!"
+        },
+        "1005": {
+            "description": "Empty field for the address for the SSL certificate!"
+        },
+        "1006": {
+            "description": "Invalid field for the address for the SSL certificate!"
+        },
+        "1007": {
+            "description": "Empty field for the zipcode for the SSL certificate!"
+        },
+        "1008": {
+            "description": "Invalid field for the zipcode for the SSL certificate!"
+        },
+        "1009": {
+            "description": "Empty field for the city for the SSL certificate!"
+        },
+        "1010": {
+            "description": "Invalid field for the city for the SSL certificate!"
+        },
+        "1011": {
+            "description": "Empty field for the state for the SSL certificate!"
+        },
+        "1012": {
+            "description": "Invalid field for the state for the SSL certificate!"
+        },
+        "1013": {
+            "description": "An unexpected error occured!"
+        },
+        "1015": {
+            "description": "Invalid country for the SSL certificate"
+        },
+        "1016": {
+            "description": "The company name in your handle is does not exist or is invalid. Please check the details in your handle."
+        },
+        "1017": {
+            "description": "Invalid phone for the SSL certificate"
+        },
+        "1020": {
+            "description": "Invalid product"
+        },
+        "1021": {
+            "description": "Invalid period!"
+        },
+        "1022": {
+            "description": "Selected no or invalid webserver software"
+        },
+        "1023": {
+            "description": "Entered invalid subdomain in the hostnames"
+        },
+        "1024": {
+            "description": "Invalid subject alternative names"
+        },
+        "1025": {
+            "description": "The CSR entered specifies alternative domain names. This certificate does not support alternative domain names."
+        },
+        "1026": {
+            "description": "Invalid wildcard format"
+        },
+        "1027": {
+            "description": "Wildcards are not supported by the product"
+        },
+        "1028": {
+            "description": "CSR common name should start with wildcard *"
+        },
+        "1029": {
+            "description": "The CSR entered does not specify any subject alternative domain names SAN. This is required for a multi-domain certificate. Please reconfigure your CSR."
+        },
+        "1030": {
+            "description": "Invalid CSR"
+        },
+        "1031": {
+            "description": "Found no or invalid common name CN gevonden in CSR"
+        },
+        "1032": {
+            "description": "This product can not be supplemented with additional features"
+        },
+        "1033": {
+            "description": "A maximum of %d additional domains applies"
+        },
+        "1034": {
+            "description": "Chosen features set is not supported by the product or invalid"
+        },
+        "1035": {
+            "description": "Multiple features are not allowed"
+        },
+        "1036": {
+            "description": "Please complete the field - Email address approver."
+        },
+        "1037": {
+            "description": "Certificate is not active"
+        },
+        "1038": {
+            "description": "An unknown error occured when generating CSR, please check parameters passed"
+        },
+        "1040": {
+            "description": "Selected no handle"
+        },
+        "1041": {
+            "description": "Selected invalid handle"
+        },
+        "1045": {
+            "description": "Invalid e-mail address for approver"
+        },
+        "1046": {
+            "description": "E-mail address for approver is not allowed"
+        },
+        "1050": {
+            "description": "CSR must contain company"
+        },
+        "1051": {
+            "description": "CSR must contain country"
+        },
+        "1052": {
+            "description": "CSR company must be equal to contact company"
+        },
+        "1083": {
+            "description": "Certificate can not be reissued from incomplete order"
+        },
+        "1084": {
+            "description": "Invalid order"
+        },
+        "1085": {
+            "description": "The command was not recognized"
+        },
+        "1086": {
+            "description": "An unknown error occurred when processing requested plugin action"
+        },
+        "1087": {
+            "description": "Order is being processed by CA"
+        },
+        "1088": {
+            "description": "SSL certificate request has been rejected"
+        },
+        "1089": {
+            "description": "SSL certificate has been revoked"
+        },
+        "1090": {
+            "description": "Revocation reason can not be empty"
+        },
+        "1091": {
+            "description": "Payment required for the successful order"
+        },
+        "1092": {
+            "description": "Product is currently disabled"
+        },
+        "1093": {
+            "description": "Empty order id"
+        },
+        "1094": {
+            "description": "Invalid order id"
+        },
+        "1095": {
+            "description": "Invalid order status"
+        },
+        "1096": {
+            "description": "Invalid product's category"
+        },
+        "1097": {
+            "description": "Empty product ID."
+        },
+        "1098": {
+            "description": "Invalid product ID."
+        },
+        "1099": {
+            "description": "An unknown error occurred when ordering the certificate; for more details..."
+        },
+        "1100": {
+            "description": "Valid customer name required"
+        },
+        "1101": {
+            "description": "Valid company name required"
+        },
+        "1102": {
+            "description": "Valid domain name required"
+        },
+        "1103": {
+            "description": "Valid e-mail address required"
+        },
+        "1105": {
+            "description": "Logo required"
+        },
+        "1106": {
+            "description": "Invalid logo file type: should be .gif or .jpg"
+        },
+        "1107": {
+            "description": "Invalid logo dimensions: should be 600px by 280px max"
+        },
+        "1540": {
+            "description": "Cannot request or reset authorization code, domain locked for transfer. Please unlock the domain first."
+        },
+        "1901": {
+            "description": "Fiscal number owner is necessary to register this domain"
+        },
+        "1902": {
+            "description": "A VAT number owner is required for this domain request"
+        },
+        "1903": {
+            "description": "A company registration number CoC is required for this domain request"
+        },
+        "1910": {
+            "description": "The admin and owner for an .ES domain must be the same person."
+        },
+        "1920": {
+            "description": "A company needs a valid SIREN/SIRET number put this in the CoC field"
+        },
+        "1921": {
+            "description": "No birth date has been entered"
+        },
+        "1922": {
+            "description": "Birth date is not formatted as dd-mm-yyyy"
+        },
+        "1923": {
+            "description": "No birth place has been entered"
+        },
+        "1924": {
+            "description": "Owner and administrative contact should be French"
+        },
+        "1925": {
+            "description": "Passport number is missing"
+        },
+        "1926": {
+            "description": "Please check customer\\'s details. Something is wrong with them."
+        },
+        "1927": {
+            "description": "Customer required additional data parameter is missing.",
+            "resolution": "Additional data information is missing and registration/transfer cannot proceed. Check here your TLD and retry by providing all the required information."
+        },
+        "2001": {
+            "description": "Uploading the file failed."
+        },
+        "2002": {
+            "description": "The filetype is not supported."
+        },
+        "2003": {
+            "description": "An error has occurred while processing the file."
+        },
+        "2004": {
+            "description": "Only csv file supported."
+        },
+        "3001": {
+            "description": "Title is required parameter"
+        },
+        "3002": {
+            "description": "License cannot be created. Try again later"
+        },
+        "3003": {
+            "description": "You have not changed any option. There is nothing to upgrade"
+        },
+        "3004": {
+            "description": "License cannot be upgraded. Try again later"
+        },
+        "3005": {
+            "description": "Cannot connect to the server. Try again later"
+        },
+        "3006": {
+            "description": "Service temporarily unavailable. Try again later"
+        },
+        "3007": {
+            "description": "No license product exists for given ID."
+        },
+        "3008": {
+            "description": "Empty license product ID."
+        },
+        "3009": {
+            "description": "Invalid orderBy value."
+        },
+        "3010": {
+            "description": "License ID is empty."
+        },
+        "3011": {
+            "description": "No license found for given ID."
+        },
+        "3012": {
+            "description": "License's title is empty."
+        },
+        "3013": {
+            "description": "Invalid 'domains' specified."
+        },
+        "3014": {
+            "description": "Invalid 'langPacks' specified."
+        },
+        "3015": {
+            "description": "Invalid 'features' specified."
+        },
+        "3016": {
+            "description": "Invalid 'keyType' specified."
+        },
+        "3017": {
+            "description": "'keyType' is empty."
+        },
+        "3018": {
+            "description": "'period' is invalid."
+        },
+        "3019": {
+            "description": "'options' parameter is empty."
+        },
+        "3020": {
+            "description": "'options' parameter is invalid."
+        },
+        "3021": {
+            "description": "A license with such an ID does not exist."
+        },
+        "3022": {
+            "description": "Cannot create a license. Check if your Company\\'s Zipcode is correct."
+        },
+        "3023": {
+            "description": "Cannot create a license. Check if your Company\\'s State is correct."
+        },
+        "3027": {
+            "description": "Invalid 'virtualization' specified."
+        },
+        "3028": {
+            "description": "Invalid 'type' specified."
+        },
+        "3029": {
+            "description": "Invalid 'pack' specified."
+        },
+        "3030": {
+            "description": "Invalid 'cpu' specified."
+        },
+        "4001": {
+            "description": "Wrong command name."
+        },
+        "4002": {
+            "description": "Permission denied"
+        },
+        "4003": {
+            "description": "Command\\'s parameters access violation"
+        },
+        "4004": {
+            "description": "API not available"
+        },
+        "4005": {
+            "description": "API disabled for maintenance"
+        },
+        "4006": {
+            "description": "Wrong message format"
+        },
+        "4007": {
+            "description": "API access temporarily blocked because of excessive use",
+            "resolution": "Identical calls of createDomainRequest within 10 seconds cause this error. The temporary block will expire in 300 seconds."
+        },
+        "5001": {
+            "description": "Empty active flag."
+        },
+        "5002": {
+            "description": "Invalid contact ID."
+        },
+        "5003": {
+            "description": "Empty contact ID."
+        },
+        "5004": {
+            "description": "Cannot remove last admin contact"
+        },
+        "5005": {
+            "description": "Contact cannot remove himself"
+        },
+        "5006": {
+            "description": "Wrong password format minimum of 6 characters, no spaces, minimum of 1 digit"
+        },
+        "5008": {
+            "description": "Bad IP list value."
+        },
+        "5009": {
+            "description": "Invalid auth type."
+        },
+        "5010": {
+            "description": "INN is invalid"
+        },
+        "5011": {
+            "description": "KPP is invalid"
+        },
+        "6001": {
+            "description": "Additional data: Invalid birth city."
+        },
+        "6002": {
+            "description": "Additional data: Invalid birth address."
+        },
+        "6003": {
+            "description": "Additional data: Empty birth country."
+        },
+        "6004": {
+            "description": "Additional data: Invalid birth country."
+        },
+        "6005": {
+            "description": "Additional data: Invalid birth date."
+        },
+        "6006": {
+            "description": "Additional data: Invalid birth state."
+        },
+        "6007": {
+            "description": "Additional data: Invalid birth zipcode"
+        },
+        "6008": {
+            "description": "Additional data: Invalid headquarters address."
+        },
+        "6009": {
+            "description": "Additional data: Invalid headquarters city."
+        },
+        "6010": {
+            "description": "Additional data: Empty headquarters country."
+        },
+        "6011": {
+            "description": "Additional data: Invalid headquarters country."
+        },
+        "6012": {
+            "description": "Additional data: Invalid headquarters state."
+        },
+        "6013": {
+            "description": "Additional data: Invalid headquarters zipcode."
+        },
+        "6014": {
+            "description": "Additional data: Invalid social security number."
+        },
+        "6015": {
+            "description": "Additional data: Invalid company registration city."
+        },
+        "6016": {
+            "description": "Additional data: Invalid company registration number."
+        },
+        "6017": {
+            "description": "Additional data: Invalid company registration subscription date.",
+            "resolution": "This error occurs while creating or updating customers/contacts/handles with invalild company registration date. Please review the date entered and ensure to use date format: YYYY-MM-DD * YYYY - Year, eg: 1990 * MM - Month, eg: 01 * DD - Date, eg: 01"
+        },
+        "6018": {
+            "description": "Unfortunately, there aren\\'t free domains in your list."
+        },
+        "6020": {
+            "description": "Invalid value, please only use numbers and digits"
+        },
+        "6200": {
+            "description": "Cannot delete a customer with domains assigned"
+        },
+        "6206": {
+            "description": "Cannot delete a customer that assigned as default handles"
+        },
+        "10001": {
+            "description": "Invalid email specified"
+        },
+        "10002": {
+            "description": "Invalid username specified"
+        },
+        "10003": {
+            "description": "No email nor username are specified"
+        },
+        "10004": {
+            "description": "Invalid password specified"
+        },
+        "10005": {
+            "description": "Access denied",
+            "resolution": "The IP address sending the API call is denied by your whitelist or blacklist"
+        },
+        "10006": {
+            "description": "Two factor authentication required"
+        },
+        "10007": {
+            "description": "Invalid code provided, please try again. If you keep having problems logging in, please contact our <a href=\\ mailto:support@openprovider.com\\ >support department</a>."
+        },
+        "10008": {
+            "description": "API access is disabled for this contact"
+        },
+        "10009": {
+            "description": "API access is disabled for this reseller",
+            "resolution": "Typically caused due to an excessive number of API calls/suspicious calls. Please contact Openprovider Support for assistance."
+        },
+        "11000": {
+            "description": "Cannot connect to spam filter server"
+        },
+        "11001": {
+            "description": "Reseller has no active subscription"
+        },
+        "11002": {
+            "description": "Reseller already has active subscription"
+        },
+        "11003": {
+            "description": "Your request contains an empty domain name"
+        },
+        "11004": {
+            "description": "Your request contains an invalid domain name"
+        },
+        "11005": {
+            "description": "Your request contains an empty destination"
+        },
+        "11006": {
+            "description": "Your request contains an invalid destination"
+        },
+        "11007": {
+            "description": "Your request contains an empty alias"
+        },
+        "11008": {
+            "description": "Your request contains an invalid alias"
+        },
+        "11009": {
+            "description": "Your request contains an empty domain id"
+        },
+        "11010": {
+            "description": "Your request contains an invalid domain id"
+        },
+        "11011": {
+            "description": "Exceeded subscription domain limit please upgrade your bundle"
+        },
+        "11012": {
+            "description": "Cannot delete bundle: delete all active filters first"
+        },
+        "11013": {
+            "description": "IP is invalid"
+        },
+        "11014": {
+            "description": "Domain IP users limit is exceeded"
+        },
+        "11101": {
+            "description": "Invalid options specified"
+        },
+        "11102": {
+            "description": "Please choose a bundle size that differs from your current bundle size"
+        },
+        "11103": {
+            "description": "Invalid promotion code - please check the code entered is correct"
+        },
+        "11999": {
+            "description": "Spam filter server error, please see details below:"
+        },
+        "13000": {
+            "description": "Incorrect PromoCode"
+        },
+        "13001": {
+            "description": "This promotion code is already used in this account"
+        },
+        "14200": {
+            "description": "Signed marked data SMD is not in base64 format"
+        },
+        "14201": {
+            "description": "Signed marked data SMD has been found in revocation list"
+        },
+        "14202": {
+            "description": "Wrong signed marked data SMD format"
+        },
+        "15001": {
+            "description": "Invalid extension. This domain extension is not enabled for your account. Please contact our support department for more information.",
+            "resolution": "The .eu extension can get automatically blocked after 10 incorrect/invalid operations or API calls within 20 minutes. Please contact support to know details and to unblock."
+        },
+        "18000": {
+            "description": "DNS check no results"
+        },
+        "18001": {
+            "description": "Records should be specified for zone creation"
+        },
+        "18002": {
+            "description": "Data you sent is invalid or service is not available, try again later"
+        },
+        "18003": {
+            "description": "Nameservers must be configured and return an authoritative answer before domain update is requested"
+        },
+        "18004": {
+            "description": "DNS zone creation or activation failed. Please attempt again in 5 minutes by modifying your domain"
+        },
+        "19000": {
+            "description": "Domain name is premium. Please contact support to purchase."
+        },
+        "19001": {
+            "description": "Can not create domain."
+        },
+        "19002": {
+            "description": "Domain is premium, but price has not yet been published by registry"
+        },
+        "19003": {
+            "description": "Locking is not possible for domains with `Whois Privacy Protection` option enabled"
+        },
+        "19004": {
+            "description": "According to ICANN guidelines, domains created or transferred less than 60 days ago are not eligible for transfers."
+        },
+        "19005": {
+            "description": "Invalid fee amount for `Early Access Program` period"
+        },
+        "19006": {
+            "description": "Domain can not be anonymized as this TLD does not yet support whois privacy"
+        },
+        "19007": {
+            "description": "Domain can not be anonymized as this TLD does not yet support whois privacy for legal persons"
+        },
+        "19008": {
+            "description": "Domain is premium and not support automatic registration. If you want this domain, please, write to support"
+        },
+        "19009": {
+            "description": "Domain id required because more than two records found"
+        },
+        "19010": {
+            "description": "Wpp contract is not signed"
+        },
+        "19011": {
+            "description": "The domain is already under your control"
+        },
+        "19012": {
+            "description": "The domain owner contact for this extension must have a local presence."
+        },
+        "19013": {
+            "description": "Invalid period unit"
+        },
+        "19307": {
+            "description": "This domain can only be renewed within 28 days from its expiration. Please, set auto-renewal or try again within that timeframe",
+            "resolution": "Please refer this article for more information."
+        },
+        "25000": {
+            "description": "Wrong auto renew value"
+        },
+        "25001": {
+            "description": "Too early for renew"
+        },
+        "25002": {
+            "description": "Renew is not implemented right now"
+        },
+        "25003": {
+            "description": "Renew is not allowed"
+        },
+        "25004": {
+            "description": "Company name of the organization contact must be specified"
+        },
+        "25005": {
+            "description": "Common name cannot be changed"
+        },
+        "25006": {
+            "description": "Invalid operation. Updating cannot be processed"
+        },
+        "25007": {
+            "description": "Invalid operation. Reissue cannot be processed"
+        },
+        "25008": {
+            "description": "Invalid operation. Validation cannot be processed"
+        },
+        "25009": {
+            "description": "Invalid operation. Cancellation cannot be processed"
+        },
+        "25010": {
+            "description": "Invalid operation. Deletion cannot be processed"
+        },
+        "25011": {
+            "description": "Invalid operation"
+        },
+        "25012": {
+            "description": "Method is currently suspended by Symantec"
+        },
+        "25013": {
+            "description": "Department must contain only numbers, letters, points and spaces"
+        },
+        "25014": {
+            "description": "Company data can not be changed during the reissue"
+        },
+        "25015": {
+            "description": "Digicert products are terminated since September 15, 2019. Please, order Comodo product instead."
+        },
+        "26001": {
+            "description": "Invalid `from` parameter"
+        },
+        "26002": {
+            "description": "Domain forwarding operation failed. The next mandatory field have not been filled or filled incorrectly: forwardTo"
+        },
+        "26003": {
+            "description": "Domain forwarding operation failed. The next mandatory field have not been filled or filled incorrectly: forwardType"
+        },
+        "26004": {
+            "description": "Domain forwarding is already being provisioned"
+        },
+        "26005": {
+            "description": "Forwarding does not exists"
+        },
+        "26006": {
+            "description": "Invalid `schemeFrom` parameter"
+        },
+        "26007": {
+            "description": "Domain forwarding operation failed. The next field have been filled incorrectly: schemeTo"
+        },
+        "26100": {
+            "description": "Domain forwarding deletion request has been accepted and will be processed within next hours."
+        },
+        "26200": {
+            "description": "Domain forwarding setup change is already ongoing"
+        },
+        "26303": {
+            "description": "Domain forwarding destination must be an URL without query or fragment."
+        },
+        "26304": {
+            "description": "Domain forwarding could not be applied to domain with this TLD"
+        },
+        "26999": {
+            "description": "An unknown forwarding-error has occurred; please contact Openprovider"
+        },
+        "27001": {
+            "description": "Invalid `abuseId` parameter"
+        },
+        "27002": {
+            "description": "Invalid `answer` parameter"
+        },
+        "27003": {
+            "description": "Cannot find abuse"
+        },
+        "27004": {
+            "description": "Cannot delete abuse"
+        },
+        "27005": {
+            "description": "Cannot modify nameservers because domain is marked as abusive"
+        },
+        "27006": {
+            "description": "Thank you for your response, it is filed for manual review."
+        },
+        "28001": {
+            "description": "Invalid `registryStatuses` parameter. Please check that statuses exist"
+        },
+        "28002": {
+            "description": "clientHold is not changeable for this domain now. It's denied by a registry"
+        },
+        "28003": {
+            "description": "clientHold cannot be updated for this domain now because email verification is failed for domain owner"
+        },
+        "28004": {
+            "description": "clientHold is not changeable for this domain now. It's denied by a registry or some internal error"
+        },
+        "28012": {
+            "description": "clientTransferProhibited is not changeable for this domain now. It's denied by a registry"
+        },
+        "28013": {
+            "description": "clientTransferProhibited cannot be updated for this domain now because domain was created/transferred less than 60 days ago."
+        },
+        "28014": {
+            "description": "clientTransferProhibited is not changeable for this domain now. It's denied by a registry or some internal error"
+        },
+        "28021": {
+            "description": "You are about to update a domain with an extension that requires an update fee. If you accept this update fee, please re-send the modifyDomainRequest command and add the parameter 'acceptUpdateFee' with the value of the update fee, which can be found in the 'data' block of this command output."
+        },
+        "29001": {
+            "description": "Sectigo Premium DNS contract is not signed yet. To proceed, please sign it at https://cp.openprovider.eu/documentation/contracts.php --> Premium DNS"
+        },
+        "29002": {
+            "description": "Your DNS zone contains a custom NS record in format that is unsupported by Sectigo DNS. Please adjust your zone / DNS template and specify the custom NS record 'name' parameter."
+        },
+        "29101": {
+            "description": "Domain Aftermarket contract is not signed yet. To proceed, please sign it at https://cp.openprovider.eu/documentation/contracts.php --> Aftermarket domains"
+        },
+        "30001": {
+            "description": "Invalid Easy Dmarc order status"
+        },
+        "30002": {
+            "description": "Empty Easy Dmarc order id"
+        },
+        "30003": {
+            "description": "Cannot create another order while existing order active"
+        },
+        "30004": {
+            "description": "Cannot create Easy Dmarc order"
+        },
+        "30005": {
+            "description": "Easy Dmarc Order Invalid"
+        },
+        "30006": {
+            "description": "Cannot activate Easy Dmarc order"
+        },
+        "30007": {
+            "description": "Easy Dmarc SSO type is invalid"
+        },
+        "30008": {
+            "description": "Easy Dmarc contract is not signed yet. To proceed, please sign it at https://cp.openprovider.eu/documentation/contracts.php --> Easy Dmarc"
+        },
+        "30072": {
+            "description": "Cannot delete dkim for this domain in Email Solution, make sure dkim created already"
+        },
+        "30073": {
+            "description": "Cannot get dkim for this domain in Email Solution, make sure dkim created already"
+        },
+        "30074": {
+            "description": "Cannot create dkim for this domain in Email Solution"
+        },
+        "30080": {
+            "description": "Invalid alias for this mailbox in Email Solution"
+        },
+        "30081": {
+            "description": "Alias is already exists for this mailbox in Email Solution"
+        }
+    }
+}

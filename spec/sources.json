@@ -1,0 +1,29 @@
+{
+    "$comment": "Inputs of tools/spec-merge. tools/spec-sync downloads them; spec/SHA256SUMS pins their bytes; spec/PROVENANCE.md explains them.",
+    "retrieved": "2026-11-09",
+    "services": {
+        "repository": "openprovider/api-documentation",
+        "branch": "v1beta",
+        "commit": "e0bcf22e81c1247a8c6cdccf486c1673ef2aed10",
+        "directory": "swagger",
+        "files": [
+            "auth",
+            "billing",
+            "dns",
+            "domain",
+            "easydmarc",
+            "email-template",
+            "license",
+            "mailcow",
+            "reseller-customer",
+            "spam-expert",
+            "ssl"
+        ]
+    },
+    "portal": {
+        "url": "https://developer.openprovider.com/data/swagger.spec.js",
+        "variable": "window.OP_API_SPEC",
+        "etag": "\"6ad68276-a8934\"",
+        "lastModified": "Mon, 19 Oct 2026 20:49:58 GMT"
+    }
+}

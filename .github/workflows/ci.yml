@@ -70,6 +70,9 @@ jobs:
       - name: Run Psalm
         run: composer psalm
 
+      - name: Verify the vendored spec and that the merge reproduces it
+        run: composer spec:verify
+
   coverage:
     name: Coverage
     runs-on: ubuntu-latest

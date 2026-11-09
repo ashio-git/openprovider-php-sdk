@@ -1,0 +1,2006 @@
+{
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "schemes": [
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "title": "License",
+        "contact": {
+            "name": "License contracts project",
+            "url": "https://github.com/openprovider/license-contracts/issues"
+        },
+        "version": "1.0.0-beta"
+    },
+    "paths": {
+        "/v1beta/licenses": {
+            "get": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "List licenses with price version",
+                "operationId": "ListLicensesWithPriceVersion",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Output limit.",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Output offset.",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Object ID.",
+                        "name": "order_by.id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License key ID.",
+                        "name": "order_by.key_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Custom license title.",
+                        "name": "order_by.title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Product type (only Plesk is available).",
+                        "name": "order_by.product",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License status.",
+                        "name": "order_by.status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License key number.",
+                        "name": "order_by.key_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License expiration date.",
+                        "name": "order_by.expiration_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Product type (only Plesk is available).",
+                        "name": "product",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License key number.",
+                        "name": "key_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Custom title pattern. Wildcard (*) can be sued.",
+                        "name": "title_pattern",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License key number pattern. Wildcard (*) can be used.",
+                        "name": "key_number_pattern",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Key ID of the partent license.",
+                        "name": "parent_key_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License status.",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseListLicensesWithPriceVersionResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1beta/licenses/hwids/reset/{product}/{key_id}": {
+            "post": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "Reset hwid",
+                "operationId": "ResetHwid",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product type (only Plesk is available)",
+                        "name": "product",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "License key ID",
+                        "name": "key_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/licenseResetHwidRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseResetHwidResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1beta/licenses/items": {
+            "get": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "List items",
+                "operationId": "ListItems",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Output limit.",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Output offset.",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Object ID.",
+                        "name": "order_by.id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License key ID.",
+                        "name": "order_by.key_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Custom license title.",
+                        "name": "order_by.title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Product type (only Plesk is available).",
+                        "name": "order_by.product",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License status.",
+                        "name": "order_by.status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License key number.",
+                        "name": "order_by.key_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License expiration date.",
+                        "name": "order_by.expiration_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Product type (only Plesk is available).",
+                        "name": "product",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseListItemsResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1beta/licenses/plesk": {
+            "get": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "List plesk licenses",
+                "operationId": "ListPleskLicenses",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Output limit.",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Output offset.",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "License key ID.",
+                        "name": "key_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License key number.",
+                        "name": "key_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Custom title pattern. Wildcard (*) can be used.",
+                        "name": "title_pattern",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License key number pattern. Wildcard (*) can be used.",
+                        "name": "key_number_pattern",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Key ID of the partent license.",
+                        "name": "parent_key_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseListLicensesResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "Create plesk license",
+                "operationId": "CreatePleskLicense",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/licenseCreatePleskLicenseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseCreatePleskLicenseResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1beta/licenses/plesk/key/{key_id}": {
+            "get": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "Get plesk key",
+                "operationId": "GetPleskKey",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "License key ID",
+                        "name": "key_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseGetLicenseKeyResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1beta/licenses/plesk/{key_id}": {
+            "get": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "Get plesk license",
+                "operationId": "GetPleskLicense",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "License key ID",
+                        "name": "key_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "License ID.",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseGetLicenseResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "Update plesk license",
+                "operationId": "UpdatePleskLicense",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "License key ID",
+                        "name": "key_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/licenseUpdatePleskLicenseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseUpdateLicenseResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "Delete plesk license",
+                "operationId": "DeletePleskLicense",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "License key ID",
+                        "name": "key_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseDeleteLicenseResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1beta/licenses/virtuozzo": {
+            "get": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "List virtuozzo licenses",
+                "operationId": "ListVirtuozzoLicenses",
+                "deprecated": true,
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Output limit.",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Output offset.",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "License key ID.",
+                        "name": "key_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License key number.",
+                        "name": "key_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Custom title pattern. Wildcard (*) can be used.",
+                        "name": "title_pattern",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "License key number pattern. Wildcard (*) can be used.",
+                        "name": "key_number_pattern",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Key ID of the partent license.",
+                        "name": "parent_key_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseListLicensesResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "Create virtuozzo license",
+                "operationId": "CreateVirtuozzoLicense",
+                "deprecated": true,
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/licenseCreateVirtuozzoLicenseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseCreateVirtuozzoLicenseResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1beta/licenses/virtuozzo/{key_id}": {
+            "get": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "Get virtuozzo license",
+                "operationId": "GetVirtuozzoLicense",
+                "deprecated": true,
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "License key ID",
+                        "name": "key_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "License ID.",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseGetLicenseResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "Update virtuozzo license",
+                "operationId": "UpdateVirtuozzoLicense",
+                "deprecated": true,
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "License key ID",
+                        "name": "key_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/licenseUpdateVirtuozzoLicenseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseUpdateLicenseResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "Delete virtuozzo license",
+                "operationId": "DeleteVirtuozzoLicense",
+                "deprecated": true,
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "License key ID",
+                        "name": "key_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseDeleteLicenseResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1beta/licenses/virtuozzo/{key_id}/key": {
+            "get": {
+                "tags": [
+                    "LicenseService"
+                ],
+                "summary": "Get virtuozzo key",
+                "operationId": "GetVirtuozzoKey",
+                "deprecated": true,
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "License key ID",
+                        "name": "key_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/licenseGetLicenseKeyResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "(empty)",
+                        "schema": {
+                            "$ref": "#/definitions/errorError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "errorError": {
+            "type": "object",
+            "title": "Error",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Error code"
+                },
+                "data": {
+                    "type": "string",
+                    "title": "Additional error description"
+                },
+                "desc": {
+                    "type": "string",
+                    "title": "Error description"
+                }
+            },
+            "example": {
+                "code": 0,
+                "data": "",
+                "desc": ""
+            }
+        },
+        "errorWarning": {
+            "type": "object",
+            "title": "Warning",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Warning code"
+                },
+                "data": {
+                    "type": "string",
+                    "title": "Additional warning description"
+                },
+                "desc": {
+                    "type": "string",
+                    "title": "Warning description"
+                }
+            },
+            "example": {
+                "code": 0,
+                "data": "",
+                "desc": ""
+            }
+        },
+        "licenseCreateLicenseResponseData": {
+            "type": "object",
+            "title": "CreateLicenseResponseData",
+            "properties": {
+                "attached_keys": {
+                    "type": "array",
+                    "title": "Third-party extension keys",
+                    "items": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "key_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "License key ID"
+                }
+            },
+            "example": {
+                "attached_keys": [
+                    123456
+                ],
+                "key_id": 123456
+            }
+        },
+        "licenseCreatePleskLicenseRequest": {
+            "type": "object",
+            "title": "CreatePleskLicenseRequest",
+            "properties": {
+                "attached_keys": {
+                    "type": "array",
+                    "title": "Third-party extension keys",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "comment": {
+                    "type": "string",
+                    "title": "Custom notes"
+                },
+                "ip_address_binding": {
+                    "type": "string",
+                    "title": "IP addess to bind license to"
+                },
+                "items": {
+                    "type": "array",
+                    "title": "List of license items",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "parent_key_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Key ID of the partent license"
+                },
+                "period": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Period for which license is active"
+                },
+                "restrict_ip_binding": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if license is bound to an IP"
+                },
+                "title": {
+                    "type": "string",
+                    "title": "Custom license title"
+                }
+            }
+        },
+        "licenseCreatePleskLicenseResponse": {
+            "type": "object",
+            "title": "CreatePleskLicenseResponse",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Response code"
+                },
+                "data": {
+                    "title": "Response data",
+                    "$ref": "#/definitions/licenseCreateLicenseResponseData"
+                },
+                "desc": {
+                    "type": "string",
+                    "title": "Response description"
+                },
+                "maintenance": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if Openprovider API is on maintenance"
+                },
+                "warnings": {
+                    "type": "array",
+                    "title": "Array of warning messages",
+                    "items": {
+                        "$ref": "#/definitions/errorWarning"
+                    }
+                }
+            },
+            "example": {
+                "code": 0,
+                "data": {
+                    "attached_keys": [
+                        123456
+                    ],
+                    "key_id": 123456
+                },
+                "desc": ""
+            }
+        },
+        "licenseCreateVirtuozzoLicenseRequest": {
+            "type": "object",
+            "title": "CreateVirtuozzoLicenseRequest",
+            "properties": {
+                "attached_keys": {
+                    "type": "array",
+                    "title": "Third-party extension keys",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "comment": {
+                    "type": "string",
+                    "title": "Custom notes"
+                },
+                "ip_address_binding": {
+                    "type": "string",
+                    "title": "IP addess to bind license to"
+                },
+                "items": {
+                    "type": "array",
+                    "title": "List of license items",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "parent_key_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Key ID of the partent license"
+                },
+                "pcs_capacity": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Virtuozzzo storage capacity in 100 Gb blocks"
+                },
+                "period": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Period for which license is active"
+                },
+                "restrict_ip_binding": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if license is bound to an IP"
+                },
+                "title": {
+                    "type": "string",
+                    "title": "Custom license title"
+                }
+            }
+        },
+        "licenseCreateVirtuozzoLicenseResponse": {
+            "type": "object",
+            "title": "CreateVirtuozzoLicenseResponse",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Response code"
+                },
+                "data": {
+                    "title": "Response data",
+                    "$ref": "#/definitions/licenseCreateLicenseResponseData"
+                },
+                "desc": {
+                    "type": "string",
+                    "title": "Response description"
+                },
+                "maintenance": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if Openprovider API is on maintenance"
+                },
+                "warnings": {
+                    "type": "array",
+                    "title": "Array of warning messages",
+                    "items": {
+                        "$ref": "#/definitions/errorWarning"
+                    }
+                }
+            },
+            "example": {
+                "code": 0,
+                "data": {
+                    "attached_keys": [
+                        123456
+                    ],
+                    "key_id": 123456
+                },
+                "desc": ""
+            }
+        },
+        "licenseDeleteLicenseResponse": {
+            "type": "object",
+            "title": "DeleteLicenseResponse",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Response code"
+                },
+                "data": {
+                    "title": "Response data",
+                    "$ref": "#/definitions/licenseDeleteLicenseResponseData"
+                },
+                "desc": {
+                    "type": "string",
+                    "title": "Response description"
+                },
+                "maintenance": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if Openprovider API is on maintenance"
+                },
+                "warnings": {
+                    "type": "array",
+                    "title": "Array of warning messages",
+                    "items": {
+                        "$ref": "#/definitions/errorWarning"
+                    }
+                }
+            },
+            "example": {
+                "code": 0,
+                "data": {
+                    "success": false
+                },
+                "desc": ""
+            }
+        },
+        "licenseDeleteLicenseResponseData": {
+            "type": "object",
+            "title": "DeleteLicenseResponseData",
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if operation was succesful"
+                }
+            },
+            "example": {
+                "success": false
+            }
+        },
+        "licenseExtendedLicense": {
+            "type": "object",
+            "title": "ExtendedLicense",
+            "properties": {
+                "activation_code": {
+                    "type": "string",
+                    "title": "License activation code"
+                },
+                "billing_type": {
+                    "type": "string",
+                    "title": "License billing type"
+                },
+                "comment": {
+                    "type": "string",
+                    "title": "Custom notes"
+                },
+                "contract": {
+                    "type": "string",
+                    "title": "Openprovider contract version"
+                },
+                "expiration_date": {
+                    "type": "string",
+                    "title": "License expiration date"
+                },
+                "extensions": {
+                    "type": "array",
+                    "title": "License extensions",
+                    "items": {
+                        "$ref": "#/definitions/licenseExtendedLicense"
+                    }
+                },
+                "features": {
+                    "type": "array",
+                    "title": "License features",
+                    "items": {
+                        "$ref": "#/definitions/licenseLicenseItem"
+                    }
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "License ID"
+                },
+                "ip_address_binding": {
+                    "type": "string",
+                    "title": "IP addess to bind license to"
+                },
+                "items": {
+                    "type": "array",
+                    "title": "List of license items",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "key": {
+                    "title": "License key",
+                    "$ref": "#/definitions/licenseKey"
+                },
+                "key_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "License key ID"
+                },
+                "key_number": {
+                    "type": "string",
+                    "title": "License key number"
+                },
+                "order_date": {
+                    "type": "string",
+                    "title": "License order date"
+                },
+                "parent_key_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Key ID of the partent license"
+                },
+                "period": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Period for which license is active"
+                },
+                "product": {
+                    "type": "string",
+                    "title": "Product type (only Plesk is available)"
+                },
+                "sku_values": {
+                    "type": "object",
+                    "title": "List of license SKU values",
+                    "additionalProperties": {
+                        "type": "boolean",
+                        "format": "boolean"
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "title": "License status"
+                },
+                "title": {
+                    "type": "string",
+                    "title": "Custom license title"
+                }
+            }
+        },
+        "licenseGetLicenseKeyResponse": {
+            "type": "object",
+            "title": "GetLicenseKeyResponse",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Response code"
+                },
+                "data": {
+                    "title": "Response data",
+                    "$ref": "#/definitions/licenseLicenseKey"
+                },
+                "desc": {
+                    "type": "string",
+                    "title": "Response description"
+                },
+                "maintenance": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if Openprovider API is on maintenance"
+                },
+                "warnings": {
+                    "type": "array",
+                    "title": "Array of warning messages",
+                    "items": {
+                        "$ref": "#/definitions/errorWarning"
+                    }
+                }
+            },
+            "example": {
+                "code": 0,
+                "data": {
+                    "key": ""
+                },
+                "desc": ""
+            }
+        },
+        "licenseGetLicenseResponse": {
+            "type": "object",
+            "title": "GetLicenseResponse",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Response code"
+                },
+                "data": {
+                    "title": "Response data",
+                    "$ref": "#/definitions/licenseExtendedLicense"
+                },
+                "desc": {
+                    "type": "string",
+                    "title": "Response description"
+                },
+                "maintenance": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if Openprovider API is on maintenance"
+                },
+                "warnings": {
+                    "type": "array",
+                    "title": "Array of warning messages",
+                    "items": {
+                        "$ref": "#/definitions/errorWarning"
+                    }
+                }
+            }
+        },
+        "licenseKey": {
+            "type": "object",
+            "title": "Key",
+            "properties": {
+                "item": {
+                    "type": "string",
+                    "title": "License item"
+                },
+                "product": {
+                    "type": "string",
+                    "title": "Product type (only Plesk is available)"
+                },
+                "sku_values": {
+                    "type": "object",
+                    "title": "List of license SKU values",
+                    "additionalProperties": {
+                        "type": "boolean",
+                        "format": "boolean"
+                    }
+                },
+                "title": {
+                    "type": "string",
+                    "title": "Custom license title"
+                }
+            },
+            "example": {
+                "item": "PLESK-12-VPS-WEB-HOST-1M",
+                "product": "plesk",
+                "sku_values": null,
+                "title": "Plesk for VPS Web Host Edition"
+            }
+        },
+        "licenseLicenseItem": {
+            "type": "object",
+            "title": "LicenseItem",
+            "properties": {
+                "item": {
+                    "type": "string",
+                    "title": "License item"
+                },
+                "product": {
+                    "type": "string",
+                    "title": "Product type (only Plesk is available)"
+                },
+                "sku_values": {
+                    "type": "object",
+                    "title": "List of license SKU values",
+                    "additionalProperties": {
+                        "type": "boolean",
+                        "format": "boolean"
+                    }
+                },
+                "title": {
+                    "type": "string",
+                    "title": "Custom license title"
+                }
+            },
+            "example": {
+                "item": "FT-PLESK-VPS-WPB-100-SITES-1M",
+                "product": "plesk",
+                "sku_values": null,
+                "title": "DNSSEC for Plesk (Bundled)"
+            }
+        },
+        "licenseLicenseKey": {
+            "type": "object",
+            "title": "LicenseKey",
+            "properties": {
+                "key": {
+                    "type": "string",
+                    "title": "License key"
+                }
+            },
+            "example": {
+                "key": ""
+            }
+        },
+        "licenseLicenseWithPriceVersion": {
+            "type": "object",
+            "title": "LicenseWithPriceVersion",
+            "properties": {
+                "activation_code": {
+                    "type": "string",
+                    "title": "License activation code"
+                },
+                "billing_type": {
+                    "type": "string",
+                    "title": "License billing type"
+                },
+                "comment": {
+                    "type": "string",
+                    "title": "Custom notes"
+                },
+                "contract": {
+                    "type": "string",
+                    "title": "Openprovider contract version"
+                },
+                "expiration_date": {
+                    "type": "string",
+                    "title": "License expiration date"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "License ID"
+                },
+                "items": {
+                    "type": "array",
+                    "title": "List of license items",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "key_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "License key ID"
+                },
+                "key_number": {
+                    "type": "string",
+                    "title": "License key number"
+                },
+                "order_date": {
+                    "type": "string",
+                    "title": "License order date"
+                },
+                "parent_key_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Key ID of the partent license"
+                },
+                "period": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Period for which license is active"
+                },
+                "product": {
+                    "type": "string",
+                    "title": "Product type (only Plesk is available)"
+                },
+                "sku_values": {
+                    "type": "object",
+                    "title": "List of license SKU values",
+                    "additionalProperties": {
+                        "type": "boolean",
+                        "format": "boolean"
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "title": "License status"
+                },
+                "title": {
+                    "type": "string",
+                    "title": "Custom license title"
+                }
+            }
+        },
+        "licenseListItemsOrderBy": {
+            "type": "object",
+            "title": "ListItemsOrderBy",
+            "properties": {
+                "expiration_date": {
+                    "type": "string",
+                    "title": "License expiration date"
+                },
+                "id": {
+                    "type": "string",
+                    "title": "Object ID"
+                },
+                "key_id": {
+                    "type": "string",
+                    "title": "License key ID"
+                },
+                "key_number": {
+                    "type": "string",
+                    "title": "License key number"
+                },
+                "product": {
+                    "type": "string",
+                    "title": "Product type (only Plesk is available)"
+                },
+                "status": {
+                    "type": "string",
+                    "title": "License status"
+                },
+                "title": {
+                    "type": "string",
+                    "title": "Custom license title"
+                }
+            },
+            "example": {
+                "expiration_date": "",
+                "id": "",
+                "key_id": "",
+                "key_number": "",
+                "product": "",
+                "status": "",
+                "title": "asc"
+            }
+        },
+        "licenseListItemsResponse": {
+            "type": "object",
+            "title": "ListItemsResponse",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Response code"
+                },
+                "data": {
+                    "title": "Response data",
+                    "$ref": "#/definitions/licenseListItemsResponseData"
+                },
+                "desc": {
+                    "type": "string",
+                    "title": "Response description"
+                },
+                "maintenance": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if Openprovider API is on maintenance"
+                },
+                "warnings": {
+                    "type": "array",
+                    "title": "Array of warning messages",
+                    "items": {
+                        "$ref": "#/definitions/errorWarning"
+                    }
+                }
+            },
+            "example": {
+                "code": 0,
+                "data": {
+                    "results": [
+                        {
+                            "item": "FT-PLESK-VPS-WPB-100-SITES-1M",
+                            "product": "plesk",
+                            "sku_values": null,
+                            "title": "DNSSEC for Plesk (Bundled)"
+                        }
+                    ],
+                    "total": 999
+                },
+                "desc": ""
+            }
+        },
+        "licenseListItemsResponseData": {
+            "type": "object",
+            "title": "ListItemsResponseData",
+            "properties": {
+                "results": {
+                    "type": "array",
+                    "title": "Array of results",
+                    "items": {
+                        "$ref": "#/definitions/licenseLicenseItem"
+                    }
+                },
+                "total": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Results count"
+                }
+            },
+            "example": {
+                "results": [
+                    {
+                        "item": "FT-PLESK-VPS-WPB-100-SITES-1M",
+                        "product": "plesk",
+                        "sku_values": null,
+                        "title": "DNSSEC for Plesk (Bundled)"
+                    }
+                ],
+                "total": 999
+            }
+        },
+        "licenseListLicensesOrderBy": {
+            "type": "object",
+            "title": "ListLicensesOrderBy",
+            "properties": {
+                "expiration_date": {
+                    "type": "string",
+                    "title": "License expiration date"
+                },
+                "id": {
+                    "type": "string",
+                    "title": "Object ID"
+                },
+                "key_id": {
+                    "type": "string",
+                    "title": "License key ID"
+                },
+                "key_number": {
+                    "type": "string",
+                    "title": "License key number"
+                },
+                "product": {
+                    "type": "string",
+                    "title": "Product type (only Plesk is available)"
+                },
+                "status": {
+                    "type": "string",
+                    "title": "License status"
+                },
+                "title": {
+                    "type": "string",
+                    "title": "Custom license title"
+                }
+            },
+            "example": {
+                "expiration_date": "",
+                "id": "",
+                "key_id": "desc",
+                "key_number": "",
+                "product": "",
+                "status": "",
+                "title": ""
+            }
+        },
+        "licenseListLicensesResponse": {
+            "type": "object",
+            "title": "ListLicensesResponse",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Response code"
+                },
+                "data": {
+                    "title": "Response data",
+                    "$ref": "#/definitions/licenseListLicensesResponseData"
+                },
+                "desc": {
+                    "type": "string",
+                    "title": "Response description"
+                },
+                "maintenance": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if Openprovider API is on maintenance"
+                },
+                "warnings": {
+                    "type": "array",
+                    "title": "Array of warning messages",
+                    "items": {
+                        "$ref": "#/definitions/errorWarning"
+                    }
+                }
+            }
+        },
+        "licenseListLicensesResponseData": {
+            "type": "object",
+            "title": "ListLicensesResponseData",
+            "properties": {
+                "results": {
+                    "type": "array",
+                    "title": "Array of results",
+                    "items": {
+                        "$ref": "#/definitions/licenselicenseLicense"
+                    }
+                },
+                "total": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Results count"
+                }
+            }
+        },
+        "licenseListLicensesWithPriceVersionResponse": {
+            "type": "object",
+            "title": "ListLicensesWithPriceVersionResponse",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Response code"
+                },
+                "data": {
+                    "title": "Response data",
+                    "$ref": "#/definitions/licenseListLicensesWithPriceVersionResponseData"
+                },
+                "desc": {
+                    "type": "string",
+                    "title": "Response description"
+                },
+                "maintenance": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if Openprovider API is on maintenance"
+                },
+                "warnings": {
+                    "type": "array",
+                    "title": "Array of warning messages",
+                    "items": {
+                        "$ref": "#/definitions/errorWarning"
+                    }
+                }
+            }
+        },
+        "licenseListLicensesWithPriceVersionResponseData": {
+            "type": "object",
+            "title": "ListLicensesWithPriceVersionResponseData",
+            "properties": {
+                "results": {
+                    "type": "array",
+                    "title": "Array of results",
+                    "items": {
+                        "$ref": "#/definitions/licenseLicenseWithPriceVersion"
+                    }
+                },
+                "total": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Results count"
+                }
+            }
+        },
+        "licenseResetHwidRequest": {
+            "type": "object",
+            "title": "ResetHwidRequest",
+            "properties": {
+                "key_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "License key ID"
+                },
+                "product": {
+                    "type": "string",
+                    "title": "Product type (only Plesk is available)"
+                }
+            },
+            "example": {
+                "key_id": 12345,
+                "product": "plesk"
+            }
+        },
+        "licenseResetHwidResponse": {
+            "type": "object",
+            "title": "ResetHwidResponse",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Response code"
+                },
+                "data": {
+                    "title": "Response data",
+                    "$ref": "#/definitions/licenseResetHwidResponseData"
+                },
+                "desc": {
+                    "type": "string",
+                    "title": "Response description"
+                },
+                "maintenance": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if Openprovider API is on maintenance"
+                },
+                "warnings": {
+                    "type": "array",
+                    "title": "Array of warning messages",
+                    "items": {
+                        "$ref": "#/definitions/errorWarning"
+                    }
+                }
+            },
+            "example": {
+                "code": 0,
+                "data": {
+                    "success": false
+                },
+                "desc": ""
+            }
+        },
+        "licenseResetHwidResponseData": {
+            "type": "object",
+            "title": "ResetHwidResponseData",
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if operation was succesful"
+                }
+            },
+            "example": {
+                "success": false
+            }
+        },
+        "licenseUpdateLicenseResponse": {
+            "type": "object",
+            "title": "UpdateLicenseResponse",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Response code"
+                },
+                "data": {
+                    "title": "Response data",
+                    "$ref": "#/definitions/licenseUpdateLicenseResponseData"
+                },
+                "desc": {
+                    "type": "string",
+                    "title": "Response description"
+                },
+                "maintenance": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if Openprovider API is on maintenance"
+                },
+                "warnings": {
+                    "type": "array",
+                    "title": "Array of warning messages",
+                    "items": {
+                        "$ref": "#/definitions/errorWarning"
+                    }
+                }
+            },
+            "example": {
+                "code": 0,
+                "data": {
+                    "success": false
+                },
+                "desc": ""
+            }
+        },
+        "licenseUpdateLicenseResponseData": {
+            "type": "object",
+            "title": "UpdateLicenseResponseData",
+            "properties": {
+                "success": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if operation was succesful"
+                }
+            },
+            "example": {
+                "success": false
+            }
+        },
+        "licenseUpdatePleskLicenseRequest": {
+            "type": "object",
+            "title": "UpdatePleskLicenseRequest",
+            "properties": {
+                "attached_keys": {
+                    "type": "array",
+                    "title": "Third-party extension keys",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "comment": {
+                    "type": "string",
+                    "title": "Custom notes"
+                },
+                "ip_address_binding": {
+                    "type": "string",
+                    "title": "IP addess to bind license to"
+                },
+                "items": {
+                    "type": "array",
+                    "title": "List of license items",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "key_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "License key ID"
+                },
+                "parent_key_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Key ID of the partent license"
+                },
+                "period": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Period for which license is active"
+                },
+                "restrict_ip_binding": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if license is bound to an IP"
+                },
+                "suspended": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if license is suspended"
+                },
+                "title": {
+                    "type": "string",
+                    "title": "Custom license title"
+                }
+            }
+        },
+        "licenseUpdateVirtuozzoLicenseRequest": {
+            "type": "object",
+            "title": "UpdateVirtuozzoLicenseRequest",
+            "properties": {
+                "attached_keys": {
+                    "type": "array",
+                    "title": "Third-party extension keys",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "comment": {
+                    "type": "string",
+                    "title": "Custom notes"
+                },
+                "ip_address_binding": {
+                    "type": "string",
+                    "title": "IP addess to bind license to"
+                },
+                "items": {
+                    "type": "array",
+                    "title": "List of license items",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "key_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "License key ID"
+                },
+                "parent_key_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Key ID of the partent license"
+                },
+                "pcs_capacity": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Virtuozzzo storage capacity in 100 Gb blocks"
+                },
+                "period": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Period for which license is active"
+                },
+                "restrict_ip_binding": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if license is bound to an IP"
+                },
+                "suspended": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "Indicates, if license is suspended"
+                },
+                "title": {
+                    "type": "string",
+                    "title": "Custom license title"
+                }
+            }
+        },
+        "licenselicenseLicense": {
+            "type": "object",
+            "title": "License",
+            "properties": {
+                "activation_code": {
+                    "type": "string",
+                    "title": "License activation code"
+                },
+                "billing_type": {
+                    "type": "string",
+                    "title": "License billing type"
+                },
+                "comment": {
+                    "type": "string",
+                    "title": "Custom notes"
+                },
+                "contract": {
+                    "type": "string",
+                    "title": "Openprovider contract version"
+                },
+                "expiration_date": {
+                    "type": "string",
+                    "title": "License expiration date"
+                },
+                "ip_address_binding": {
+                    "type": "string",
+                    "title": "IP addess to bind license to"
+                },
+                "items": {
+                    "type": "array",
+                    "title": "List of license items",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "key_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "License key ID"
+                },
+                "key_number": {
+                    "type": "string",
+                    "title": "License key number"
+                },
+                "order_date": {
+                    "type": "string",
+                    "title": "License order date"
+                },
+                "parent_key_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Key ID of the partent license"
+                },
+                "period": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "Period for which license is active"
+                },
+                "product": {
+                    "type": "string",
+                    "title": "Product type (only Plesk is available)"
+                },
+                "sku_values": {
+                    "type": "object",
+                    "title": "List of license SKU values",
+                    "additionalProperties": {
+                        "type": "boolean",
+                        "format": "boolean"
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "title": "License status"
+                },
+                "title": {
+                    "type": "string",
+                    "title": "Custom license title"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "security": [
+        {
+            "Bearer": []
+        }
+    ],
+    "externalDocs": {
+        "description": "More about REST API v1",
+        "url": "https://docs.openprovider.com"
+    }
+}

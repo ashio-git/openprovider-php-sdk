@@ -69,6 +69,10 @@
             "@analyse",
             "@psalm",
             "@test"
+        ],
+        "spec:verify": [
+            "php tools/spec-sync --verify",
+            "php tools/spec-merge --check"
         ]
     },
     "suggest": {

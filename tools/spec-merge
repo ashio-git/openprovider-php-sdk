@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Ashio\OpenProvider\Tools\Spec\SpecMergeCommand;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+exit(SpecMergeCommand::run(array_values(array_slice($argv, 1)), dirname(__DIR__) . '/spec', STDOUT, STDERR));

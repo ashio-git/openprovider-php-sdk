@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Ashio\OpenProvider\Tools\Spec\GuzzleFetcher;
+use Ashio\OpenProvider\Tools\Spec\SpecSyncCommand;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$token = getenv('GITHUB_TOKEN');
+
+exit(SpecSyncCommand::run(
+    array_values(array_slice($argv, 1)),
+    dirname(__DIR__) . '/spec',
+    new GuzzleFetcher(is_string($token) ? $token : null),
+    (new DateTimeImmutable('now', new DateTimeZone('UTC')))->format('Y-m-d'),
+    STDOUT,
+    STDERR,
+));

@@ -1,0 +1,59 @@
+name: Spec drift
+
+# Weekly: does upstream still serve the inputs pinned in spec/? If not, open (or update) one issue.
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: spec-drift
+  cancel-in-progress: false
+
+jobs:
+  drift:
+    name: Compare spec/ with upstream
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: curl, json, mbstring
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress --no-interaction
+
+      - name: Check upstream
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          php tools/spec-sync --check-upstream --report=drift.md
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          # 0 = no drift, 1 = drift (reported below), 2 = download or usage error (fail the job)
+          if [ "$status" -eq 2 ]; then exit 1; fi
+          exit 0
+
+      - name: Open or update the drift issue
+        if: steps.check.outputs.status == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Spec drift: Openprovider upstream changed"
+          number=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body-file drift.md
+          else
+            gh issue create --title "$title" --body-file drift.md
+          fi

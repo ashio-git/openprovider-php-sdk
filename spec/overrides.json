@@ -1,0 +1,18 @@
+{
+    "$comment": "Explicit, justified decisions tools/spec-merge will not take on its own. Every entry needs a reason; an entry that matches nothing fails the merge.",
+    "operationIds": {
+        "POST /mailcow/orders": {
+            "operationId": "CreateMailcowOrder",
+            "reason": "The portal gives the Mailcow and SSL order operations the same operationIds (its composed spec merges both services' order packages). The SSL operations keep the names; the Mailcow ones get the service in theirs."
+        },
+        "GET /mailcow/orders/{id}": {
+            "operationId": "GetMailcowOrder",
+            "reason": "The portal gives the Mailcow and SSL order operations the same operationIds (its composed spec merges both services' order packages). The SSL operations keep the names; the Mailcow ones get the service in theirs."
+        },
+        "DELETE /mailcow/domains": {
+            "operationId": "DeleteMailcowDomain",
+            "reason": "The portal uses DeleteDomain for both DELETE /domains/{id} and DELETE /mailcow/domains. The domain service keeps the name."
+        }
+    },
+    "conflicts": {}
+}

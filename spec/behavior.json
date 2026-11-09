@@ -1,0 +1,458 @@
+{
+    "$comment": "API behaviour that the Swagger files do not describe. Each fact carries its sources; all were accessed on the date below. Evidence: docs/study/2026-11-09/sources.md. The SDK core in src/ mirrors these values and tests/Spec/BehaviorTest.php keeps the two in step.",
+    "accessed": "2026-11-09",
+    "environments": {
+        "production": {
+            "baseUri": "https://api.openprovider.eu",
+            "sources": [
+                "https://developer.openprovider.com/get-started.html"
+            ]
+        },
+        "sandbox": {
+            "baseUri": "https://api.sandbox.openprovider.nl",
+            "note": "Relaunched in 2026: accounts from the old sandbox do not carry over; no domain transfers and only some TLDs. The old http://api.sandbox.openprovider.nl:8480 times out.",
+            "sources": [
+                "https://openprovider.help/books/api-integrations/page/sandbox-testing-environment",
+                "https://github.com/openprovider/Openprovider-WHMCS-domains (advanced-module-configurations.php)"
+            ]
+        }
+    },
+    "basePath": {
+        "current": "/v1",
+        "deprecated": "/v1beta",
+        "deprecatedSunset": "2027-06-30",
+        "note": "/v1 is functionally identical to /v1beta; the migration is a base URL change.",
+        "sources": [
+            "https://docs.openprovider.com/ (banner, api-documentation commit 6b5ae978)",
+            "https://developer.openprovider.com/whmcs.html"
+        ]
+    },
+    "envelope": {
+        "fields": [
+            "code",
+            "desc",
+            "data",
+            "warnings",
+            "maintenance"
+        ],
+        "successCode": 0,
+        "httpStatusIsReliable": false,
+        "note": "Classify by the body code. Authentication failures arrive as HTTP 500 in production and HTTP 401 in the sandbox, always with code 196; an unknown route is HTTP 501 with code 81.",
+        "sources": [
+            "https://developer.openprovider.com/get-started.html",
+            "https://openprovider.help/books/api-integrations/page/api-error-codes",
+            "probes of 2026-11-09, docs/study/2026-11-09/sources.md sections 2-3"
+        ]
+    },
+    "authentication": {
+        "login": {
+            "operation": "POST /auth/login",
+            "body": [
+                "username",
+                "password",
+                "ip"
+            ],
+            "returns": [
+                "token",
+                "reseller_id"
+            ],
+            "header": "Authorization: Bearer <token>",
+            "note": "ip is optional; 0.0.0.0 means any address. The Swagger files do not mark the login operation as public, but it is."
+        },
+        "tokenTtlSeconds": 172800,
+        "refreshAfterSeconds": 169200,
+        "expiredTokenCode": 196,
+        "onExpiredToken": "log in again once and repeat the call",
+        "neverRetryCodes": [
+            10005,
+            10006
+        ],
+        "sources": [
+            "https://openprovider.help/books/api-integrations/page/how-long-api-bearer-auth-token-is-valid-for",
+            "https://openprovider.help/books/api-integrations/page/getting-started-with-openprovider-api",
+            "https://github.com/openprovider/rest-client-php (examples/token_expiration_handling.php)"
+        ]
+    },
+    "rateLimits": {
+        "note": "Per account and IP, for identical calls; they cannot be raised. No HTTP 429 or Retry-After is documented.",
+        "rules": [
+            {
+                "calls": "identical calls of any other command",
+                "limit": 300,
+                "windowSeconds": 300,
+                "code": 10005,
+                "block": "until removed manually"
+            },
+            {
+                "calls": "identical checkDomainRequest",
+                "limit": 20,
+                "windowSeconds": 300,
+                "code": 50,
+                "blockSeconds": 300
+            },
+            {
+                "calls": "identical checkDomainRequest for eu, uk, co.uk, org.uk, me.uk, it, ch, fi, fr, xn--e1a4c",
+                "limit": 60,
+                "windowSeconds": 60,
+                "code": 50,
+                "blockSeconds": 60
+            },
+            {
+                "calls": "identical createDomainRequest",
+                "limit": 15,
+                "windowSeconds": 300,
+                "code": 4007,
+                "blockSeconds": 300
+            },
+            {
+                "calls": "failed logins",
+                "limit": 100,
+                "windowSeconds": 3600,
+                "code": 50,
+                "blockSeconds": 1200
+            },
+            {
+                "calls": "token generation",
+                "limit": 30,
+                "windowSeconds": 60,
+                "code": 50,
+                "blockSeconds": 60
+            },
+            {
+                "calls": "identical createCustomerPhoneVerificationRequest",
+                "limit": 1,
+                "windowSeconds": 60,
+                "code": 50,
+                "blockSeconds": 60
+            }
+        ],
+        "sources": [
+            "https://openprovider.help/books/api-integrations/page/what-are-openprovider-api-calls-limits",
+            "https://openprovider.help/books/api-integrations/page/api-error-codes"
+        ]
+    },
+    "paging": {
+        "parameters": [
+            "limit",
+            "offset"
+        ],
+        "defaultLimit": 100,
+        "maxLimit": {
+            "GET /domains": 1000,
+            "GET /ssl/orders": 1000,
+            "GET /dns/zones": 500,
+            "GET /dns/zones/{name}/records": 500
+        },
+        "note": "Maxima exist only in description text; other list operations document none. Exceeding the ListDomains maximum returns code 60.",
+        "sources": [
+            "spec/openprovider.json (parameter descriptions)",
+            "https://openprovider.help/books/api-integrations/page/api-error-codes"
+        ]
+    },
+    "dates": {
+        "timezone": "Europe/Amsterdam",
+        "format": "Y-m-d H:i:s",
+        "note": "Dates are CET/CEST strings without an offset.",
+        "sources": [
+            "https://openprovider.help/books/api-integrations/page/getting-started-with-openprovider-api"
+        ]
+    },
+    "idempotency": {
+        "supported": false,
+        "note": "No idempotency key is documented and identical writes trigger blocks. Never repeat a write automatically; reconcile by reading back.",
+        "sources": [
+            "https://openprovider.help/books/api-integrations/page/what-are-openprovider-api-calls-limits"
+        ]
+    },
+    "userAgent": {
+        "note": "Openprovider's MCP server reports one rejection (code 10005) of a custom User-Agent. Single source, unverified: the sandbox smoke suite (F6) must confirm the SDK's User-Agent is accepted.",
+        "sources": [
+            "https://github.com/openprovider/openprovider-mcp"
+        ]
+    },
+    "errorClasses": {
+        "$comment": "Exception subclass per API code. authentication, rateLimited and maintenance are curated by hand. notFound and validation were derived on 2026-11-09 from the descriptions in spec/error-codes.json with the patterns below and reviewed; the exclusions are business-state errors. Each code belongs to at most one class.",
+        "authentication": {
+            "codes": [
+                196,
+                197,
+                4002,
+                10005,
+                10006
+            ],
+            "why": "196 bad credentials or expired token; 197 account blocked (unsigned agreement); 4002 permission denied; 10005 IP not allowed; 10006 2FA required"
+        },
+        "rateLimited": {
+            "codes": [
+                50,
+                4007
+            ],
+            "why": "50 calls limit reached; 4007 temporary block for excessive use"
+        },
+        "maintenance": {
+            "codes": [
+                10,
+                15,
+                17,
+                340,
+                4005
+            ],
+            "why": "10, 17 and 340 registry unreachable or in maintenance; 15 EU registration closed; 4005 API disabled for maintenance. An error envelope with maintenance=true also maps here."
+        },
+        "notFound": {
+            "codes": [
+                176,
+                177,
+                201,
+                224,
+                392,
+                800,
+                872,
+                873,
+                953,
+                3007,
+                3011,
+                3021,
+                26005
+            ],
+            "pattern": "/\\bnot (be )?found\\b|could not be found|\\bdoes ?n.?t exists?\\b|\\bdo not exist\\b|no license product exists|no license found|^unknown dns zone$/i",
+            "excluded": [
+                1016
+            ]
+        },
+        "validation": {
+            "codes": [
+                19,
+                80,
+                101,
+                103,
+                104,
+                106,
+                108,
+                111,
+                113,
+                114,
+                116,
+                118,
+                119,
+                121,
+                124,
+                131,
+                133,
+                135,
+                137,
+                138,
+                139,
+                141,
+                142,
+                143,
+                146,
+                150,
+                151,
+                152,
+                161,
+                162,
+                163,
+                164,
+                165,
+                167,
+                169,
+                172,
+                190,
+                195,
+                200,
+                222,
+                226,
+                227,
+                228,
+                303,
+                307,
+                316,
+                318,
+                331,
+                333,
+                335,
+                344,
+                347,
+                355,
+                358,
+                359,
+                372,
+                373,
+                374,
+                375,
+                377,
+                380,
+                381,
+                382,
+                383,
+                384,
+                385,
+                386,
+                387,
+                388,
+                398,
+                401,
+                403,
+                421,
+                423,
+                425,
+                506,
+                507,
+                508,
+                509,
+                510,
+                511,
+                515,
+                540,
+                545,
+                546,
+                550,
+                801,
+                802,
+                803,
+                804,
+                808,
+                815,
+                816,
+                820,
+                821,
+                822,
+                823,
+                824,
+                825,
+                826,
+                827,
+                828,
+                829,
+                831,
+                832,
+                833,
+                834,
+                835,
+                836,
+                837,
+                853,
+                855,
+                856,
+                870,
+                871,
+                921,
+                924,
+                950,
+                951,
+                1006,
+                1008,
+                1010,
+                1012,
+                1015,
+                1016,
+                1017,
+                1020,
+                1021,
+                1022,
+                1023,
+                1024,
+                1026,
+                1029,
+                1030,
+                1031,
+                1034,
+                1041,
+                1045,
+                1050,
+                1051,
+                1052,
+                1084,
+                1094,
+                1095,
+                1096,
+                1098,
+                1106,
+                1107,
+                1902,
+                1903,
+                1910,
+                1925,
+                1926,
+                1927,
+                3001,
+                3009,
+                3013,
+                3014,
+                3015,
+                3016,
+                3018,
+                3020,
+                3027,
+                3028,
+                3029,
+                3030,
+                4001,
+                4006,
+                5002,
+                5006,
+                5009,
+                5010,
+                5011,
+                6001,
+                6002,
+                6004,
+                6005,
+                6006,
+                6007,
+                6008,
+                6009,
+                6011,
+                6012,
+                6013,
+                6014,
+                6015,
+                6016,
+                6017,
+                6020,
+                10001,
+                10002,
+                10004,
+                10007,
+                11004,
+                11006,
+                11008,
+                11010,
+                11013,
+                11101,
+                11103,
+                13000,
+                14202,
+                15001,
+                18002,
+                18003,
+                19005,
+                19012,
+                19013,
+                25000,
+                25004,
+                25006,
+                25008,
+                25009,
+                25010,
+                25011,
+                25013,
+                26001,
+                26006,
+                26303,
+                27001,
+                27002,
+                28001,
+                30001,
+                30005,
+                30007,
+                30080
+            ],
+            "pattern": "/\\b(invalid|incorrect|wrong|missing|is required|are required|required parameter|too long|too short|must (be|contain|have)|not (a )?valid)\\b/i",
+            "excluded": [
+                25007
+            ]
+        }
+    }
+}
