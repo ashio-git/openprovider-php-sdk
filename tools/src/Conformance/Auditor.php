@@ -124,24 +124,23 @@ final class Auditor
     private function operations(): array
     {
         $groupOf = [];
-        foreach (Json::list($this->spec['x-tagGroups'] ?? [], 'x-tagGroups') as $group) {
-            $group = Json::object($group, 'x-tagGroups entry');
-            foreach (Json::list($group['tags'] ?? [], 'x-tagGroups tags') as $tag) {
-                $groupOf[Json::string($tag, 'tag')] = Json::string($group['name'] ?? null, 'x-tagGroups name');
+        foreach (Json::objectList($this->spec['x-tagGroups'] ?? [], 'x-tagGroups') as $group) {
+            foreach (Json::stringList($group['tags'] ?? [], 'x-tagGroups tags') as $tag) {
+                $groupOf[$tag] = Json::string($group['name'] ?? null, 'x-tagGroups name');
             }
         }
         $operations = [];
-        foreach (Json::object($this->spec['paths'] ?? null, 'paths') as $path => $item) {
-            foreach (Json::object($item, "paths.$path") as $method => $operation) {
+        foreach (Json::objectMap($this->spec['paths'] ?? null, 'paths') as $path => $item) {
+            foreach (array_keys($item) as $method) {
                 if (!in_array($method, self::HTTP_METHODS, true)) {
                     continue;
                 }
-                $operation = Json::object($operation, "$method $path");
-                $tag = Json::list($operation['tags'] ?? [], 'tags')[0] ?? null;
+                $operation = Json::object($item[$method], "$method $path");
+                $tags = Json::stringList($operation['tags'] ?? [], "$method $path tags");
                 $operations[Json::string($operation['operationId'] ?? null, "$method $path operationId")] = [
-                    'method' => strtoupper((string) $method),
+                    'method' => strtoupper($method),
                     'path' => (string) $path,
-                    'group' => $groupOf[is_string($tag) ? $tag : ''] ?? '',
+                    'group' => $groupOf[$tags[0] ?? ''] ?? '',
                     'operation' => $operation,
                 ];
             }
@@ -198,8 +197,7 @@ final class Auditor
         $spec = $operation['operation'];
         $query = [];
         $bodyDefinition = null;
-        foreach (Json::list($spec['parameters'] ?? [], "$id parameters") as $parameter) {
-            $parameter = Json::object($parameter, "$id parameter");
+        foreach (Json::objectList($spec['parameters'] ?? [], "$id parameters") as $parameter) {
             $name = Json::string($parameter['name'] ?? null, "$id parameter name");
             if (($parameter['in'] ?? null) === 'query') {
                 $query[$name] = $parameter;
@@ -335,25 +333,24 @@ final class Auditor
             $this->major('registry', 'wrong_method', $id, sprintf('sends %s, the spec says %s', $request->getMethod(), $operation['method']));
         }
         $path = $request->getUri()->getPath();
-        $basePath = is_string($this->spec['basePath'] ?? null) ? $this->spec['basePath'] : '';
-        $pattern = '#^' . preg_quote($basePath, '#') . preg_replace_callback(
+        $basePath = Json::optionalString($this->spec, 'basePath') ?? '';
+        $route = preg_replace_callback(
             '/\\\\\{([^}]+)\\\\\}/',
             static fn (array $m): string => '(?<p' . bin2hex($m[1]) . '>[^/]+)',
             preg_quote($operation['path'], '#'),
-        ) . '$#';
+        ) ?? throw new \LogicException('Cannot build the route pattern of ' . $operation['path']);
+        $pattern = '#^' . preg_quote($basePath, '#') . $route . '$#';
         if (preg_match($pattern, $path, $matches) !== 1) {
             $this->major('params', 'wrong_path', $id, sprintf('sends %s, the spec\'s path is %s%s', $path, $basePath, $operation['path']));
 
             return;
         }
         $texts = array_map(static fn (mixed $v): ?string => self::text($v), $arguments);
-        foreach ($matches as $group => $segment) {
-            if (!is_string($group) || !str_starts_with($group, 'p')) {
-                continue;
-            }
-            $placeholder = (string) hex2bin(substr($group, 1));
-            if (!in_array(rawurldecode($segment), $texts, true)) {
-                $this->major('params', 'path_param_unmapped', $id, sprintf('{%s} is "%s", which is none of the arguments', $placeholder, rawurldecode($segment)));
+        preg_match_all('/\{([^}]+)\}/', $operation['path'], $placeholders);
+        foreach ($placeholders[1] as $placeholder) {
+            $segment = rawurldecode($matches['p' . bin2hex($placeholder)] ?? '');
+            if (!in_array($segment, $texts, true)) {
+                $this->major('params', 'path_param_unmapped', $id, sprintf('{%s} is "%s", which is none of the arguments', $placeholder, $segment));
             }
         }
     }
@@ -391,14 +388,13 @@ final class Auditor
             return;
         }
         $expected = self::withoutNulls($this->samples->object($definition));
-        $sent = $body === '' ? null : json_decode($body, true);
-        if (self::canonical($sent) !== self::canonical($expected)) {
+        if (self::canonical($body === '' ? null : json_decode($body, true)) !== self::canonical($expected)) {
             $this->major('body', 'body_mismatch', $id, sprintf('sends %s for the spec\'s example %s', $body, (string) json_encode($expected)));
         }
         $typed = $this->samples->typed($definition);
         $model = $class::fromArray($typed);
-        $extra = (new \ReflectionProperty($model, 'extra'))->getValue($model);
-        $untyped = array_map('strval', array_keys(array_intersect_key(is_array($extra) ? $extra : [], $typed)));
+        $extra = self::arrayOrEmpty((new \ReflectionProperty($model, 'extra'))->getValue($model));
+        $untyped = array_map('strval', array_keys(array_intersect_key($extra, $typed)));
         if ($untyped !== []) {
             $this->minor('body', 'missing_field', $id, sprintf('%s has no typed field for %s', $class, implode(', ', $untyped)));
         }
@@ -419,7 +415,14 @@ final class Auditor
 
             return;
         }
-        $value = $result->data;
+        $this->checkData($id, $class, $list, $result->data, $data);
+    }
+
+    /**
+     * Whether the data read into the response is the spec's model, holding what the API sent.
+     */
+    private function checkData(string $id, string $class, bool $list, mixed $value, mixed $data): void
+    {
         if (is_array($value) && !$list) {
             $this->minor('response', 'raw_data', $id, sprintf('hands back the raw data; the spec declares the model %s', $class));
 
@@ -432,18 +435,27 @@ final class Auditor
 
             return;
         }
-        foreach ($items as $i => $item) {
-            if (!$item instanceof $class || !$item instanceof Model) {
-                $this->major('response', 'model_mismatch', $id, sprintf('reads data into %s, the spec declares %s', get_debug_type($item), $class));
-
-                return;
-            }
-            if (self::canonical($item->toArray()) !== self::canonical($sent[$i])) {
-                $this->major('response', 'response_lost_fields', $id, sprintf('%s does not give back what the API sent', $class));
-
+        foreach (array_keys($items) as $i) {
+            if (!$this->checkItem($id, $class, $items[$i], $sent[$i])) {
                 return;
             }
         }
+    }
+
+    private function checkItem(string $id, string $class, mixed $item, mixed $sent): bool
+    {
+        if (!$item instanceof $class || !$item instanceof Model) {
+            $this->major('response', 'model_mismatch', $id, sprintf('reads data into %s, the spec declares %s', get_debug_type($item), $class));
+
+            return false;
+        }
+        if (self::canonical($item->toArray()) !== self::canonical($sent)) {
+            $this->major('response', 'response_lost_fields', $id, sprintf('%s does not give back what the API sent', $class));
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -451,7 +463,7 @@ final class Auditor
      */
     private function checkType(string $id, string $variable, \ReflectionParameter $parameter, array $spec, string $name): void
     {
-        $specType = is_string($spec['type'] ?? null) ? $spec['type'] : '?';
+        $specType = Json::optionalString($spec, 'type') ?? '?';
         $expected = self::PHP_TYPES[$specType] ?? [];
         $type = $parameter->getType();
         $actual = [];
@@ -479,19 +491,27 @@ final class Auditor
      */
     private function call(array $operation, string $class, string $method, array $arguments): array
     {
-        $data = $this->samples->data($this->envelope($operation['operation']));
+        return $this->callWith($operation, $class, $method, $arguments, $this->samples->data($this->envelope($operation['operation'])));
+    }
+
+    /**
+     * @param array{method: string, path: string, group: string, operation: array<array-key, mixed>} $operation
+     * @param class-string<AbstractService>                                                        $class
+     * @param array<string, mixed>                                                                 $arguments
+     *
+     * @return array{request: ?RequestInterface, result: mixed, error: ?\Throwable, data: mixed}
+     */
+    private function callWith(array $operation, string $class, string $method, array $arguments, mixed $data): array
+    {
         $http = new ProbeHttpClient(['code' => 0, 'desc' => '', 'data' => $data], '/auth/login', $operation['path'] === '/auth/login');
         $service = new $class(ApiClient::create(ClientConfig::sandbox(), new Credentials('probe', 'probe'), null, $http));
 
         try {
-            $result = $service->{$method}(...$arguments);
-            $error = null;
+            // The call runs first: the request it sent is read after it.
+            return ['result' => $service->{$method}(...$arguments), 'request' => $http->last(), 'error' => null, 'data' => $data];
         } catch (\Throwable $e) {
-            $result = null;
-            $error = $e;
+            return ['result' => null, 'request' => $http->last(), 'error' => $e, 'data' => $data];
         }
-
-        return ['request' => $http->last(), 'result' => $result, 'error' => $error, 'data' => $data];
     }
 
     /**
@@ -517,8 +537,10 @@ final class Auditor
     /**
      * A value of the parameter's native type; booleans are false, the value a filter that drops
      * falsy values loses. Null when the type is none the audit can fill.
+     *
+     * @return Model|array<array-key, mixed>|scalar|null
      */
-    private function sample(\ReflectionParameter $parameter, int $seed, ?string $bodyDefinition): mixed
+    private function sample(\ReflectionParameter $parameter, int $seed, ?string $bodyDefinition): Model|array|int|float|string|bool|null
     {
         $type = $parameter->getType();
         $names = [];
@@ -627,7 +649,7 @@ final class Auditor
         }
         $items = array_map(static fn (mixed $item): string => (string) self::text($item), array_values($value));
         $separators = ['csv' => ',', 'ssv' => ' ', 'tsv' => "\t", 'pipes' => '|'];
-        $format = is_string($spec['collectionFormat'] ?? null) ? $spec['collectionFormat'] : 'csv';
+        $format = Json::optionalString($spec, 'collectionFormat') ?? 'csv';
         if ($format === 'multi') {
             return array_map(static fn (string $item): array => [$name, $item], $items);
         }
@@ -671,9 +693,15 @@ final class Auditor
      */
     private static function keys(string $body): array
     {
-        $decoded = json_decode($body, true);
+        return array_map('strval', array_keys(self::arrayOrEmpty(json_decode($body, true))));
+    }
 
-        return is_array($decoded) ? array_map('strval', array_keys($decoded)) : [];
+    /**
+     * @return array<array-key, mixed>
+     */
+    private static function arrayOrEmpty(mixed $value): array
+    {
+        return is_array($value) ? $value : [];
     }
 
     /**
@@ -691,21 +719,19 @@ final class Auditor
         return null;
     }
 
+    /**
+     * Drops null entries of maps at every depth; lists keep their positions.
+     *
+     * @return ($value is array ? array<array-key, mixed> : mixed)
+     */
     private static function withoutNulls(mixed $value): mixed
     {
         if (!is_array($value)) {
             return $value;
         }
-        $list = array_is_list($value);
-        $out = [];
-        foreach ($value as $key => $item) {
-            if ($item === null && !$list) {
-                continue;
-            }
-            $out[$key] = self::withoutNulls($item);
-        }
+        $kept = array_is_list($value) ? $value : array_filter($value, static fn (mixed $item): bool => $item !== null);
 
-        return $out;
+        return array_map(self::withoutNulls(...), $kept);
     }
 
     /**

@@ -52,7 +52,7 @@ final class OperationParameter
             throw new SpecException(sprintf('%s: parameter "%s" is in %s, which the SDK does not support', $operationId, $name, (string) json_encode($in)));
         }
         $where = "$operationId parameter \"$name\"";
-        $description = is_string($parameter['description'] ?? null) ? $parameter['description'] : '';
+        $description = Json::optionalString($parameter, 'description') ?? '';
         $hasDefault = array_key_exists('default', $parameter);
         if ($in === 'body') {
             $schema = Json::object($parameter['schema'] ?? null, "$where schema");
@@ -67,7 +67,7 @@ final class OperationParameter
 
         $type = Json::string($parameter['type'] ?? null, "$where type");
         $itemType = null;
-        $enum = $parameter['enum'] ?? null;
+        $items = [];
         if ($type === 'array') {
             $items = Json::object($parameter['items'] ?? null, "$where items");
             $itemType = Json::string($items['type'] ?? null, "$where item type");
@@ -77,7 +77,6 @@ final class OperationParameter
             if ($in === 'path') {
                 throw new SpecException($where . ': a path parameter cannot be an array');
             }
-            $enum ??= $items['enum'] ?? null;
         } elseif (!isset(self::SCALARS[$type])) {
             throw new SpecException(sprintf('%s: the type %s is not supported', $where, $type));
         }
@@ -95,7 +94,10 @@ final class OperationParameter
             $format,
             null,
             $description,
-            array_map(static fn (mixed $v): string => is_scalar($v) ? (string) $v : (string) json_encode($v), Json::list($enum ?? [], "$where enum")),
+            array_map(
+                static fn (mixed $v): string => is_scalar($v) ? (string) $v : (string) json_encode($v),
+                Json::list($parameter['enum'] ?? $items['enum'] ?? [], "$where enum"),
+            ),
             $hasDefault,
             $parameter['default'] ?? null,
         );

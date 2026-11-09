@@ -60,18 +60,23 @@ final class ParameterSpec
         }
         $location = ParameterLocation::tryFrom($in)
             ?? throw new InvalidArgumentException(sprintf('%s: parameter "%s" is in %s, which the SDK does not support', $context, $name, $in));
-        $type = $parameter['type'] ?? null;
-        $items = $parameter['items'] ?? null;
-        $itemType = is_array($items) ? ($items['type'] ?? null) : null;
-        $format = $parameter['collectionFormat'] ?? 'csv';
+        $items = isset($parameter['items']) && is_array($parameter['items']) ? $parameter['items'] : [];
 
         return new self(
             $name,
             $location,
             $location === ParameterLocation::Path || ($parameter['required'] ?? false) === true,
-            $location === ParameterLocation::Body ? null : (is_string($type) ? $type : null),
-            is_string($itemType) ? $itemType : null,
-            is_string($format) ? $format : 'csv',
+            $location === ParameterLocation::Body ? null : self::stringAt($parameter, 'type'),
+            self::stringAt($items, 'type'),
+            self::stringAt($parameter, 'collectionFormat') ?? 'csv',
         );
+    }
+
+    /**
+     * @param array<array-key, mixed> $object
+     */
+    private static function stringAt(array $object, string $key): ?string
+    {
+        return isset($object[$key]) && is_string($object[$key]) ? $object[$key] : null;
     }
 }

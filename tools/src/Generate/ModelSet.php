@@ -53,29 +53,29 @@ final class ModelSet
         $envelopes = [];
         $errors = [];
         $warnings = [];
-        foreach (Json::object($spec['paths'] ?? null, 'paths') as $path => $item) {
-            foreach (Json::object($item, "paths.$path") as $method => $operation) {
+        foreach (Json::objectMap($spec['paths'] ?? null, 'paths') as $path => $item) {
+            foreach (array_keys($item) as $method) {
                 if (!in_array($method, self::METHODS, true)) {
                     continue;
                 }
-                $operation = Json::object($operation, "$method $path");
-                $id = is_string($operation['operationId'] ?? null) ? $operation['operationId'] : strtoupper((string) $method) . ' ' . $path;
-                foreach (Json::list($operation['parameters'] ?? [], "$id parameters") as $parameter) {
-                    $parameter = Json::object($parameter, "$id parameter");
+                $operation = Json::object($item[$method], "$method $path");
+                $id = isset($operation['operationId']) && is_string($operation['operationId'])
+                    ? $operation['operationId']
+                    : strtoupper($method) . ' ' . $path;
+                foreach (Json::objectList($operation['parameters'] ?? [], "$id parameters") as $parameter) {
                     foreach (self::refs($parameter['schema'] ?? null) as $ref) {
                         $roots[$ref] = true;
                     }
                 }
-                foreach (Json::object($operation['responses'] ?? null, "$id responses") as $status => $response) {
-                    $schema = Json::object($response, "$id $status response")['schema'] ?? null;
-                    if ($schema === null) {
+                foreach (Json::objectMap($operation['responses'] ?? null, "$id responses") as $status => $response) {
+                    if (!isset($response['schema'])) {
                         continue;
                     }
-                    $ref = Json::object($schema, "$id $status schema")['$ref'] ?? null;
-                    if (!is_string($ref)) {
+                    $schema = Json::object($response['schema'], "$id $status schema");
+                    if (!isset($schema['$ref']) || !is_string($schema['$ref'])) {
                         throw new SpecException(sprintf('%s: the %s response is not a $ref to an envelope', $id, $status));
                     }
-                    $name = self::refName($ref);
+                    $name = self::refName($schema['$ref']);
                     $envelope = self::envelopeFields(Json::object($definitions[$name] ?? null, $name), $name);
                     foreach (self::refs($envelope['warnings'] ?? null) as $warning) {
                         $warnings[$warning] = true;
@@ -101,7 +101,7 @@ final class ModelSet
         $reachable = [];
         $queue = array_keys($roots);
         while ($queue !== []) {
-            $name = (string) array_pop($queue);
+            $name = array_pop($queue);
             if (isset($reachable[$name])) {
                 continue;
             }
@@ -117,10 +117,9 @@ final class ModelSet
         $unsupported = [];
         foreach (array_keys($reachable) as $name) {
             $definition = Json::object($definitions[$name], $name);
-            $type = $definition['type'] ?? null;
-            if ($type === 'string' && isset($definition['enum'])) {
+            if (($definition['type'] ?? null) === 'string' && isset($definition['enum'])) {
                 $enums[] = $name;
-            } elseif ($type === 'object') {
+            } elseif (($definition['type'] ?? null) === 'object') {
                 $models[] = $name;
             } else {
                 $unsupported[] = $name;
@@ -155,7 +154,7 @@ final class ModelSet
         }
         $schema = Json::object($schema, 'schema');
         $refs = isset($schema['$ref']) ? [self::refName($schema['$ref'])] : [];
-        foreach (Json::object($schema['properties'] ?? [], 'properties') as $property) {
+        foreach (Json::objectMap($schema['properties'] ?? [], 'properties') as $property) {
             array_push($refs, ...self::refs($property));
         }
         foreach (['items', 'additionalProperties', 'not'] as $keyword) {
@@ -164,7 +163,7 @@ final class ModelSet
             }
         }
         foreach (['allOf', 'anyOf', 'oneOf'] as $keyword) {
-            foreach (Json::list($schema[$keyword] ?? [], $keyword) as $member) {
+            foreach (Json::objectList($schema[$keyword] ?? [], $keyword) as $member) {
                 array_push($refs, ...self::refs($member));
             }
         }
@@ -174,11 +173,12 @@ final class ModelSet
 
     public static function refName(mixed $ref): string
     {
-        if (!is_string($ref) || !str_starts_with($ref, '#/definitions/') || strlen($ref) === strlen('#/definitions/')) {
+        $name = is_string($ref) && str_starts_with($ref, '#/definitions/') ? substr($ref, strlen('#/definitions/')) : '';
+        if ($name === '') {
             throw new SpecException(sprintf('Unsupported $ref %s: only #/definitions/<name> is', (string) json_encode($ref)));
         }
 
-        return substr($ref, strlen('#/definitions/'));
+        return $name;
     }
 
     /**

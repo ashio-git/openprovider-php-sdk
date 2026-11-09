@@ -20,7 +20,10 @@ use Ashio\OpenProvider\Service\Operations;
  */
 abstract class AbstractService
 {
-    public function __construct(protected readonly ApiClient $client)
+    /**
+     * Final: the facade and the audit build every service from the client alone.
+     */
+    final public function __construct(protected readonly ApiClient $client)
     {
     }
 

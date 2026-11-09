@@ -63,13 +63,13 @@ final class OperationGenerator
 
         $byGroup = [];
         $all = [];
-        foreach (Json::object($spec['paths'] ?? null, 'paths') as $path => $item) {
-            foreach (Json::object($item, "paths.$path") as $method => $operation) {
+        foreach (Json::objectMap($spec['paths'] ?? null, 'paths') as $path => $item) {
+            foreach (array_keys($item) as $method) {
                 if (!in_array($method, self::HTTP_METHODS, true)) {
                     continue;
                 }
-                $operation = Json::object($operation, "$method $path");
-                $entry = self::operation((string) $method, (string) $path, $operation, $groupOf, $public, $classes, $definitions);
+                $operation = Json::object($item[$method], "$method $path");
+                $entry = self::operation($method, (string) $path, $operation, $groupOf, $public, $classes, $definitions);
                 if (isset($deferred[$entry['group']])) {
                     continue;
                 }
@@ -102,7 +102,8 @@ final class OperationGenerator
     public static function serviceClass(string $group): string
     {
         $name = '';
-        foreach (preg_split('/[^A-Za-z0-9]+/', $group, -1, PREG_SPLIT_NO_EMPTY) ?: [] as $word) {
+        $words = preg_split('/[^A-Za-z0-9]+/', $group, -1, PREG_SPLIT_NO_EMPTY);
+        foreach ($words === false ? [] : $words as $word) {
             $name .= ucfirst(strtoupper($word) === $word ? strtolower($word) : $word);
         }
         if (preg_match('/^[A-Z][A-Za-z0-9]*$/', $name) !== 1) {
@@ -163,11 +164,9 @@ final class OperationGenerator
     {
         $groupOf = [];
         $tags = [];
-        foreach (Json::list($spec['x-tagGroups'] ?? null, 'x-tagGroups') as $group) {
-            $group = Json::object($group, 'x-tagGroups entry');
+        foreach (Json::objectList($spec['x-tagGroups'] ?? null, 'x-tagGroups') as $group) {
             $name = Json::string($group['name'] ?? null, 'x-tagGroups name');
-            foreach (Json::list($group['tags'] ?? null, "x-tagGroups $name tags") as $tag) {
-                $tag = Json::string($tag, "x-tagGroups $name tag");
+            foreach (Json::stringList($group['tags'] ?? null, "x-tagGroups $name tags") as $tag) {
                 if (isset($groupOf[$tag])) {
                     throw new SpecException(sprintf('The tag "%s" is in the groups "%s" and "%s"', $tag, $groupOf[$tag], $name));
                 }
@@ -192,8 +191,7 @@ final class OperationGenerator
     {
         $id = Json::string($operation['operationId'] ?? null, strtoupper($method) . " $path operationId");
         $group = null;
-        foreach (Json::list($operation['tags'] ?? null, "$id tags") as $tag) {
-            $tag = Json::string($tag, "$id tag");
+        foreach (Json::stringList($operation['tags'] ?? null, "$id tags") as $tag) {
             $tagGroup = $groupOf[$tag] ?? throw new SpecException(sprintf('%s: the tag "%s" is in no x-tagGroups group', $id, $tag));
             if ($group !== null && $group !== $tagGroup) {
                 throw new SpecException(sprintf('%s: its tags are in the groups "%s" and "%s"', $id, $group, $tagGroup));
@@ -205,8 +203,8 @@ final class OperationGenerator
         }
 
         $parameters = [];
-        foreach (Json::list($operation['parameters'] ?? [], "$id parameters") as $parameter) {
-            $parameters[] = OperationParameter::fromSpec(Json::object($parameter, "$id parameter"), $classes, $definitions, $id);
+        foreach (Json::objectList($operation['parameters'] ?? [], "$id parameters") as $parameter) {
+            $parameters[] = OperationParameter::fromSpec($parameter, $classes, $definitions, $id);
         }
         $variables = NameMap::properties($id, array_map(static fn (OperationParameter $p): string => $p->name, $parameters));
         $parameters = array_map(static fn (OperationParameter $p): OperationParameter => $p->withVariable($variables[$p->name]), $parameters);
@@ -228,7 +226,6 @@ final class OperationGenerator
         usort($optional, static fn (OperationParameter $a, OperationParameter $b): int => ($a->in === 'body' ? 0 : 1) <=> ($b->in === 'body' ? 0 : 1));
 
         [$data, $list] = self::data($id, $operation, $classes, $definitions);
-        $security = $operation['security'] ?? null;
 
         return [
             'id' => $id,
@@ -236,10 +233,10 @@ final class OperationGenerator
             'path' => $path,
             'group' => $group,
             'name' => self::methodName($id),
-            'auth' => $security !== [] && !in_array(strtoupper($method) . ' ' . $path, $public, true),
+            'auth' => ($operation['security'] ?? null) !== [] && !in_array(strtoupper($method) . ' ' . $path, $public, true),
             'experimental' => ($operation['x-experimental'] ?? false) === true,
-            'summary' => is_string($operation['summary'] ?? null) ? $operation['summary'] : '',
-            'description' => is_string($operation['description'] ?? null) ? $operation['description'] : '',
+            'summary' => isset($operation['summary']) && is_string($operation['summary']) ? $operation['summary'] : '',
+            'description' => isset($operation['description']) && is_string($operation['description']) ? $operation['description'] : '',
             'parameters' => $parameters,
             'signature' => [...$pathParameters, ...$required, ...$optional],
             'data' => $data,
@@ -262,9 +259,9 @@ final class OperationGenerator
         $success = Json::object($responses['200'] ?? null, "$id 200 response");
         $envelope = ModelSet::refName(Json::object($success['schema'] ?? null, "$id 200 schema")['$ref'] ?? null);
         $fields = Json::object(Json::object($definitions[$envelope] ?? null, $envelope)['properties'] ?? [], "$envelope properties");
-        $data = is_array($fields['data'] ?? null) ? $fields['data'] : [];
+        $data = isset($fields['data']) && is_array($fields['data']) ? $fields['data'] : [];
         $list = ($data['type'] ?? null) === 'array';
-        $target = $list ? (is_array($data['items'] ?? null) ? $data['items'] : []) : $data;
+        $target = $list ? (isset($data['items']) && is_array($data['items']) ? $data['items'] : []) : $data;
         $definition = isset($target['$ref']) ? ModelSet::refName($target['$ref']) : null;
         $class = $definition === null ? null : ($classes[$definition] ?? null);
         if ($definition === null || $class === null || (Json::object($definitions[$definition] ?? null, $definition)['type'] ?? null) !== 'object') {

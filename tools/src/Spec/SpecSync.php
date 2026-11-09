@@ -117,8 +117,8 @@ final class SpecSync
         }
 
         $listed = [];
-        foreach (Json::list(Json::decode($this->fetcher->get($manifest->listingUrl())->body, 'the GitHub listing'), 'listing') as $entry) {
-            $name = Json::string(Json::object($entry, 'listing entry')['name'] ?? null, 'listing entry name');
+        foreach (Json::objectList(Json::decode($this->fetcher->get($manifest->listingUrl())->body, 'the GitHub listing'), 'listing') as $entry) {
+            $name = Json::string($entry['name'] ?? null, 'listing entry name');
             if (str_ends_with($name, '.swagger.json')) {
                 $listed[] = substr($name, 0, -strlen('.swagger.json'));
             }

@@ -213,14 +213,7 @@ final class Fields
      */
     public static function toArray(array $fields, array $extra): array
     {
-        $out = [];
-        foreach ($fields as $key => $value) {
-            if ($value !== null) {
-                $out[$key] = self::plain($value);
-            }
-        }
-
-        return $out + $extra;
+        return array_map(self::plain(...), self::present($fields)) + $extra;
     }
 
     /**
@@ -233,18 +226,40 @@ final class Fields
      */
     public static function toJson(array $fields, array $extra, array $maps = []): \stdClass
     {
-        $out = [];
-        foreach ($fields as $key => $value) {
-            if ($value !== null) {
-                $out[$key] = is_array($value) && in_array($key, $maps, true) ? (object) $value : $value;
-            }
-        }
-        $json = new \stdClass();
-        foreach ($out + $extra as $key => $value) {
-            $json->{(string) $key} = $value;
+        $present = self::present($fields);
+        $objects = array_map(
+            static fn (mixed $value): mixed => is_array($value) ? self::jsonObject($value) : $value,
+            array_intersect_key($present, array_flip($maps)),
+        );
+
+        return self::jsonObject(array_replace($present, $objects) + $extra);
+    }
+
+    /**
+     * An array as a JSON object, whatever its keys: `[]` becomes `{}` and a list `{"0": …}`.
+     *
+     * @param array<array-key, mixed> $map
+     */
+    public static function jsonObject(array $map): \stdClass
+    {
+        $object = new \stdClass();
+        foreach (array_keys($map) as $key) {
+            $object->{(string) $key} = $map[$key];
         }
 
-        return $json;
+        return $object;
+    }
+
+    /**
+     * The fields that are set, in their order: null means absent.
+     *
+     * @param array<string, mixed> $fields
+     *
+     * @return array<string, mixed>
+     */
+    private static function present(array $fields): array
+    {
+        return array_filter($fields, static fn (mixed $value): bool => $value !== null);
     }
 
     /**
@@ -313,8 +328,8 @@ final class Fields
     private static function each(array $values, \Closure $item): ?array
     {
         $out = [];
-        foreach ($values as $key => $value) {
-            $converted = $item($value);
+        foreach (array_keys($values) as $key) {
+            $converted = $item($values[$key]);
             if ($converted === null) {
                 return null;
             }

@@ -104,15 +104,15 @@ final class MergeRun
     {
         ksort($services, SORT_STRING);
         $operations = [];
-        foreach ($services as $name => $spec) {
-            $name = (string) $name;
+        foreach (array_keys($services) as $key) {
+            $name = (string) $key;
             if ($name === SpecMerger::PORTAL) {
                 throw new SpecException('A service named "portal" collides with the namespace of portal-only definitions');
             }
             if (preg_match('/^[a-z0-9][a-z0-9-]*$/', $name) !== 1) {
                 throw new SpecException(sprintf('Service name "%s" would make "<service>.<definition>" names ambiguous; use [a-z0-9-]', $name));
             }
-            $spec = Json::object($spec, "service $name");
+            $spec = Json::object($services[$key], "service $name");
             $this->serviceDefinitions[$name] = Json::object($spec['definitions'] ?? [], "$name definitions");
             foreach (self::operations($spec, $name) as $key => $operation) {
                 if (isset($operations[$key])) {
@@ -134,12 +134,12 @@ final class MergeRun
     private static function operations(array $spec, string $origin): array
     {
         $operations = [];
-        foreach (Json::object($spec['paths'] ?? [], "$origin paths") as $path => $item) {
+        foreach (Json::objectMap($spec['paths'] ?? [], "$origin paths") as $path => $item) {
             $path = (string) $path;
             if (preg_match('#^/v1(?:beta)?(/.+)$#', $path, $match) !== 1) {
                 throw new SpecException(sprintf('Path %s of %s does not start with /v1 or /v1beta', $path, $origin));
             }
-            foreach (Json::object($item, "$origin $path") as $method => $operation) {
+            foreach (array_keys($item) as $method) {
                 $method = (string) $method;
                 if (str_starts_with($method, 'x-')) {
                     continue;
@@ -151,7 +151,7 @@ final class MergeRun
                 if (isset($operations[$key])) {
                     throw new SpecException(sprintf('%s appears twice in %s', $key, $origin));
                 }
-                $operations[$key] = Json::object($operation, "$origin $key");
+                $operations[$key] = Json::object($item[$method], "$origin $key");
             }
         }
         ksort($operations, SORT_STRING);
@@ -180,11 +180,10 @@ final class MergeRun
         }
 
         $serviceResponses = Json::object($serviceOperation['responses'] ?? [], "$key responses");
-        foreach (Json::object($portalOperation['responses'] ?? [], "$key responses") as $code => $portalResponse) {
-            $serviceSchema = Json::object($serviceResponses[$code] ?? [], "$key response $code")['schema'] ?? null;
-            $portalSchema = Json::object($portalResponse, "$key response $code")['schema'] ?? null;
-            if ($serviceSchema !== null && $portalSchema !== null) {
-                $difference = $this->compare($service, $serviceSchema, $portalSchema);
+        foreach (Json::objectMap($portalOperation['responses'] ?? [], "$key responses") as $code => $portalResponse) {
+            $serviceResponse = Json::object($serviceResponses[$code] ?? [], "$key response $code");
+            if (isset($serviceResponse['schema'], $portalResponse['schema'])) {
+                $difference = $this->compare($service, $serviceResponse['schema'], $portalResponse['schema']);
                 if ($difference !== null) {
                     $this->schemaConflict("paths/$key/responses/$code", $difference);
                 }
@@ -234,9 +233,10 @@ final class MergeRun
             }
         }
         $portalProperties = self::properties($p);
-        foreach (self::properties($s) as $name => $property) {
+        $serviceProperties = self::properties($s);
+        foreach (array_keys($serviceProperties) as $name) {
             if (array_key_exists($name, $portalProperties)) {
-                $difference = $this->compare($service, $property, $portalProperties[$name]);
+                $difference = $this->compare($service, $serviceProperties[$name], $portalProperties[$name]);
                 if ($difference !== null) {
                     return $name . ': ' . $difference;
                 }
@@ -264,9 +264,10 @@ final class MergeRun
         $serviceDefinition = Json::object($this->serviceDefinitions[$service][$serviceName], $out);
         $portalDefinition = Json::object($this->portalDefinitions[$portalName], "portal $portalName");
         $portalProperties = self::properties($portalDefinition);
-        foreach (self::properties($serviceDefinition) as $name => $property) {
+        $serviceProperties = self::properties($serviceDefinition);
+        foreach (array_keys($serviceProperties) as $name) {
             if (array_key_exists($name, $portalProperties)) {
-                $difference = $this->compare($service, $property, $portalProperties[$name]);
+                $difference = $this->compare($service, $serviceProperties[$name], $portalProperties[$name]);
                 if ($difference !== null) {
                     $this->schemaConflict("definitions/$out/properties/$name", $difference);
                 }
@@ -291,9 +292,9 @@ final class MergeRun
     private function sharedOperation(string $key, string $service, array $serviceOperation, array $portalOperation): array
     {
         $operation = Json::object($this->rewrite($serviceOperation, static fn (string $name): string => "$service.$name"), $key);
-        $operation['operationId'] = $portalOperation['operationId'] ?? $serviceOperation['operationId'] ?? null;
+        $operation['operationId'] = Json::value($portalOperation['operationId'] ?? $serviceOperation['operationId'] ?? null, "$key operationId");
         if (isset($portalOperation['tags'])) {
-            $operation['tags'] = $portalOperation['tags'];
+            $operation['tags'] = Json::value($portalOperation['tags'], "$key tags");
         }
 
         $parameters = array_values(self::parametersById($operation, $key));
@@ -312,7 +313,7 @@ final class MergeRun
         }
 
         $responses = Json::object($operation['responses'] ?? [], "$key responses");
-        foreach (Json::object($portalOperation['responses'] ?? [], "$key responses") as $code => $portalResponse) {
+        foreach (Json::objectMap($portalOperation['responses'] ?? [], "$key responses") as $code => $portalResponse) {
             $location = "paths/$key/responses/$code";
             if (!array_key_exists($code, $responses)) {
                 $responses[$code] = $this->fromPortal($portalResponse, $service);
@@ -326,7 +327,7 @@ final class MergeRun
         }
 
         if ($this->portalWins("paths/$key/security")) {
-            $operation['security'] = $portalOperation['security'] ?? null;
+            $operation['security'] = Json::value($portalOperation['security'] ?? null, "$key security");
         }
         $operation['x-openprovider-operation'] = [
             'service' => $service,
@@ -457,15 +458,16 @@ final class MergeRun
         foreach ($portalNames as $portalName) {
             $properties = self::properties($definition);
             $before = $properties;
-            foreach (self::properties(Json::object($this->portalDefinitions[$portalName], $portalName)) as $property => $portalProperty) {
+            $portalProperties = self::properties(Json::object($this->portalDefinitions[$portalName], $portalName));
+            foreach (array_keys($portalProperties) as $property) {
                 $location = "definitions/$out/properties/$property";
                 if (!array_key_exists($property, $properties)) {
-                    $properties[$property] = $this->fromPortal($portalProperty, $namespace);
+                    $properties[$property] = $this->fromPortal($portalProperties[$property], $namespace);
                     $this->additions[$location] = true;
                 } elseif ($this->portalWins($location)) {
-                    $properties[$property] = $this->fromPortal($portalProperty, $namespace);
+                    $properties[$property] = $this->fromPortal($portalProperties[$property], $namespace);
                 } else {
-                    $properties[$property] = $this->uniteEnums($properties[$property], $portalProperty, $location);
+                    $properties[$property] = $this->uniteEnums($properties[$property], $portalProperties[$property], $location);
                 }
             }
             if ($properties !== $before) {
@@ -476,18 +478,22 @@ final class MergeRun
         return $definition;
     }
 
-    private function uniteEnums(mixed $serviceSchema, mixed $portalSchema, string $location): mixed
+    /**
+     * @return array<array-key, mixed>|\stdClass|scalar|null
+     */
+    private function uniteEnums(mixed $serviceSchema, mixed $portalSchema, string $location): array|\stdClass|bool|int|float|string|null
     {
         if (!is_array($serviceSchema) || !is_array($portalSchema)) {
-            return $serviceSchema;
+            return Json::value($serviceSchema, $location);
         }
-        if (is_array($serviceSchema['enum'] ?? null) && is_array($portalSchema['enum'] ?? null)) {
+        if (isset($serviceSchema['enum'], $portalSchema['enum']) && is_array($serviceSchema['enum']) && is_array($portalSchema['enum'])) {
+            $known = array_values($serviceSchema['enum']);
             $missing = array_values(array_filter(
                 $portalSchema['enum'],
-                static fn (mixed $value): bool => !in_array($value, $serviceSchema['enum'], true),
+                static fn (mixed $value): bool => !in_array($value, $known, true),
             ));
             if ($missing !== []) {
-                $serviceSchema['enum'] = array_merge(array_values($serviceSchema['enum']), $missing);
+                $serviceSchema['enum'] = array_merge($known, $missing);
                 $this->enumUnions[$location] = true;
             }
         }
@@ -508,7 +514,10 @@ final class MergeRun
      * A portal schema placed into a service's output: its references point at the service's
      * definition when the pairing proved which one it is, otherwise at a `portal.` import.
      */
-    private function fromPortal(mixed $schema, string $service): mixed
+    /**
+     * @return array<array-key, mixed>|\stdClass|scalar|null
+     */
+    private function fromPortal(mixed $schema, string $service): array|\stdClass|bool|int|float|string|null
     {
         $rewritten = $this->rewrite($schema, function (string $name) use ($service): string {
             $candidates = $this->portalToService[$name][$service] ?? [];
@@ -541,22 +550,21 @@ final class MergeRun
     }
 
     /**
+     * Every `$ref` at any depth renamed through $rename.
+     *
      * @param \Closure(string): string $rename
+     *
+     * @return array<array-key, mixed>|\stdClass|scalar|null
      */
-    private function rewrite(mixed $value, \Closure $rename): mixed
+    private function rewrite(mixed $value, \Closure $rename): array|\stdClass|bool|int|float|string|null
     {
         if (!is_array($value)) {
-            return $value;
-        }
-        foreach ($value as $key => $item) {
-            if ($key === '$ref') {
-                $value[$key] = self::DEFINITIONS . $rename(self::definitionName($item));
-            } else {
-                $value[$key] = $this->rewrite($item, $rename);
-            }
+            return Json::value($value, 'schema');
         }
 
-        return $value;
+        return Json::mapValues($value, fn (mixed $item, int|string $key): mixed => $key === '$ref'
+            ? self::DEFINITIONS . $rename(self::definitionName($item))
+            : $this->rewrite($item, $rename));
     }
 
     /**
@@ -568,11 +576,11 @@ final class MergeRun
             return [];
         }
         $found = [];
-        foreach ($value as $key => $item) {
+        foreach (array_keys($value) as $key) {
             if ($key === '$ref') {
-                $found[] = self::definitionName($item);
+                $found[] = self::definitionName($value[$key]);
             } else {
-                array_push($found, ...self::references($item));
+                array_push($found, ...self::references($value[$key]));
             }
         }
 
@@ -581,11 +589,12 @@ final class MergeRun
 
     private static function definitionName(mixed $reference): string
     {
-        if (!is_string($reference) || !str_starts_with($reference, self::DEFINITIONS)) {
+        $name = is_string($reference) && str_starts_with($reference, self::DEFINITIONS) ? substr($reference, strlen(self::DEFINITIONS)) : null;
+        if ($name === null) {
             throw new SpecException(sprintf('Only local definition references are supported, got %s', self::show($reference)));
         }
 
-        return substr($reference, strlen(self::DEFINITIONS));
+        return $name;
     }
 
     /**
@@ -601,13 +610,11 @@ final class MergeRun
      */
     private static function typeOf(array $schema): string
     {
-        $type = $schema['type'] ?? null;
-        if (!is_string($type)) {
-            $type = isset($schema['properties']) || isset($schema['additionalProperties']) ? 'object' : 'any';
-        }
-        $format = $schema['format'] ?? null;
+        $type = Json::optionalString($schema, 'type')
+            ?? (isset($schema['properties']) || isset($schema['additionalProperties']) ? 'object' : 'any');
+        $format = Json::optionalString($schema, 'format');
 
-        return is_string($format) ? "$type:$format" : $type;
+        return $format !== null ? "$type:$format" : $type;
     }
 
     /**
@@ -638,8 +645,7 @@ final class MergeRun
     private static function parametersById(array $operation, string $key): array
     {
         $parameters = [];
-        foreach (Json::list($operation['parameters'] ?? [], "$key parameters") as $parameter) {
-            $parameter = Json::object($parameter, "$key parameter");
+        foreach (Json::objectList($operation['parameters'] ?? [], "$key parameters") as $parameter) {
             $id = Json::string($parameter['in'] ?? null, "$key parameter in") . ':'
                 . Json::string($parameter['name'] ?? null, "$key parameter name");
             $parameters[$id] = $parameter;
@@ -717,13 +723,13 @@ final class MergeRun
         ];
         foreach (['host'] as $key) {
             if (isset($portal[$key])) {
-                $spec[$key] = $portal[$key];
+                $spec[$key] = Json::value($portal[$key], "portal $key");
             }
         }
         $spec['basePath'] = SpecMerger::BASE_PATH;
         foreach (['schemes', 'consumes', 'produces', 'securityDefinitions', 'security', 'tags', 'x-tagGroups'] as $key) {
             if (isset($portal[$key])) {
-                $spec[$key] = $portal[$key];
+                $spec[$key] = Json::value($portal[$key], "portal $key");
             }
         }
         if ($sources !== []) {

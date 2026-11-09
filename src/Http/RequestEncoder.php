@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ashio\OpenProvider\Http;
 
 use Ashio\OpenProvider\Exception\InvalidArgumentException;
+use Ashio\OpenProvider\Serialization\Fields;
 use Ashio\OpenProvider\Spec\OperationSpec;
 use Ashio\OpenProvider\Spec\ParameterLocation;
 use Ashio\OpenProvider\Spec\ParameterSpec;
@@ -42,13 +43,14 @@ final class RequestEncoder
         $query = [];
         $body = null;
         foreach ($operation->parameters as $parameter) {
-            $value = $arguments[$parameter->name] ?? null;
-            if ($value === null && $parameter->required && $parameter->in !== ParameterLocation::Body) {
+            // isset() is false for null too: null is "absent", as everywhere in the SDK.
+            $given = isset($arguments[$parameter->name]);
+            if (!$given && $parameter->required && $parameter->in !== ParameterLocation::Body) {
                 throw new InvalidArgumentException(sprintf('%s requires "%s"', $operation->operationId, $parameter->name));
             }
             switch ($parameter->in) {
                 case ParameterLocation::Path:
-                    $segment = self::scalar($parameter, (string) $parameter->type, $value);
+                    $segment = self::scalar($parameter, (string) $parameter->type, $arguments[$parameter->name] ?? null);
                     if ($segment === '') {
                         throw new InvalidArgumentException(sprintf('%s: path parameter "%s" cannot be empty', $operation->operationId, $parameter->name));
                     }
@@ -56,16 +58,16 @@ final class RequestEncoder
 
                     break;
                 case ParameterLocation::Query:
-                    if ($value !== null) {
-                        array_push($query, ...self::queryPairs($parameter, $value));
+                    if ($given) {
+                        array_push($query, ...self::queryPairs($parameter, $arguments[$parameter->name]));
                     }
 
                     break;
                 case ParameterLocation::Body:
-                    if ($value === null && $parameter->required) {
+                    if (!$given && $parameter->required) {
                         throw new InvalidArgumentException(sprintf('%s requires a "%s"', $operation->operationId, $parameter->name));
                     }
-                    $body = self::json($parameter, $value ?? []);
+                    $body = self::json($parameter, $arguments[$parameter->name] ?? []);
 
                     break;
             }
@@ -137,17 +139,25 @@ final class RequestEncoder
     }
 
     /**
-     * Drops null entries of maps at every depth; lists keep their positions.
+     * Drops null entries of maps at every depth; lists keep their positions. A JsonSerializable
+     * is replaced by what it serializes to, once: if that is an object again, it is refused.
+     *
+     * @return array<array-key, mixed>|\stdClass|scalar|null
      */
-    private static function withoutNulls(mixed $value, string $where): mixed
+    private static function withoutNulls(mixed $value, string $where): array|\stdClass|bool|int|float|string|null
     {
-        if ($value instanceof \JsonSerializable) {
-            $value = $value->jsonSerialize();
-        }
+        return self::plainWithoutNulls($value instanceof \JsonSerializable ? $value->jsonSerialize() : $value, $where);
+    }
+
+    /**
+     * @return array<array-key, mixed>|\stdClass|scalar|null
+     */
+    private static function plainWithoutNulls(mixed $value, string $where): array|\stdClass|bool|int|float|string|null
+    {
         if ($value instanceof \stdClass) {
             $map = self::mapWithoutNulls(get_object_vars($value), $where);
 
-            return $map === [] ? new \stdClass() : (object) $map;
+            return Fields::jsonObject($map);
         }
         if (is_array($value)) {
             if (array_is_list($value)) {
@@ -160,11 +170,11 @@ final class RequestEncoder
         if (is_float($value) && !is_finite($value)) {
             throw new InvalidArgumentException(sprintf('The "%s" parameter holds a float JSON cannot represent', $where));
         }
-        if (is_object($value) || is_resource($value)) {
-            throw new InvalidArgumentException(sprintf('The "%s" parameter holds a %s; pass arrays or JsonSerializable objects', $where, get_debug_type($value)));
+        if ($value === null || is_scalar($value)) {
+            return $value;
         }
 
-        return $value;
+        throw new InvalidArgumentException(sprintf('The "%s" parameter holds a %s; pass arrays or JsonSerializable objects', $where, get_debug_type($value)));
     }
 
     /**
@@ -174,13 +184,9 @@ final class RequestEncoder
      */
     private static function mapWithoutNulls(array $map, string $where): array
     {
-        $out = [];
-        foreach ($map as $key => $item) {
-            if ($item !== null) {
-                $out[$key] = self::withoutNulls($item, $where);
-            }
-        }
-
-        return $out;
+        return array_map(
+            static fn (mixed $item): mixed => self::withoutNulls($item, $where),
+            array_filter($map, static fn (mixed $item): bool => $item !== null),
+        );
     }
 }

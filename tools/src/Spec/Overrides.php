@@ -37,8 +37,9 @@ final class Overrides
         }
 
         $conflicts = [];
-        foreach (Json::object($data['conflicts'] ?? [], 'overrides.conflicts') as $id => $entry) {
-            $entry = Json::object($entry, "overrides.conflicts[$id]");
+        $entries = Json::object($data['conflicts'] ?? [], 'overrides.conflicts');
+        foreach (array_keys($entries) as $id) {
+            $entry = Json::object($entries[$id], "overrides.conflicts[$id]");
             $use = Json::string($entry['use'] ?? null, "overrides.conflicts[$id].use");
             if ($use !== Resolution::SERVICE && $use !== Resolution::PORTAL) {
                 throw new SpecException(sprintf('overrides.conflicts[%s].use must be "service" or "portal", got "%s"', $id, $use));
@@ -47,8 +48,9 @@ final class Overrides
         }
 
         $operationIds = [];
-        foreach (Json::object($data['operationIds'] ?? [], 'overrides.operationIds') as $key => $entry) {
-            $entry = Json::object($entry, "overrides.operationIds[$key]");
+        $entries = Json::object($data['operationIds'] ?? [], 'overrides.operationIds');
+        foreach (array_keys($entries) as $key) {
+            $entry = Json::object($entries[$key], "overrides.operationIds[$key]");
             $operationId = Json::string($entry['operationId'] ?? null, "overrides.operationIds[$key].operationId");
             if (preg_match('/^[A-Za-z][A-Za-z0-9]*$/', $operationId) !== 1) {
                 throw new SpecException(sprintf('overrides.operationIds[%s].operationId is not an identifier: %s', $key, $operationId));

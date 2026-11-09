@@ -63,8 +63,9 @@ final class OperationSpec
      */
     public static function fromSwagger(string $method, string $path, array $operation): self
     {
-        $operationId = $operation['operationId'] ?? null;
-        $operationId = is_string($operationId) ? $operationId : strtoupper($method) . ' ' . $path;
+        $operationId = isset($operation['operationId']) && is_string($operation['operationId'])
+            ? $operation['operationId']
+            : strtoupper($method) . ' ' . $path;
         $parameters = [];
         foreach (is_array($operation['parameters'] ?? null) ? $operation['parameters'] : [] as $parameter) {
             if (!is_array($parameter)) {

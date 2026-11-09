@@ -195,20 +195,44 @@ final class GenerateCommand
             return [];
         }
         $files = [];
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS));
-        foreach ($iterator as $file) {
-            if ($file instanceof \SplFileInfo && $file->isFile()) {
-                $files[substr($file->getPathname(), strlen($directory) + 1)] = self::read($file->getPathname());
-            }
+        foreach (self::files($directory) as $file) {
+            $files[$file] = self::read($directory . '/' . $file);
         }
         ksort($files, SORT_STRING);
 
         return $files;
     }
 
+    /**
+     * The files under $directory at any depth, relative to it. Symlinked directories are not
+     * followed.
+     *
+     * @return list<string>
+     */
+    private static function files(string $directory): array
+    {
+        $entries = scandir($directory);
+        $files = [];
+        foreach ($entries === false ? [] : $entries as $entry) {
+            $path = $directory . '/' . $entry;
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+            if (is_dir($path) && !is_link($path)) {
+                foreach (self::files($path) as $file) {
+                    $files[] = $entry . '/' . $file;
+                }
+            } elseif (is_file($path)) {
+                $files[] = $entry;
+            }
+        }
+
+        return $files;
+    }
+
     private static function isEmpty(string $directory): bool
     {
-        return is_dir($directory) && (scandir($directory) ?: []) === ['.', '..'];
+        return is_dir($directory) && scandir($directory) === ['.', '..'];
     }
 
     private static function write(string $file, string $contents): void

@@ -25,11 +25,10 @@ final class ModelGenerator
     public static function generate(string $specJson): array
     {
         try {
-            $spec = json_decode($specJson, true, 512, JSON_THROW_ON_ERROR);
+            $spec = Json::object(json_decode($specJson, true, 512, JSON_THROW_ON_ERROR), 'spec/openprovider.json');
         } catch (\JsonException $e) {
             throw new SpecException('spec/openprovider.json is not valid JSON: ' . $e->getMessage(), 0, $e);
         }
-        $spec = Json::object($spec, 'spec/openprovider.json');
         $definitions = Json::object($spec['definitions'] ?? null, 'definitions');
         $set = ModelSet::fromSpec($spec);
         $classes = NameMap::classes([...$set->models, ...$set->enums]);
@@ -154,10 +153,7 @@ final class ModelGenerator
     private static function enum(string $name, array $definition, string $class, ?string $portal): string
     {
         [$namespace, $short] = self::split($class);
-        $values = [];
-        foreach (Json::list($definition['enum'], "$name enum") as $value) {
-            $values[] = Json::string($value, "$name enum value");
-        }
+        $values = Json::stringList($definition['enum'], "$name enum");
         $constants = NameMap::constants($name, $values);
 
         $lines = [
@@ -260,8 +256,8 @@ final class ModelGenerator
      */
     private static function classDoc(array $definition, array $note, ?string $portal): array
     {
-        $title = is_string($definition['title'] ?? null) ? $definition['title'] : '';
-        $description = is_string($definition['description'] ?? null) ? $definition['description'] : '';
+        $title = Json::optionalString($definition, 'title') ?? '';
+        $description = Json::optionalString($definition, 'description') ?? '';
         $sections = [];
         foreach ([$title, $description === $title ? '' : $description] as $text) {
             if (trim($text) !== '') {
@@ -294,9 +290,8 @@ final class ModelGenerator
      */
     private static function fieldDoc(string $key, string $property, array $schema, FieldType $type, string $namespace): string
     {
-        $text = is_string($schema['title'] ?? null) && trim($schema['title']) !== ''
-            ? $schema['title']
-            : (is_string($schema['description'] ?? null) ? $schema['description'] : '');
+        $title = Json::optionalString($schema, 'title') ?? '';
+        $text = trim($title) !== '' ? $title : Json::optionalString($schema, 'description') ?? '';
         $notes = [];
         if ($key !== $property) {
             $notes[] = "`$key`";

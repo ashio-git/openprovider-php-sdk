@@ -26,16 +26,7 @@ final class Psr16TokenStore implements TokenStore
     #[\Override]
     public function get(string $key): ?AccessToken
     {
-        $entry = $this->cache->get(self::PREFIX . $key);
-        if ($entry === null) {
-            return null;
-        }
-        $token = is_array($entry) ? self::fromEntry($entry) : null;
-        if ($token === null) {
-            $this->cache->delete(self::PREFIX . $key);
-        }
-
-        return $token;
+        return $this->read($key, $this->cache->get(self::PREFIX . $key));
     }
 
     #[\Override]
@@ -56,6 +47,23 @@ final class Psr16TokenStore implements TokenStore
     public function delete(string $key): void
     {
         $this->cache->delete(self::PREFIX . $key);
+    }
+
+    /**
+     * A cache miss is no token; an entry this store did not write is no token either, and is
+     * removed so the next login replaces it.
+     */
+    private function read(string $key, mixed $entry): ?AccessToken
+    {
+        if ($entry === null) {
+            return null;
+        }
+        $token = is_array($entry) ? self::fromEntry($entry) : null;
+        if ($token === null) {
+            $this->cache->delete(self::PREFIX . $key);
+        }
+
+        return $token;
     }
 
     /**

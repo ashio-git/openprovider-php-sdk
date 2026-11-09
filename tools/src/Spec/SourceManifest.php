@@ -105,9 +105,7 @@ final class SourceManifest
 
     public function portalEtag(): ?string
     {
-        $etag = Json::object($this->data['portal'] ?? [], 'sources.portal')['etag'] ?? null;
-
-        return is_string($etag) ? $etag : null;
+        return Json::optionalString(Json::object($this->data['portal'] ?? [], 'sources.portal'), 'etag');
     }
 
     public function retrieved(): string

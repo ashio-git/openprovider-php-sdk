@@ -31,7 +31,7 @@ final class SpecSamples
     public function object(string $definition, int $depth = 0): array
     {
         $schema = Json::object($this->definitions[$definition] ?? null, $definition);
-        if (is_array($schema['example'] ?? null)) {
+        if (isset($schema['example']) && is_array($schema['example'])) {
             return $schema['example'];
         }
 
@@ -56,9 +56,8 @@ final class SpecSamples
     public function data(string $envelope): mixed
     {
         $schema = Json::object($this->definitions[$envelope] ?? null, $envelope);
-        $example = $schema['example'] ?? null;
-        if (is_array($example) && array_key_exists('data', $example)) {
-            return $example['data'];
+        if (isset($schema['example']) && is_array($schema['example']) && array_key_exists('data', $schema['example'])) {
+            return $schema['example']['data'];
         }
         $properties = Json::object($schema['properties'] ?? [], "$envelope properties");
 
@@ -74,15 +73,14 @@ final class SpecSamples
      */
     public static function parameter(array $parameter, int $seed): mixed
     {
-        $type = $parameter['type'] ?? null;
+        $type = Json::optionalString($parameter, 'type');
         if ($type === 'array') {
-            $items = is_array($parameter['items'] ?? null) ? $parameter['items'] : [];
+            $items = isset($parameter['items']) && is_array($parameter['items']) ? $parameter['items'] : [];
 
             return [self::parameter($items, $seed), self::parameter($items, $seed + 1)];
         }
-        $enum = $parameter['enum'] ?? null;
-        if (is_array($enum) && $enum !== []) {
-            return array_values($enum)[$seed % count($enum)];
+        if (isset($parameter['enum']) && is_array($parameter['enum']) && $parameter['enum'] !== []) {
+            return array_values($parameter['enum'])[$seed % count($parameter['enum'])];
         }
 
         return match ($type) {
@@ -110,7 +108,7 @@ final class SpecSamples
         if (array_key_exists('example', $schema)) {
             return $schema['example'];
         }
-        if (is_array($schema['enum'] ?? null) && $schema['enum'] !== []) {
+        if (isset($schema['enum']) && is_array($schema['enum']) && $schema['enum'] !== []) {
             return array_values($schema['enum'])[0];
         }
 
@@ -132,12 +130,10 @@ final class SpecSamples
      */
     private function built(array $schema, int $depth): array
     {
-        $object = [];
-        foreach (Json::object($schema['properties'] ?? [], 'properties') as $key => $property) {
-            $object[$key] = $this->value(Json::object($property, (string) $key), $depth);
-        }
-
-        return $object;
+        return array_map(
+            fn (array $property): mixed => $this->value($property, $depth),
+            Json::objectMap($schema['properties'] ?? [], 'properties'),
+        );
     }
 
     /**

@@ -26,11 +26,11 @@ final class ErrorCatalogGenerator
         $codes = Json::object(Json::object(Json::decode($errorCodesJson, 'error-codes.json'), 'error-codes.json')['codes'] ?? null, 'codes');
         $descriptions = [];
         $resolutions = [];
-        foreach ($codes as $code => $entry) {
+        foreach (array_keys($codes) as $code) {
             if (!is_int($code)) {
                 throw new SpecException(sprintf('error-codes.json: "%s" is not a numeric code', $code));
             }
-            $entry = Json::object($entry, "code $code");
+            $entry = Json::object($codes[$code], "code $code");
             $descriptions[$code] = Json::string($entry['description'] ?? null, "code $code description");
             if (isset($entry['resolution'])) {
                 $resolutions[$code] = Json::string($entry['resolution'], "code $code resolution");
@@ -41,15 +41,18 @@ final class ErrorCatalogGenerator
 
         $behavior = Json::object(Json::decode($behaviorJson, 'behavior.json'), 'behavior.json');
         $categories = [];
-        foreach (Json::object($behavior['errorClasses'] ?? null, 'errorClasses') as $class => $definition) {
+        $classes = Json::object($behavior['errorClasses'] ?? null, 'errorClasses');
+        foreach (array_keys($classes) as $class) {
             if ($class === '$comment') {
                 continue;
             }
             $case = self::CLASSES[$class] ?? throw new SpecException(sprintf('errorClasses.%s is not a known class', $class));
-            foreach (Json::list(Json::object($definition, (string) $class)['codes'] ?? null, "$class codes") as $code) {
-                if (!is_int($code)) {
+            $codes = Json::list(Json::object($classes[$class], (string) $class)['codes'] ?? null, "$class codes");
+            foreach (array_keys($codes) as $i) {
+                if (!is_int($codes[$i])) {
                     throw new SpecException(sprintf('errorClasses.%s lists a non-integer code', $class));
                 }
+                $code = $codes[$i];
                 if (!isset($descriptions[$code])) {
                     throw new SpecException(sprintf('errorClasses.%s lists %d, which error-codes.json does not have', $class, $code));
                 }

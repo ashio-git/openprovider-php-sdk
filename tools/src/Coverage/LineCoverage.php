@@ -33,18 +33,17 @@ final class LineCoverage
 
         $root = rtrim($root, '/') . '/';
         $byArea = [];
-        foreach ((new \DOMXPath($document))->query('//file') ?: [] as $file) {
+        $xpath = new \DOMXPath($document);
+        $files = $xpath->query('//file');
+        foreach ($files === false ? [] : $files as $file) {
             if (!$file instanceof \DOMElement) {
                 continue;
             }
             $name = $file->getAttribute('name');
-            $metrics = null;
-            foreach ($file->childNodes as $child) {
-                if ($child instanceof \DOMElement && $child->nodeName === 'metrics') {
-                    $metrics = $child;
-                }
-            }
-            if ($metrics === null) {
+            // The file's own metrics: a direct child, after those of its classes.
+            $own = $xpath->query('./metrics', $file);
+            $metrics = $own === false ? null : $own->item($own->length - 1);
+            if (!$metrics instanceof \DOMElement) {
                 throw new \UnexpectedValueException(sprintf('%s has no metrics', $name));
             }
             $statements = self::count($metrics, 'statements', $name);

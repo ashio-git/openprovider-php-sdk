@@ -55,7 +55,8 @@ final class ConformanceCommand
     private static function services(string $root): array
     {
         $services = [];
-        foreach (glob($root . '/src/Service/*.php') ?: [] as $file) {
+        $files = glob($root . '/src/Service/*.php');
+        foreach ($files === false ? [] : $files as $file) {
             $class = 'Ashio\\OpenProvider\\Service\\' . basename($file, '.php');
             if (class_exists($class) && is_subclass_of($class, AbstractService::class)) {
                 $services[] = $class;

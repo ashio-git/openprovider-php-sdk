@@ -71,4 +71,66 @@ final class JsonTest extends TestCase
         $this->expectExceptionMessage('ctx');
         Json::object([1, 2], 'ctx');
     }
+
+    public function testTypedCollectionsCheckEveryEntry(): void
+    {
+        $empty = new \stdClass();
+
+        self::assertSame(['/a' => ['get' => []], '/b' => []], Json::objectMap(['/a' => ['get' => []], '/b' => $empty], 'paths'));
+        self::assertSame([['name' => 'x'], []], Json::objectList([['name' => 'x'], $empty], 'parameters'));
+        self::assertSame(['a', 'b'], Json::stringList(['a', 'b'], 'tags'));
+        self::assertSame([], Json::objectMap([], 'paths'));
+        self::assertSame([], Json::stringList([], 'tags'));
+    }
+
+    /**
+     * @return iterable<string, array{\Closure(): mixed, string}>
+     */
+    public static function badCollections(): iterable
+    {
+        yield 'map with a string value' => [static fn (): mixed => Json::objectMap(['/a' => 'x'], 'paths'), 'paths./a must be a JSON object, got string'];
+        yield 'map that is a list' => [static fn (): mixed => Json::objectMap([[]], 'paths'), 'paths must be a JSON object'];
+        yield 'list with a list item' => [static fn (): mixed => Json::objectList([['a' => 1], [1]], 'parameters'), 'parameters[1] must be a JSON object, got array'];
+        yield 'list that is a map' => [static fn (): mixed => Json::objectList(['a' => []], 'parameters'), 'parameters must be a JSON array'];
+        yield 'list with a number' => [static fn (): mixed => Json::stringList(['a', 2], 'tags'), 'tags[1] must be a string, got int'];
+    }
+
+    #[DataProvider('badCollections')]
+    public function testTypedCollectionsNameTheBadEntry(\Closure $read, string $message): void
+    {
+        $this->expectException(SpecException::class);
+        $this->expectExceptionMessage($message);
+
+        $read();
+    }
+
+    public function testOptionalStringIsNullForAbsentOrOtherTypes(): void
+    {
+        $object = ['title' => 'T', 'count' => 3, 'none' => null];
+
+        self::assertSame('T', Json::optionalString($object, 'title'));
+        self::assertNull(Json::optionalString($object, 'count'));
+        self::assertNull(Json::optionalString($object, 'none'));
+        self::assertNull(Json::optionalString($object, 'missing'));
+    }
+
+    public function testValueAcceptsWhatJsonHoldsAndNothingElse(): void
+    {
+        $object = new \stdClass();
+        foreach ([null, true, 0, 1.5, '', [], ['a' => 1], $object] as $value) {
+            self::assertSame($value, Json::value($value, 'ctx'));
+        }
+
+        $this->expectException(SpecException::class);
+        $this->expectExceptionMessage('ctx must be a JSON value, got Closure');
+        Json::value(static fn (): null => null, 'ctx');
+    }
+
+    public function testMapValuesKeepsKeysAndOrderAndPassesTheKey(): void
+    {
+        $mapped = Json::mapValues(['b' => 1, 'a' => 2, 7 => 3], static fn (mixed $value, int|string $key): string => $key . '=' . (is_int($value) ? $value : 0));
+
+        self::assertSame(['b' => 'b=1', 'a' => 'a=2', 7 => '7=3'], $mapped);
+        self::assertSame([], Json::mapValues([], static fn (mixed $value): mixed => $value));
+    }
 }

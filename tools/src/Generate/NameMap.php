@@ -187,7 +187,9 @@ final class NameMap
      */
     private static function words(string $name): array
     {
-        return preg_split('/[^A-Za-z0-9]+/', $name, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        $words = preg_split('/[^A-Za-z0-9]+/', $name, -1, PREG_SPLIT_NO_EMPTY);
+
+        return $words === false ? [] : $words;
     }
 
     /**

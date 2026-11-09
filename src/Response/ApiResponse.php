@@ -47,18 +47,16 @@ final class ApiResponse
                 $e,
             );
         }
-        if (!is_array($envelope) || array_is_list($envelope) || !is_int($envelope['code'] ?? null)) {
+        if (!is_array($envelope) || array_is_list($envelope) || !isset($envelope['code']) || !is_int($envelope['code'])) {
             throw new UnexpectedResponseException(
                 sprintf('HTTP %d response is not an API envelope: it has no integer "code"', $status),
                 $status,
             );
         }
 
-        $desc = $envelope['desc'] ?? '';
-
         return new self(
             $envelope['code'],
-            is_string($desc) ? $desc : '',
+            isset($envelope['desc']) && is_string($envelope['desc']) ? $envelope['desc'] : '',
             $envelope['data'] ?? null,
             self::warnings($envelope['warnings'] ?? null),
             ($envelope['maintenance'] ?? false) === true,
@@ -100,15 +98,21 @@ final class ApiResponse
             if (!is_array($warning) || array_is_list($warning)) {
                 continue;
             }
-            $code = $warning['code'] ?? 0;
-            $desc = $warning['desc'] ?? '';
             $out[] = new Warning(
-                is_int($code) ? $code : (is_string($code) && ctype_digit($code) ? (int) $code : 0),
-                is_string($desc) ? $desc : '',
+                self::warningCode($warning['code'] ?? null),
+                isset($warning['desc']) && is_string($warning['desc']) ? $warning['desc'] : '',
                 $warning['data'] ?? null,
             );
         }
 
         return $out;
+    }
+
+    /**
+     * An integer code, or one sent as a string of digits; anything else is 0.
+     */
+    private static function warningCode(mixed $code): int
+    {
+        return is_int($code) ? $code : (is_string($code) && ctype_digit($code) ? (int) $code : 0);
     }
 }

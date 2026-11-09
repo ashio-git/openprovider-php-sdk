@@ -80,14 +80,12 @@ final class Authenticator
         }
 
         $data = is_array($response->data) ? $response->data : [];
-        $token = $data['token'] ?? null;
-        $resellerId = $data['reseller_id'] ?? null;
-        if (!is_string($token) || $token === '') {
+        if (!isset($data['token']) || !is_string($data['token']) || $data['token'] === '') {
             throw new UnexpectedResponseException('The login response has no token', $response->httpStatus);
         }
         $accessToken = new AccessToken(
-            new Secret($token),
-            is_int($resellerId) ? $resellerId : null,
+            new Secret($data['token']),
+            isset($data['reseller_id']) && is_int($data['reseller_id']) ? $data['reseller_id'] : null,
             $this->clock->now()->modify(sprintf('+%d seconds', self::REFRESH_AFTER_SECONDS)),
         );
         $this->store->save($this->key, $accessToken);

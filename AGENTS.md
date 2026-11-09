@@ -14,7 +14,8 @@
 
 ## Project commands
 
-- `composer quality` runs php-cs-fixer (check), PHPStan (level max on `src`, `tools/src` and `tests`), Psalm and PHPUnit; all four must pass before handing off.
+- `composer quality` runs php-cs-fixer (check), PHPStan (level max on `src`, `tools/src` and `tests`), Psalm (level 1 on `src` and `tools/src`, no baseline) and PHPUnit; all four must pass before handing off.
+- Psalm level 1 refuses storing a `mixed` value in a variable. Narrow decoded JSON where it is read: `isset($a['k']) && is_string($a['k'])` (Psalm does not narrow `is_string($a['k'] ?? null)`), or in the tools `Json::optionalString`, `objectMap`, `objectList`, `stringList` and `value`; iterate `array_keys()` when values are mixed.
 - `composer spec:verify` checks the vendored spec hashes, that the merge reproduces `spec/openprovider.json`, and that the error catalog, `src/Model`, `src/Service` and `src/OpenProvider.php` are what the generator writes.
 - `composer conformance` (`tools/conformance`, gate S2) runs every service method against a recording transport and must report 140 conform, 0 MAJOR, 0 MINOR and 0 pending.
 - PHPUnit fails on warnings, notices and deprecations (`phpunit.xml`). Reading or writing a property a model does not declare fails the run, so check the model's real field names before asserting on them.

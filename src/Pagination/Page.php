@@ -35,8 +35,7 @@ final class Page
         if (!is_array($results) || !array_is_list($results)) {
             throw new UnexpectedResponseException('A list response has "results" that is not a list', $httpStatus);
         }
-        $total = $data['total'] ?? null;
 
-        return new self($results, is_int($total) ? $total : null);
+        return new self($results, isset($data['total']) && is_int($data['total']) ? $data['total'] : null);
     }
 }

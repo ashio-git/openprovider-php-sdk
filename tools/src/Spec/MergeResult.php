@@ -95,8 +95,8 @@ final class MergeResult
     public function operationCount(): int
     {
         $count = 0;
-        foreach (Json::object($this->spec['paths'] ?? [], 'paths') as $item) {
-            $count += count(Json::object($item, 'path item'));
+        foreach (Json::objectMap($this->spec['paths'] ?? [], 'paths') as $item) {
+            $count += count($item);
         }
 
         return $count;

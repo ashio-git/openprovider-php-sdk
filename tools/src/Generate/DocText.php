@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ashio\OpenProvider\Tools\Generate;
 
+use Ashio\OpenProvider\Tools\Spec\Json;
+
 /**
  * Spec text made safe for a PHPDoc block, shared by the generators.
  */
@@ -31,7 +33,9 @@ final class DocText
      */
     public static function inline(string $text): string
     {
-        return self::sanitize(implode(' ', preg_split('/\s+/u', $text, -1, PREG_SPLIT_NO_EMPTY) ?: []));
+        $words = preg_split('/\s+/u', $text, -1, PREG_SPLIT_NO_EMPTY);
+
+        return self::sanitize(implode(' ', $words === false ? [] : $words));
     }
 
     public static function sanitize(string $text): string
@@ -46,11 +50,10 @@ final class DocText
      */
     public static function portalUrl(array $spec): ?string
     {
-        $sources = $spec['x-openprovider-sources'] ?? null;
-        $portal = is_array($sources) ? ($sources['portal'] ?? null) : null;
-        $url = is_array($portal) ? ($portal['url'] ?? null) : null;
+        $sources = isset($spec['x-openprovider-sources']) && is_array($spec['x-openprovider-sources']) ? $spec['x-openprovider-sources'] : [];
+        $portal = isset($sources['portal']) && is_array($sources['portal']) ? $sources['portal'] : [];
 
-        return is_string($url) ? $url : null;
+        return Json::optionalString($portal, 'url');
     }
 
     /**
