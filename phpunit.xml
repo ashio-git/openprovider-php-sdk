@@ -16,13 +16,18 @@
          displayDetailsOnTestsThatTriggerNotices="true"
          displayDetailsOnTestsThatTriggerWarnings="true">
     <testsuites>
-        <testsuite name="OpenProvider SDK Test Suite">
+        <testsuite name="sdk">
             <directory>tests</directory>
+        </testsuite>
+        <testsuite name="legacy">
+            <directory>legacy/tests</directory>
         </testsuite>
     </testsuites>
     <source>
         <include>
             <directory>src</directory>
+            <directory>tools/src</directory>
+            <directory>legacy/src</directory>
         </include>
     </source>
 </phpunit>

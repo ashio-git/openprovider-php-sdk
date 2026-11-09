@@ -1,10 +1,18 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+# Vendored upstream specs are verified byte for byte against spec/SHA256SUMS
+/spec/upstream/** -text
+/spec/openprovider.json -text
+
 # Keep development files out of Composer dist archives
 /.github            export-ignore
 /docs               export-ignore
 /tests              export-ignore
+/legacy/tests       export-ignore
+/spec               export-ignore
+/tools              export-ignore
+/phpstan-legacy.neon export-ignore
 /.gitattributes     export-ignore
 /.gitignore         export-ignore
 /.php-cs-fixer.php  export-ignore
