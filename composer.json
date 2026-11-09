@@ -72,7 +72,8 @@
         ],
         "spec:verify": [
             "php tools/spec-sync --verify",
-            "php tools/spec-merge --check"
+            "php tools/spec-merge --check",
+            "php tools/generate errors --check"
         ]
     },
     "suggest": {
