@@ -7,7 +7,9 @@ namespace Ashio\OpenProvider\Tests\Spec;
 use Ashio\OpenProvider\Exception\InvalidArgumentException;
 use Ashio\OpenProvider\Spec\OperationSpec;
 use Ashio\OpenProvider\Spec\ParameterLocation;
+use Ashio\OpenProvider\Spec\ParameterSpec;
 use Ashio\OpenProvider\Tools\Spec\Json;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class OperationSpecTest extends TestCase
@@ -69,6 +71,41 @@ final class OperationSpecTest extends TestCase
             ['name' => 'a', 'in' => 'body', 'schema' => []],
             ['name' => 'b', 'in' => 'body', 'schema' => []],
         ]]);
+    }
+
+    public function testAPagedListingNeedsLimitAndOffsetInTheQuery(): void
+    {
+        $limit = new ParameterSpec('limit', ParameterLocation::Query, false, 'integer');
+        $offset = new ParameterSpec('offset', ParameterLocation::Query, false, 'integer');
+
+        $listing = new OperationSpec('GET', '/x', 'ListX', [$limit, $offset], paged: true, maxLimit: 500);
+        self::assertTrue($listing->paged);
+        self::assertSame(500, $listing->maxLimit);
+        self::assertNull((new OperationSpec('GET', '/x', 'ListX', [$limit, $offset], paged: true))->maxLimit);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('ListX: a paged listing needs the query parameters limit and offset');
+        new OperationSpec('GET', '/x', 'ListX', [$limit], paged: true);
+    }
+
+    /**
+     * @return iterable<string, array{bool, int}>
+     */
+    public static function refusedMaxima(): iterable
+    {
+        yield 'a maximum without paging' => [false, 100];
+        yield 'a maximum of zero' => [true, 0];
+    }
+
+    #[DataProvider('refusedMaxima')]
+    public function testAMaximumNeedsAPagedListingAndAPositiveValue(bool $paged, int $maxLimit): void
+    {
+        $parameters = [new ParameterSpec('limit', ParameterLocation::Query, false, 'integer'), new ParameterSpec('offset', ParameterLocation::Query, false, 'integer')];
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('ListX: a maximum limit needs a paged listing and must be at least 1');
+
+        new OperationSpec('GET', '/x', 'ListX', $parameters, paged: $paged, maxLimit: $maxLimit);
     }
 
     public function testEveryOperationOfTheMergedSpecBuilds(): void

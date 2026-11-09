@@ -12,6 +12,7 @@ use Ashio\OpenProvider\OpenProvider;
 use Ashio\OpenProvider\Service\Operations;
 use Ashio\OpenProvider\Spec\Operation;
 use Ashio\OpenProvider\Spec\OperationSpec;
+use Ashio\OpenProvider\Tests\Support\ArrayPath;
 use Ashio\OpenProvider\Tests\Support\FakeHttpClient;
 use Ashio\OpenProvider\Tests\Support\SpecOperations;
 use Ashio\OpenProvider\Tools\Generate\OperationGenerator;
@@ -101,17 +102,77 @@ final class OperationRegistryTest extends TestCase
 
     public function testTheRegistryEncodesEachOperationAsTheSpecDeclaresIt(): void
     {
+        $maxLimits = ArrayPath::entries(self::behavior(), 'paging', 'maxLimit');
         self::assertSame(array_keys(SpecOperations::all()), Operations::IDS);
         foreach (SpecOperations::all() as $id => $operation) {
-            $expected = OperationSpec::fromSwagger($operation['method'], $operation['path'], $operation['operation']);
-            if ($id === 'Login') {
+            $swagger = OperationSpec::fromSwagger($operation['method'], $operation['path'], $operation['operation']);
+            $maxLimit = $maxLimits[$operation['method'] . ' ' . $operation['path']] ?? null;
+            $expected = new OperationSpec(
+                $swagger->method,
+                $swagger->path,
+                $id,
+                $swagger->parameters,
                 // spec/behavior.json: the Swagger files do not mark the login public, but it is.
-                $expected = new OperationSpec($expected->method, $expected->path, $id, $expected->parameters, false);
-            }
+                $id !== 'Login' && $swagger->requiresAuth,
+                self::isPagedListing($operation['operation']),
+                is_int($maxLimit) ? $maxLimit : null,
+            );
             self::assertEquals($expected, Operations::get($id), $id);
         }
         self::assertFalse(Operations::get('CreateResellerPublic')->requiresAuth);
         self::assertTrue(Operations::get('GetReseller')->requiresAuth);
+    }
+
+    /**
+     * A9: the paged listings are the operations with `limit` and `offset` whose data holds
+     * `results` and `total`; the four documented maxima of spec/behavior.json reach the registry.
+     */
+    public function testThePagedListingsAndTheirMaximaAreKnown(): void
+    {
+        $paged = array_values(array_filter(Operations::IDS, static fn (string $id): bool => Operations::get($id)->paged));
+        $maxima = [];
+        foreach (Operations::IDS as $id) {
+            if (Operations::get($id)->maxLimit !== null) {
+                $maxima[$id] = Operations::get($id)->maxLimit;
+            }
+        }
+        ksort($maxima);
+
+        self::assertCount(24, $paged);
+        self::assertNotContains('GetTld', $paged, 'GetTld takes limit and offset but returns no results');
+        self::assertSame(['ListDomains' => 1000, 'ListOrders' => 1000, 'ListZoneRecords' => 500, 'ListZones' => 500], $maxima);
+    }
+
+    /**
+     * @param array<array-key, mixed> $operation
+     */
+    private static function isPagedListing(array $operation): bool
+    {
+        $query = [];
+        foreach (ArrayPath::entries($operation, 'parameters') as $parameter) {
+            if (ArrayPath::at($parameter, 'in') === 'query') {
+                $query[] = ArrayPath::at($parameter, 'name');
+            }
+        }
+        $envelope = SpecOperations::refName(ArrayPath::entries($operation, 'responses', '200', 'schema'));
+        $data = ArrayPath::entries(SpecOperations::definitions(), $envelope, 'properties', 'data');
+        if (!isset($data['$ref'])) {
+            return false;
+        }
+        $fields = ArrayPath::entries(SpecOperations::definitions(), SpecOperations::refName($data), 'properties');
+
+        return in_array('limit', $query, true) && in_array('offset', $query, true)
+            && ArrayPath::at($fields, 'results', 'type') === 'array' && isset($fields['total']);
+    }
+
+    /**
+     * @return array<array-key, mixed>
+     */
+    private static function behavior(): array
+    {
+        $behavior = json_decode((string) file_get_contents(SpecOperations::ROOT . '/spec/behavior.json'), true, 512, JSON_THROW_ON_ERROR);
+
+        return is_array($behavior) ? $behavior : [];
     }
 
     public function testTheFacadeReachesEveryServiceOnce(): void

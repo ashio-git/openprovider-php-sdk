@@ -193,7 +193,7 @@ final class Operations
                 new ParameterSpec('username_pattern', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('role', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('with_additional_data', ParameterLocation::Query, false, 'boolean'),
-            ]),
+            ], paged: true),
             'CreateContact' => new OperationSpec('POST', '/contacts', 'CreateContact', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -224,7 +224,7 @@ final class Operations
                 new ParameterSpec('with_additional_data', ParameterLocation::Query, false, 'boolean'),
                 new ParameterSpec('type', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('columns', ParameterLocation::Query, false, 'array', 'string', 'multi'),
-            ]),
+            ], paged: true),
             'CreateCustomer' => new OperationSpec('POST', '/customers', 'CreateCustomer', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -240,7 +240,7 @@ final class Operations
                 new ParameterSpec('response.to', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('limit', ParameterLocation::Query, false, 'integer'),
                 new ParameterSpec('offset', ParameterLocation::Query, false, 'integer'),
-            ]),
+            ], paged: true),
             'RestartEmailVerification' => new OperationSpec('POST', '/customers/verifications/emails/restart', 'RestartEmailVerification', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -270,7 +270,7 @@ final class Operations
                 new ParameterSpec('offset', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('order', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('order_by', ParameterLocation::Query, false, 'string'),
-            ]),
+            ], paged: true),
             'CreateNameserver' => new OperationSpec('POST', '/dns/nameservers', 'CreateNameserver', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -285,7 +285,7 @@ final class Operations
                 new ParameterSpec('ns_group_pattern', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('ns_name_pattern', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('ns_ip_pattern', ParameterLocation::Query, false, 'string'),
-            ]),
+            ], paged: true),
             'CreateGroup' => new OperationSpec('POST', '/dns/nameservers/groups', 'CreateGroup', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -317,7 +317,7 @@ final class Operations
                 new ParameterSpec('order_by', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('with_records', ParameterLocation::Query, false, 'boolean'),
                 new ParameterSpec('name_pattern', ParameterLocation::Query, false, 'string'),
-            ]),
+            ], paged: true),
             'CreateTemplate' => new OperationSpec('POST', '/dns/templates', 'CreateTemplate', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -339,7 +339,7 @@ final class Operations
                 new ParameterSpec('with_history', ParameterLocation::Query, false, 'boolean'),
                 new ParameterSpec('with_dnskey', ParameterLocation::Query, false, 'boolean'),
                 new ParameterSpec('provider', ParameterLocation::Query, false, 'string'),
-            ]),
+            ], paged: true, maxLimit: 500),
             'CreateZone' => new OperationSpec('POST', '/dns/zones', 'CreateZone', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -378,7 +378,7 @@ final class Operations
                 new ParameterSpec('prio', ParameterLocation::Query, false, 'integer'),
                 new ParameterSpec('ttl', ParameterLocation::Query, false, 'integer'),
                 new ParameterSpec('zone_provider', ParameterLocation::Query, false, 'string'),
-            ]),
+            ], paged: true, maxLimit: 500),
             'ListDomains' => new OperationSpec('GET', '/domains', 'ListDomains', [
                 new ParameterSpec('order_by.id', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('order_by.domain_name', ParameterLocation::Query, false, 'string'),
@@ -414,7 +414,7 @@ final class Operations
                 new ParameterSpec('with_abuse_details', ParameterLocation::Query, false, 'boolean'),
                 new ParameterSpec('is_abusive', ParameterLocation::Query, false, 'boolean'),
                 new ParameterSpec('domain_names', ParameterLocation::Query, false, 'array', 'string', 'multi'),
-            ]),
+            ], paged: true, maxLimit: 1000),
             'CreateDomain' => new OperationSpec('POST', '/domains', 'CreateDomain', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -516,7 +516,7 @@ final class Operations
                 new ParameterSpec('status', ParameterLocation::Query, false, 'array', 'string', 'multi'),
                 new ParameterSpec('domain.name', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('domain.extension', ParameterLocation::Query, false, 'string'),
-            ]),
+            ], paged: true),
             'DeleteEasyDmarc' => new OperationSpec('DELETE', '/easydmarcs/{id}', 'DeleteEasyDmarc', [
                 new ParameterSpec('id', ParameterLocation::Path, true, 'integer'),
             ]),
@@ -535,7 +535,7 @@ final class Operations
                 new ParameterSpec('limit', ParameterLocation::Query, false, 'integer'),
                 new ParameterSpec('offset', ParameterLocation::Query, false, 'integer'),
                 new ParameterSpec('is_system', ParameterLocation::Query, false, 'boolean'),
-            ]),
+            ], paged: true),
             'CreateEmail' => new OperationSpec('POST', '/emails', 'CreateEmail', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -553,7 +553,7 @@ final class Operations
                 new ParameterSpec('order_by', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('start_creation_date', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('end_creation_date', ParameterLocation::Query, false, 'string'),
-            ]),
+            ], paged: true),
             'ListLicensesWithPriceVersion' => new OperationSpec('GET', '/licenses', 'ListLicensesWithPriceVersion', [
                 new ParameterSpec('limit', ParameterLocation::Query, false, 'integer'),
                 new ParameterSpec('offset', ParameterLocation::Query, false, 'integer'),
@@ -570,7 +570,7 @@ final class Operations
                 new ParameterSpec('key_number_pattern', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('parent_key_id', ParameterLocation::Query, false, 'integer'),
                 new ParameterSpec('status', ParameterLocation::Query, false, 'string'),
-            ]),
+            ], paged: true),
             'ResetHwid' => new OperationSpec('POST', '/licenses/hwids/reset/{product}/{key_id}', 'ResetHwid', [
                 new ParameterSpec('product', ParameterLocation::Path, true, 'string'),
                 new ParameterSpec('key_id', ParameterLocation::Path, true, 'integer'),
@@ -587,7 +587,7 @@ final class Operations
                 new ParameterSpec('order_by.key_number', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('order_by.expiration_date', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('product', ParameterLocation::Query, false, 'string'),
-            ]),
+            ], paged: true),
             'ListPleskLicenses' => new OperationSpec('GET', '/licenses/plesk', 'ListPleskLicenses', [
                 new ParameterSpec('limit', ParameterLocation::Query, false, 'integer'),
                 new ParameterSpec('offset', ParameterLocation::Query, false, 'integer'),
@@ -596,7 +596,7 @@ final class Operations
                 new ParameterSpec('title_pattern', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('key_number_pattern', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('parent_key_id', ParameterLocation::Query, false, 'integer'),
-            ]),
+            ], paged: true),
             'CreatePleskLicense' => new OperationSpec('POST', '/licenses/plesk', 'CreatePleskLicense', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -622,7 +622,7 @@ final class Operations
                 new ParameterSpec('title_pattern', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('key_number_pattern', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('parent_key_id', ParameterLocation::Query, false, 'integer'),
-            ]),
+            ], paged: true),
             'CreateVirtuozzoLicense' => new OperationSpec('POST', '/licenses/virtuozzo', 'CreateVirtuozzoLicense', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -643,7 +643,7 @@ final class Operations
             'ListAlias' => new OperationSpec('GET', '/mailcow/alias', 'ListAlias', [
                 new ParameterSpec('limit', ParameterLocation::Query, false, 'integer'),
                 new ParameterSpec('offset', ParameterLocation::Query, false, 'integer'),
-            ]),
+            ], paged: true),
             'AddAlias' => new OperationSpec('POST', '/mailcow/alias', 'AddAlias', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -678,7 +678,7 @@ final class Operations
             'ListDomain' => new OperationSpec('GET', '/mailcow/domains/list', 'ListDomain', [
                 new ParameterSpec('limit', ParameterLocation::Query, false, 'integer'),
                 new ParameterSpec('offset', ParameterLocation::Query, false, 'integer'),
-            ]),
+            ], paged: true),
             'EditMailbox' => new OperationSpec('POST', '/mailcow/mailbox/edit', 'EditMailbox', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -700,7 +700,7 @@ final class Operations
                 new ParameterSpec('domain.extension', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('mailbox', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('mailbox_status', ParameterLocation::Query, false, 'array', 'string', 'multi'),
-            ]),
+            ], paged: true),
             'CreateMailcowOrder' => new OperationSpec('POST', '/mailcow/orders', 'CreateMailcowOrder', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -749,7 +749,7 @@ final class Operations
                 new ParameterSpec('status', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('start_creation_date', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('end_creation_date', ParameterLocation::Query, false, 'string'),
-            ]),
+            ], paged: true),
             'GetReseller' => new OperationSpec('GET', '/resellers', 'GetReseller', [
                 new ParameterSpec('with_additional_data', ParameterLocation::Query, false, 'boolean'),
                 new ParameterSpec('with_statistics', ParameterLocation::Query, false, 'boolean'),
@@ -807,7 +807,7 @@ final class Operations
                 new ParameterSpec('status', ParameterLocation::Query, false, 'array', 'string', 'multi'),
                 new ParameterSpec('contact_handle', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('show_expiring', ParameterLocation::Query, false, 'boolean'),
-            ]),
+            ], paged: true, maxLimit: 1000),
             'CreateOrder' => new OperationSpec('POST', '/ssl/orders', 'CreateOrder', [
                 new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
@@ -854,7 +854,7 @@ final class Operations
                 new ParameterSpec('order_by.sub_category', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('order_by.brand_seqno', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('order_by.product_seqno', ParameterLocation::Query, false, 'string'),
-            ]),
+            ], paged: true),
             'GetProduct' => new OperationSpec('GET', '/ssl/products/{id}', 'GetProduct', [
                 new ParameterSpec('id', ParameterLocation::Path, true, 'integer'),
             ]),
@@ -887,7 +887,7 @@ final class Operations
                 new ParameterSpec('is_new_gtld', ParameterLocation::Query, false, 'boolean'),
                 new ParameterSpec('status', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('application_mode', ParameterLocation::Query, false, 'string'),
-            ]),
+            ], paged: true),
             'GetTld' => new OperationSpec('GET', '/tlds/{name}', 'GetTld', [
                 new ParameterSpec('name', ParameterLocation::Path, true, 'string'),
                 new ParameterSpec('limit', ParameterLocation::Query, false, 'integer'),
@@ -907,7 +907,7 @@ final class Operations
                 new ParameterSpec('start_creation_date', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('end_creation_date', ParameterLocation::Query, false, 'string'),
                 new ParameterSpec('filter_for_subject', ParameterLocation::Query, false, 'string'),
-            ]),
+            ], paged: true),
             default => throw new InvalidArgumentException(sprintf('No service implements the operation "%s"', $operationId)),
         };
     }

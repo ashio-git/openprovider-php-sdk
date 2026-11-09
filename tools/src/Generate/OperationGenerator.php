@@ -54,15 +54,15 @@ final class OperationGenerator
     public static function generate(string $specJson, string $behaviorJson, array $deferred = self::DEFERRED_GROUPS): array
     {
         $spec = Json::object(self::decode($specJson, 'spec/openprovider.json'), 'spec/openprovider.json');
-        $public = self::publicOperations(Json::object(self::decode($behaviorJson, 'spec/behavior.json'), 'spec/behavior.json'));
+        $behavior = Json::object(self::decode($behaviorJson, 'spec/behavior.json'), 'spec/behavior.json');
+        $public = self::publicOperations($behavior);
         $definitions = Json::object($spec['definitions'] ?? null, 'definitions');
         $set = ModelSet::fromSpec($spec);
         $classes = NameMap::classes([...$set->models, ...$set->enums]);
         $portal = DocText::portalUrl($spec);
         [$groupOf, $groupTags] = self::groups($spec);
 
-        $byGroup = [];
-        $all = [];
+        $entries = [];
         foreach (Json::objectMap($spec['paths'] ?? null, 'paths') as $path => $item) {
             foreach (array_keys($item) as $method) {
                 if (!in_array($method, self::HTTP_METHODS, true)) {
@@ -70,12 +70,25 @@ final class OperationGenerator
                 }
                 $operation = Json::object($item[$method], "$method $path");
                 $entry = self::operation($method, (string) $path, $operation, $groupOf, $public, $classes, $definitions);
-                if (isset($deferred[$entry['group']])) {
-                    continue;
-                }
-                $byGroup[$entry['group']][] = $entry;
-                $all[] = $entry;
+                $entries[$entry['method'] . ' ' . $entry['path']] = $entry;
             }
+        }
+        foreach (self::maxLimits($behavior) as $key => $maxLimit) {
+            $entry = $entries[$key] ?? throw new SpecException(sprintf('behavior.json paging.maxLimit names %s, which is no operation', $key));
+            if (!$entry['paged']) {
+                throw new SpecException(sprintf('behavior.json paging.maxLimit names %s (%s), which is not a paged listing', $key, $entry['id']));
+            }
+            $entries[$key]['maxLimit'] = $maxLimit;
+        }
+
+        $byGroup = [];
+        $all = [];
+        foreach ($entries as $entry) {
+            if (isset($deferred[$entry['group']])) {
+                continue;
+            }
+            $byGroup[$entry['group']][] = $entry;
+            $all[] = $entry;
         }
 
         $files = [];
@@ -156,6 +169,28 @@ final class OperationGenerator
     }
 
     /**
+     * The largest `limit` each paged listing documents (spec/behavior.json `paging.maxLimit`).
+     *
+     * @param array<array-key, mixed> $behavior
+     *
+     * @return array<string, int> "METHOD /path" => maximum
+     */
+    private static function maxLimits(array $behavior): array
+    {
+        $paging = Json::object($behavior['paging'] ?? [], 'behavior paging');
+        $declared = Json::object($paging['maxLimit'] ?? [], 'behavior paging.maxLimit');
+        $maxima = [];
+        foreach (array_keys($declared) as $key) {
+            if (!is_int($declared[$key]) || $declared[$key] < 1) {
+                throw new SpecException(sprintf('behavior.json paging.maxLimit of %s must be a positive integer', $key));
+            }
+            $maxima[(string) $key] = $declared[$key];
+        }
+
+        return $maxima;
+    }
+
+    /**
      * @param array<array-key, mixed> $spec
      *
      * @return array{array<string, string>, array<string, list<string>>} tag => group, and group => tags in order
@@ -185,7 +220,7 @@ final class OperationGenerator
      * @param array<string, string>   $classes
      * @param array<array-key, mixed> $definitions
      *
-     * @return array{id: string, method: string, path: string, group: string, name: string, auth: bool, experimental: bool, summary: string, description: string, parameters: list<OperationParameter>, signature: list<OperationParameter>, data: string, list: bool}
+     * @return array{id: string, method: string, path: string, group: string, name: string, auth: bool, experimental: bool, summary: string, description: string, parameters: list<OperationParameter>, signature: list<OperationParameter>, data: string, list: bool, paged: bool, maxLimit: int|null}
      */
     private static function operation(string $method, string $path, array $operation, array $groupOf, array $public, array $classes, array $definitions): array
     {
@@ -225,7 +260,10 @@ final class OperationGenerator
         usort($required, static fn (OperationParameter $a, OperationParameter $b): int => ($a->in === 'body' ? 0 : 1) <=> ($b->in === 'body' ? 0 : 1));
         usort($optional, static fn (OperationParameter $a, OperationParameter $b): int => ($a->in === 'body' ? 0 : 1) <=> ($b->in === 'body' ? 0 : 1));
 
-        [$data, $list] = self::data($id, $operation, $classes, $definitions);
+        [$data, $list, $dataDefinition] = self::data($id, $operation, $classes, $definitions);
+        $query = array_map(static fn (OperationParameter $p): string => $p->name, array_filter($parameters, static fn (OperationParameter $p): bool => $p->in === 'query'));
+        $fields = Json::object(Json::object($definitions[$dataDefinition] ?? null, $dataDefinition)['properties'] ?? [], "$dataDefinition properties");
+        $results = Json::object($fields['results'] ?? [], "$dataDefinition results");
 
         return [
             'id' => $id,
@@ -241,6 +279,10 @@ final class OperationGenerator
             'signature' => [...$pathParameters, ...$required, ...$optional],
             'data' => $data,
             'list' => $list,
+            // A paged listing: limit and offset in, `results` (a list) and `total` out.
+            'paged' => !$list && in_array('limit', $query, true) && in_array('offset', $query, true)
+                && ($results['type'] ?? null) === 'array' && isset($fields['total']),
+            'maxLimit' => null,
         ];
     }
 
@@ -251,7 +293,7 @@ final class OperationGenerator
      * @param array<string, string>   $classes
      * @param array<array-key, mixed> $definitions
      *
-     * @return array{string, bool}
+     * @return array{string, bool, string} the class, whether data is a list of it, and its definition
      */
     private static function data(string $id, array $operation, array $classes, array $definitions): array
     {
@@ -268,12 +310,12 @@ final class OperationGenerator
             throw new SpecException($id . ': data is neither a $ref to a model nor a list of them');
         }
 
-        return [$class, $list];
+        return [$class, $list, $definition];
     }
 
     /**
      * @param list<string>                                                                                                                   $tags
-     * @param list<array{id: string, method: string, path: string, group: string, name: string, auth: bool, experimental: bool, summary: string, description: string, parameters: list<OperationParameter>, signature: list<OperationParameter>, data: string, list: bool}> $operations
+     * @param list<array{id: string, method: string, path: string, group: string, name: string, auth: bool, experimental: bool, summary: string, description: string, parameters: list<OperationParameter>, signature: list<OperationParameter>, data: string, list: bool, paged: bool, maxLimit: int|null}> $operations
      */
     private static function service(string $group, string $class, array $tags, array $operations, ?string $portal): string
     {
@@ -331,7 +373,7 @@ final class OperationGenerator
     }
 
     /**
-     * @param array{id: string, method: string, path: string, group: string, name: string, auth: bool, experimental: bool, summary: string, description: string, parameters: list<OperationParameter>, signature: list<OperationParameter>, data: string, list: bool} $operation
+     * @param array{id: string, method: string, path: string, group: string, name: string, auth: bool, experimental: bool, summary: string, description: string, parameters: list<OperationParameter>, signature: list<OperationParameter>, data: string, list: bool, paged: bool, maxLimit: int|null} $operation
      * @param callable(string): string                                                                                                                                                                                                  $reference
      *
      * @return list<string>
@@ -404,7 +446,7 @@ final class OperationGenerator
     }
 
     /**
-     * @param list<array{id: string, method: string, path: string, group: string, name: string, auth: bool, experimental: bool, summary: string, description: string, parameters: list<OperationParameter>, signature: list<OperationParameter>, data: string, list: bool}> $operations
+     * @param list<array{id: string, method: string, path: string, group: string, name: string, auth: bool, experimental: bool, summary: string, description: string, parameters: list<OperationParameter>, signature: list<OperationParameter>, data: string, list: bool, paged: bool, maxLimit: int|null}> $operations
      */
     private static function registry(array $operations): string
     {
@@ -465,7 +507,17 @@ final class OperationGenerator
                 var_export($operation['path'], true),
                 var_export($operation['id'], true),
             );
-            $close = $operation['auth'] ? '),' : ', requiresAuth: false),';
+            $named = [];
+            if (!$operation['auth']) {
+                $named[] = 'requiresAuth: false';
+            }
+            if ($operation['paged']) {
+                $named[] = 'paged: true';
+            }
+            if ($operation['maxLimit'] !== null) {
+                $named[] = 'maxLimit: ' . $operation['maxLimit'];
+            }
+            $close = ($named === [] ? '' : ', ' . implode(', ', $named)) . '),';
             if ($operation['parameters'] === []) {
                 $lines[] = $head . '[]' . $close;
 

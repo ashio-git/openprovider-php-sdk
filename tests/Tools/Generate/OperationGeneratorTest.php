@@ -160,6 +160,48 @@ final class OperationGeneratorTest extends TestCase
         self::assertStringContainsString("public const IDS = [\n        'Login',\n        'CreateResellerPublic',\n        'GetZone',", $registry);
     }
 
+    public function testAPagedListingIsMarkedAndCarriesItsDocumentedMaximum(): void
+    {
+        $registry = OperationGenerator::generate(self::json(self::spec()), self::behavior(['GET /dns/records' => 500]))['Service/Operations.php'];
+
+        self::assertStringContainsString(<<<'PHP'
+                        'ListRecords' => new OperationSpec('GET', '/dns/records', 'ListRecords', [
+                            new ParameterSpec('limit', ParameterLocation::Query, false, 'integer'),
+                            new ParameterSpec('offset', ParameterLocation::Query, false, 'integer'),
+                        ], paged: true, maxLimit: 500),
+            PHP, $registry);
+
+        $plain = self::generate()['Service/Operations.php'];
+        self::assertStringContainsString(<<<'PHP'
+                            new ParameterSpec('offset', ParameterLocation::Query, false, 'integer'),
+                        ], paged: true),
+            PHP, $plain, 'paged without a documented maximum');
+        self::assertStringContainsString("'ListZones' => new OperationSpec('GET', '/dns/zones', 'ListZones', []),", $plain, 'a bare list is not a paged listing');
+    }
+
+    /**
+     * @return iterable<string, array{array<string, mixed>, string}>
+     */
+    public static function refusedMaxima(): iterable
+    {
+        yield 'an operation the spec does not have' => [['GET /nowhere' => 10], 'paging.maxLimit names GET /nowhere, which is no operation'];
+        yield 'an operation that is not a paged listing' => [['GET /dns/zones' => 10], 'paging.maxLimit names GET /dns/zones (ListZones), which is not a paged listing'];
+        yield 'a maximum below one' => [['GET /dns/records' => 0], 'paging.maxLimit of GET /dns/records must be a positive integer'];
+        yield 'a maximum that is not an integer' => [['GET /dns/records' => '500'], 'paging.maxLimit of GET /dns/records must be a positive integer'];
+    }
+
+    /**
+     * @param array<string, mixed> $maxLimit
+     */
+    #[DataProvider('refusedMaxima')]
+    public function testAMaximumThatMatchesNoPagedListingIsRefused(array $maxLimit, string $message): void
+    {
+        $this->expectException(SpecException::class);
+        $this->expectExceptionMessage($message);
+
+        OperationGenerator::generate(self::json(self::spec()), self::behavior($maxLimit));
+    }
+
     public function testTheFacadeHasOneAccessorPerService(): void
     {
         $facade = self::generate()['OpenProvider.php'];
@@ -229,9 +271,17 @@ final class OperationGeneratorTest extends TestCase
         return OperationGenerator::generate(self::json(self::spec()), self::behavior());
     }
 
-    private static function behavior(): string
+    /**
+     * @param array<string, mixed>|null $maxLimit paging.maxLimit, or no paging section
+     */
+    private static function behavior(?array $maxLimit = null): string
     {
-        return self::json(['authentication' => ['login' => ['operation' => 'POST /auth/login']]]);
+        $behavior = ['authentication' => ['login' => ['operation' => 'POST /auth/login']]];
+        if ($maxLimit !== null) {
+            $behavior['paging'] = ['maxLimit' => $maxLimit === [] ? new \stdClass() : $maxLimit];
+        }
+
+        return self::json($behavior);
     }
 
     /**
@@ -301,6 +351,15 @@ final class OperationGeneratorTest extends TestCase
                     'operationId' => 'ListZones',
                     'responses' => $responses('dns.zoneListZonesResponse'),
                 ]],
+                '/dns/records' => ['get' => [
+                    'tags' => ['ZoneService'],
+                    'operationId' => 'ListRecords',
+                    'parameters' => [
+                        ['name' => 'limit', 'in' => 'query', 'type' => 'integer'],
+                        ['name' => 'offset', 'in' => 'query', 'type' => 'integer'],
+                    ],
+                    'responses' => $responses('dns.zoneListRecordsResponse'),
+                ]],
                 '/customers/{handle}' => ['delete' => [
                     'tags' => ['Customer'],
                     'operationId' => 'DeleteCustomerMixin8',
@@ -324,6 +383,11 @@ final class OperationGeneratorTest extends TestCase
                 'dns.errorError' => ['type' => 'object', 'properties' => ['code' => ['type' => 'integer'], 'desc' => ['type' => 'string']]],
                 'dns.zoneGetZoneResponse' => $envelope($ref('dns.zoneZone')),
                 'dns.zoneListZonesResponse' => $envelope(['type' => 'array', 'items' => $ref('dns.zoneZone')]),
+                'dns.zoneListRecordsResponse' => $envelope($ref('dns.zoneListRecordsData')),
+                'dns.zoneListRecordsData' => ['type' => 'object', 'properties' => [
+                    'results' => ['type' => 'array', 'items' => $ref('dns.zoneZone')],
+                    'total' => ['type' => 'integer'],
+                ]],
                 'dns.zoneUpdateZoneRequest' => ['type' => 'object', 'properties' => ['name' => ['type' => 'string']]],
                 'dns.zoneZone' => ['type' => 'object', 'properties' => ['name' => ['type' => 'string']]],
             ],

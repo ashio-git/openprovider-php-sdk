@@ -7,7 +7,9 @@ namespace Ashio\OpenProvider\Spec;
 use Ashio\OpenProvider\Exception\InvalidArgumentException;
 
 /**
- * One API operation: method, path relative to the base path, and its parameters.
+ * One API operation: method, path relative to the base path, and its parameters. A paged
+ * listing takes `limit` and `offset` and returns `results` and `total`; $maxLimit is the largest
+ * `limit` the endpoint documents (spec/behavior.json), null when it documents none.
  */
 final class OperationSpec
 {
@@ -25,6 +27,8 @@ final class OperationSpec
         public readonly string $operationId,
         public readonly array $parameters = [],
         public readonly bool $requiresAuth = true,
+        public readonly bool $paged = false,
+        public readonly ?int $maxLimit = null,
     ) {
         if (!in_array($method, self::METHODS, true)) {
             throw new InvalidArgumentException(sprintf('%s: unsupported method "%s"', $operationId, $method));
@@ -43,6 +47,12 @@ final class OperationSpec
         }
         if ($bodies > 1) {
             throw new InvalidArgumentException(sprintf('%s: an operation has at most one body parameter', $operationId));
+        }
+        if ($paged && (($byName['limit'] ?? null)?->in !== ParameterLocation::Query || ($byName['offset'] ?? null)?->in !== ParameterLocation::Query)) {
+            throw new InvalidArgumentException(sprintf('%s: a paged listing needs the query parameters limit and offset', $operationId));
+        }
+        if ($maxLimit !== null && (!$paged || $maxLimit < 1)) {
+            throw new InvalidArgumentException(sprintf('%s: a maximum limit needs a paged listing and must be at least 1', $operationId));
         }
         preg_match_all('/\{([^}]+)\}/', $path, $placeholders);
         foreach ($placeholders[1] as $placeholder) {
