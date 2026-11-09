@@ -1,8 +1,8 @@
 <p align="center">
   <img src="https://img.shields.io/badge/PHP-8.1+-8892BF.svg?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.1+">
   <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="License">
-  <img src="https://img.shields.io/badge/Coverage-100%25-brightgreen.svg?style=for-the-badge" alt="Coverage">
-  <img src="https://img.shields.io/badge/API-111%20Endpoints-blue.svg?style=for-the-badge" alt="API Coverage">
+  <img src="https://img.shields.io/badge/Line%20coverage-58.6%25-orange.svg?style=for-the-badge" alt="Line coverage 58.6%">
+  <img src="https://img.shields.io/badge/API-111%2F140%20operations-blue.svg?style=for-the-badge" alt="111 of 140 API operations">
 </p>
 
 <h1 align="center">🌐 OpenProvider PHP SDK</h1>
@@ -22,9 +22,8 @@
 | Feature | Status |
 |---------|--------|
 | **PHP 8.1+** | Modern syntax with strict types |
-| **100% API Coverage** | All 111 endpoints implemented |
+| **API Coverage** | 111 of the 140 operations in the current Openprovider documentation (Mailcow and reseller signup are not implemented yet; see `docs/plans/`) |
 | **219 Models** | Complete data type coverage |
-| **Production Ready** | Battle-tested and reliable |
 | **PSR-12 Compliant** | Industry-standard code style |
 | **Fully Documented** | Comprehensive PHPDoc blocks |
 
@@ -374,9 +373,9 @@ composer quality
 | Tool | Level | Status |
 |------|-------|--------|
 | **PHPStan** | Level 8 | ✅ Pass |
-| **Psalm** | Strict | ✅ Pass |
+| **Psalm** | Error level 3 | ✅ Pass |
 | **PHP-CS-Fixer** | PSR-12 | ✅ Pass |
-| **PHPUnit** | Full Coverage | ✅ Pass |
+| **PHPUnit** | 58.6% line coverage; warnings and deprecations fail the run | ✅ Pass |
 
 ---
 
@@ -437,7 +436,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 |---------|----------|--------|
 | PHP 8.1+ Support | ✅ | ❌ Often PHP 7.x |
 | Strict Types | ✅ | ❌ Rarely |
-| 100% API Coverage | ✅ | ❌ Partial |
 | Type-Safe Models | ✅ 219 models | ❌ Arrays |
 | Modern Patterns | ✅ | ❌ Legacy code |
 | Active Maintenance | ✅ | ❓ Varies |

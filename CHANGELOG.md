@@ -5,6 +5,35 @@ All notable changes to the OpenProvider PHP SDK will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- `EasyDmarcOrder::fromArray()` (used by `EasyDMARC::getEasyDmarc()`) threw a fatal `Error` whenever the response contained `domain`: it called the instance method `Domain::fromArray()` statically. `domain` is now a `DomainName` (`name`, `extension`), matching the spec's `orderDomain`.
+- `RenewDomainRequest::toArray()` (used by `Domain::renewDomain()`) threw a fatal `Error` when `domain` was set, because `Model\Domain` has no `toArray()`. The `domain` field of every request DTO is now a `DomainName`, matching the spec's `domainDomain`/`zoneDomain`: `ApproveTransferRequest`, `CreateDomainRequest`, `CreateZoneRequest`, `RenewDomainRequest`, `ResetAuthCodeRequest`, `SendFoa1Request`, `TryAgainLastOperationRequest`, `UpdateDomainRequest`, `UpdateZoneRequest`.
+- `CreateDomainRequest::fromArray()` and `UpdateDomainRequest::fromArray()` threw on `name_servers` (static call to the instance method `Nameserver::fromArray()`).
+- `Prices` and `PriceGroup` now hold `ProductPrice` (`currency`, `price`) and `LevelPrice::$price` holds `Prices`, as the spec defines; the previous types made them throw.
+- Models referenced classes that did not exist: `RecentEasyDmarcAction` (now `EasyDmarcRecentAction`), `NameServersSet` (now `NameserverSet`), and `UINDocumentType` / `UpdateAdditionalData` (added from the spec).
+- Paginated list methods no longer read `data.total` from a response that is not an array.
+- `DnsRecordUpdates::toArray()` no longer passes a private method to `array_map()` as a callable.
+- `SslOrder::fromArray()` (used by `SSL::getOrder()` and `SSL::listOrders()`) threw a `TypeError` on any payload containing `options` or `domain_validation_statuses`: a generic loop assigned their raw arrays to object-typed properties before the explicit mapping ran.
+- `toArray()` dropped legitimate `0`, `0.0` and `false` values in `SettingsPaymentMethodLimit` and six `Statistics*` models (`array_filter()` without a callback); only `null` is dropped now.
+- `StatisticsSpamExpertsStatistics::toArray()` returned camelCase keys instead of the API keys `fromArray()` reads.
+- README no longer claims 100% test coverage or 100% API coverage: measured line coverage is 58.6% and 111 of the 140 operations in the current documentation are implemented.
+
+### Tests
+- 57 constructor calls passed the HTTP client as positional argument 3, which became `$environment` in the sandbox release; they now use the named argument `httpClient:`.
+- Rewrote the model tests that read or wrote properties the models do not have (99 accesses in 17 files) or mutated readonly DTOs. They now build models from API-shaped payloads and assert real fields and round trips.
+- Added regression tests for the serialization bugs above.
+
+### Added
+- `toArray()` on `ProductPrice` and `EasyDmarcRecentAction`.
+
+### Changed
+- PHPStan level 8 and Psalm now pass with no errors. Psalm is configured for a library (unused-code detection off, since public API is unused by design).
+- Merged 100+ duplicated docblocks (only the last one was ever read) and added array value types to `fromArray()` / `toArray()`.
+- PHPUnit configuration migrated to the PHPUnit 10.5/11.5 schema; warnings, notices and deprecations now fail the run. PHPUnit 9 dropped from `require-dev`.
+- CI: one workflow testing PHP 8.1–8.5 plus lowest dependencies on 8.1, a code-quality job and a coverage job. Removed the PHP 7.2–8.0 jobs (the package requires PHP 8.1) and the Codecov uploads (no token was configured and no `coverage.xml` was produced).
+
 ## [2.1.0] - 2026-01-05
 
 ### Added
