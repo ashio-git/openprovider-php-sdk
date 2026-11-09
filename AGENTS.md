@@ -18,6 +18,9 @@
 - Psalm level 1 refuses storing a `mixed` value in a variable. Narrow decoded JSON where it is read: `isset($a['k']) && is_string($a['k'])` (Psalm does not narrow `is_string($a['k'] ?? null)`), or in the tools `Json::optionalString`, `objectMap`, `objectList`, `stringList` and `value`; iterate `array_keys()` when values are mixed.
 - `composer spec:verify` checks the vendored spec hashes, that the merge reproduces `spec/openprovider.json`, and that the error catalog, `src/Model`, `src/Service` and `src/OpenProvider.php` are what the generator writes.
 - `composer conformance` (`tools/conformance`, gate S2) runs every service method against a recording transport and must report 140 conform, 0 MAJOR, 0 MINOR and 0 pending.
+- `composer test:coverage` runs PHPUnit with pcov over `src` and `tools/src` and then `tools/coverage`, which fails below 95% of lines (gate S4).
+- Mutation testing (S4) uses Infection with `infection.json5` (minimum MSI 85%, generated code excluded). Infection is not a dev dependency, because its releases need PHP 8.3: CI installs it with setup-php, and locally run `COMPOSER_HOME=/tmp/infection-home composer global require infection/infection` and call `/tmp/infection-home/vendor/bin/infection --threads=8`.
+- `composer smoke` (gate S7) runs `smoke/` against the real sandbox and needs `OPENPROVIDER_SANDBOX_USERNAME` and `OPENPROVIDER_SANDBOX_PASSWORD`; without them it fails rather than skipping. It is never part of `composer test`, and its calls are paced (1 s apart, at most 40 per run).
 - PHPUnit fails on warnings, notices and deprecations (`phpunit.xml`). Reading or writing a property a model does not declare fails the run, so check the model's real field names before asserting on them.
 
 ## Layout

@@ -1,0 +1,40 @@
+name: Sandbox smoke
+
+# S7: the SDK against the real Openprovider sandbox. Manual only: it needs the repository secrets
+# OPENPROVIDER_SANDBOX_USERNAME and OPENPROVIDER_SANDBOX_PASSWORD (decision D5), and it spends
+# rate-limited calls (one second apart, at most 40 per run). Without the secrets the run fails.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Two runs at once would share the sandbox account's rate limits.
+concurrency:
+  group: sandbox-smoke
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    name: Sandbox smoke (S7)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: curl, dom, json, mbstring
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress --no-interaction
+
+      - name: Run the smoke suite
+        env:
+          OPENPROVIDER_SANDBOX_USERNAME: ${{ secrets.OPENPROVIDER_SANDBOX_USERNAME }}
+          OPENPROVIDER_SANDBOX_PASSWORD: ${{ secrets.OPENPROVIDER_SANDBOX_PASSWORD }}
+        run: composer smoke

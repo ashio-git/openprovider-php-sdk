@@ -49,7 +49,8 @@
     "autoload-dev": {
         "psr-4": {
             "Ashio\\OpenProvider\\Tests\\": "tests/",
-            "Ashio\\OpenProvider\\Tools\\": "tools/src/"
+            "Ashio\\OpenProvider\\Tools\\": "tools/src/",
+            "Ashio\\OpenProvider\\Smoke\\": "smoke/"
         }
     },
     "scripts": {
@@ -75,7 +76,8 @@
             "php tools/generate models --check",
             "php tools/generate operations --check"
         ],
-        "conformance": "php tools/conformance"
+        "conformance": "php tools/conformance",
+        "smoke": "phpunit --configuration phpunit.smoke.xml"
     },
     "suggest": {
         "psr/simple-cache": "Share the API token between processes with Psr16TokenStore"

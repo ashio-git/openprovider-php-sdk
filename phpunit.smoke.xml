@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- S7: the sandbox smoke suite. Run with `composer smoke`; it needs OPENPROVIDER_SANDBOX_USERNAME and
+     OPENPROVIDER_SANDBOX_PASSWORD and reaches https://api.sandbox.openprovider.nl. Never part of `composer test`. -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         cacheDirectory=".phpunit.cache"
+         colors="true"
+         executionOrder="default"
+         beStrictAboutOutputDuringTests="true"
+         failOnEmptyTestSuite="true"
+         failOnRisky="true"
+         failOnSkipped="true"
+         failOnIncomplete="true"
+         failOnWarning="true"
+         failOnNotice="true"
+         failOnDeprecation="true"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+         displayDetailsOnTestsThatTriggerErrors="true"
+         displayDetailsOnTestsThatTriggerNotices="true"
+         displayDetailsOnTestsThatTriggerWarnings="true">
+    <testsuites>
+        <testsuite name="smoke">
+            <directory>smoke</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

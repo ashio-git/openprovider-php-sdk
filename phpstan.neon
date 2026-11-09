@@ -4,3 +4,4 @@ parameters:
         - src
         - tools/src
         - tests
+        - smoke
