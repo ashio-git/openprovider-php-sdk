@@ -40,13 +40,14 @@ final class GenerateOperationsCommandTest extends TestCase
     {
         [$code, $out] = $this->generate(['operations']);
         self::assertSame(0, $code);
-        self::assertStringContainsString('Wrote 4 files under src/Service', $out);
+        self::assertStringContainsString('Wrote 5 files under src/Service', $out);
         self::assertFileExists($this->root . '/src/Service/DnsService.php');
+        self::assertFileExists($this->root . '/src/Service/MailcowService.php');
         self::assertFileExists($this->root . '/src/OpenProvider.php');
 
         [$code, $out] = $this->generate(['operations', '--check']);
         self::assertSame(0, $code, $out);
-        self::assertStringContainsString('src/Service is up to date (4 files)', $out);
+        self::assertStringContainsString('src/Service is up to date (5 files)', $out);
         self::assertStringContainsString('src/OpenProvider.php is up to date', $out);
     }
 

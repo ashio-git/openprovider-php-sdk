@@ -12,6 +12,7 @@ use Ashio\OpenProvider\Service\DomainService;
 use Ashio\OpenProvider\Service\EasyDmarcService;
 use Ashio\OpenProvider\Service\EmailTemplateService;
 use Ashio\OpenProvider\Service\LicenseService;
+use Ashio\OpenProvider\Service\MailcowService;
 use Ashio\OpenProvider\Service\ResellerCustomerService;
 use Ashio\OpenProvider\Service\SpamExpertsService;
 use Ashio\OpenProvider\Service\SslService;
@@ -37,6 +38,7 @@ final class OpenProvider
     private ?ResellerCustomerService $resellerCustomer = null;
     private ?SpamExpertsService $spamExperts = null;
     private ?SslService $ssl = null;
+    private ?MailcowService $mailcow = null;
 
     public function __construct(private readonly ApiClient $client)
     {
@@ -125,5 +127,13 @@ final class OpenProvider
     public function ssl(): SslService
     {
         return $this->ssl ??= new SslService($this->client);
+    }
+
+    /**
+     * Mailcow: the operations tagged MailcowOrder, MailcowDomain, MailcowMailbox, MailcowAlias, MailcowDkim, MailcowWhiteLabel.
+     */
+    public function mailcow(): MailcowService
+    {
+        return $this->mailcow ??= new MailcowService($this->client);
     }
 }

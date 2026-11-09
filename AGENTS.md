@@ -16,7 +16,7 @@
 
 - `composer quality` runs php-cs-fixer (check), PHPStan (level max on `src`, `tools/src` and `tests`), Psalm and PHPUnit; all four must pass before handing off.
 - `composer spec:verify` checks the vendored spec hashes, that the merge reproduces `spec/openprovider.json`, and that the error catalog, `src/Model`, `src/Service` and `src/OpenProvider.php` are what the generator writes.
-- `composer conformance` (`tools/conformance`, gate S2) runs every service method against a recording transport and must report 0 MAJOR and 0 MINOR divergences; the Mailcow operations are listed as pending.
+- `composer conformance` (`tools/conformance`, gate S2) runs every service method against a recording transport and must report 140 conform, 0 MAJOR, 0 MINOR and 0 pending.
 - PHPUnit fails on warnings, notices and deprecations (`phpunit.xml`). Reading or writing a property a model does not declare fails the run, so check the model's real field names before asserting on them.
 
 ## Layout
@@ -31,6 +31,6 @@
 - In tests of the 3.0 core, fake HTTP with `tests/Support/FakeHttpClient` (PSR-18) passed as the fourth argument of `ApiClient::create()`; no test may reach the network.
 - Models: one class per definition reachable from a request body or an envelope's `data`; envelopes, error schemas and warnings are read by `ApiResponse`, the exceptions and `Warning` instead. Names are mechanical, so look a class up in `src/Model/ModelMap.php` by definition rather than guessing: the class keeps the spec's package prefix (`domain.domainCreateDomainRequest` → `Model\Domain\DomainCreateDomainRequest`, `domain.domainNameserver` → `DomainNameserver`) and properties are the camelCase of the API keys (`name_servers` → `$nameServers`, `AUD` → `$aud`). A value of another type than the spec declares lands in `$extra`, with the typed property null.
 - Services: one per `x-tagGroups` group, one method per operation, named by its operationId without the `Mixin<n>` suffix (`DeleteDomainMixin8` → `SpamExpertsService::deleteDomain`). Arguments: path parameters in path order, then the body model, then optional query parameters as named arguments (`domain.name` → `$domainName`). Each returns `ApiResponse<Model>` (or `ApiResponse<list<Model>>`), with `warnings` kept.
-- The Mailcow tag group is deferred in `OperationGenerator::DEFERRED_GROUPS`: to implement it, remove the entry, run `php tools/generate operations`, and the registry test and the audit then require all 28 operations.
+- `OperationGenerator::DEFERRED_GROUPS` is empty and the registry test keeps it so: every tag group, Mailcow included, is generated. Deferring a group again means changing that test and `tests/Support/SpecOperations`, which assume all 140 operations have a method.
 - Issues and pull requests live on GitHub (`ashio-git/openprovider-php-sdk`), not on Ashio Forge.
 

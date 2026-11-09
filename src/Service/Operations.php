@@ -103,6 +103,34 @@ final class Operations
         'UpdateVirtuozzoLicense',
         'DeleteVirtuozzoLicense',
         'GetVirtuozzoKey',
+        'ListAlias',
+        'AddAlias',
+        'EditAlias',
+        'GetAlias',
+        'DeleteAlias',
+        'GetMailCowDkim',
+        'CreateMailCowDkim',
+        'DeleteMailCowDkim',
+        'AddDomain',
+        'DeleteMailcowDomain',
+        'ListDomain',
+        'EditMailbox',
+        'ModifyMailboxName',
+        'IncreaseMailboxQuota',
+        'ListOrder',
+        'CreateMailcowOrder',
+        'AssignMailbox',
+        'RetainMailbox',
+        'GetMailcowOrder',
+        'DeleteOrder',
+        'GetMailboxPassword',
+        'GetMailcowStatistics',
+        'GetTimeLimitedAlias',
+        'AddTimeLimitedAlias',
+        'RetrieveWhiteLabelDomain',
+        'UpsertWhiteLabelDomain',
+        'RetrieveWhiteLabelLogo',
+        'ModifyWhiteLabelLogo',
         'ListPayments',
         'GetReseller',
         'GetSettings',
@@ -611,6 +639,106 @@ final class Operations
             ]),
             'GetVirtuozzoKey' => new OperationSpec('GET', '/licenses/virtuozzo/{key_id}/key', 'GetVirtuozzoKey', [
                 new ParameterSpec('key_id', ParameterLocation::Path, true, 'integer'),
+            ]),
+            'ListAlias' => new OperationSpec('GET', '/mailcow/alias', 'ListAlias', [
+                new ParameterSpec('limit', ParameterLocation::Query, false, 'integer'),
+                new ParameterSpec('offset', ParameterLocation::Query, false, 'integer'),
+            ]),
+            'AddAlias' => new OperationSpec('POST', '/mailcow/alias', 'AddAlias', [
+                new ParameterSpec('body', ParameterLocation::Body, true),
+            ]),
+            'EditAlias' => new OperationSpec('POST', '/mailcow/alias/edit/{id}', 'EditAlias', [
+                new ParameterSpec('id', ParameterLocation::Path, true, 'integer'),
+                new ParameterSpec('body', ParameterLocation::Body, true),
+            ]),
+            'GetAlias' => new OperationSpec('GET', '/mailcow/alias/{id}', 'GetAlias', [
+                new ParameterSpec('id', ParameterLocation::Path, true, 'integer'),
+            ]),
+            'DeleteAlias' => new OperationSpec('DELETE', '/mailcow/alias/{id}', 'DeleteAlias', [
+                new ParameterSpec('id', ParameterLocation::Path, true, 'integer'),
+            ]),
+            'GetMailCowDkim' => new OperationSpec('GET', '/mailcow/dkim', 'GetMailCowDkim', [
+                new ParameterSpec('domain.name', ParameterLocation::Query, false, 'string'),
+                new ParameterSpec('domain.extension', ParameterLocation::Query, false, 'string'),
+            ]),
+            'CreateMailCowDkim' => new OperationSpec('POST', '/mailcow/dkim', 'CreateMailCowDkim', [
+                new ParameterSpec('body', ParameterLocation::Body, true),
+            ]),
+            'DeleteMailCowDkim' => new OperationSpec('DELETE', '/mailcow/dkim', 'DeleteMailCowDkim', [
+                new ParameterSpec('domain.name', ParameterLocation::Query, false, 'string'),
+                new ParameterSpec('domain.extension', ParameterLocation::Query, false, 'string'),
+            ]),
+            'AddDomain' => new OperationSpec('POST', '/mailcow/domains', 'AddDomain', [
+                new ParameterSpec('body', ParameterLocation::Body, true),
+            ]),
+            'DeleteMailcowDomain' => new OperationSpec('DELETE', '/mailcow/domains', 'DeleteMailcowDomain', [
+                new ParameterSpec('domain.name', ParameterLocation::Query, false, 'string'),
+                new ParameterSpec('domain.extension', ParameterLocation::Query, false, 'string'),
+            ]),
+            'ListDomain' => new OperationSpec('GET', '/mailcow/domains/list', 'ListDomain', [
+                new ParameterSpec('limit', ParameterLocation::Query, false, 'integer'),
+                new ParameterSpec('offset', ParameterLocation::Query, false, 'integer'),
+            ]),
+            'EditMailbox' => new OperationSpec('POST', '/mailcow/mailbox/edit', 'EditMailbox', [
+                new ParameterSpec('body', ParameterLocation::Body, true),
+            ]),
+            'ModifyMailboxName' => new OperationSpec('POST', '/mailcow/mailbox/name/modify', 'ModifyMailboxName', [
+                new ParameterSpec('body', ParameterLocation::Body, true),
+            ]),
+            'IncreaseMailboxQuota' => new OperationSpec('POST', '/mailcow/mailbox/quota/increase', 'IncreaseMailboxQuota', [
+                new ParameterSpec('body', ParameterLocation::Body, true),
+            ]),
+            'ListOrder' => new OperationSpec('GET', '/mailcow/orders', 'ListOrder', [
+                new ParameterSpec('limit', ParameterLocation::Query, false, 'integer'),
+                new ParameterSpec('offset', ParameterLocation::Query, false, 'integer'),
+                new ParameterSpec('order_by.id', ParameterLocation::Query, false, 'string'),
+                new ParameterSpec('order_by.created_at', ParameterLocation::Query, false, 'string'),
+                new ParameterSpec('order_by.expired_at', ParameterLocation::Query, false, 'string'),
+                new ParameterSpec('order_by.mailbox_status', ParameterLocation::Query, false, 'string'),
+                new ParameterSpec('status', ParameterLocation::Query, false, 'array', 'string', 'multi'),
+                new ParameterSpec('domain.name', ParameterLocation::Query, false, 'string'),
+                new ParameterSpec('domain.extension', ParameterLocation::Query, false, 'string'),
+                new ParameterSpec('mailbox', ParameterLocation::Query, false, 'string'),
+                new ParameterSpec('mailbox_status', ParameterLocation::Query, false, 'array', 'string', 'multi'),
+            ]),
+            'CreateMailcowOrder' => new OperationSpec('POST', '/mailcow/orders', 'CreateMailcowOrder', [
+                new ParameterSpec('body', ParameterLocation::Body, true),
+            ]),
+            'AssignMailbox' => new OperationSpec('POST', '/mailcow/orders/assign', 'AssignMailbox', [
+                new ParameterSpec('body', ParameterLocation::Body, true),
+            ]),
+            'RetainMailbox' => new OperationSpec('POST', '/mailcow/orders/retain', 'RetainMailbox', [
+                new ParameterSpec('body', ParameterLocation::Body, true),
+            ]),
+            'GetMailcowOrder' => new OperationSpec('GET', '/mailcow/orders/{id}', 'GetMailcowOrder', [
+                new ParameterSpec('id', ParameterLocation::Path, true, 'integer'),
+            ]),
+            'DeleteOrder' => new OperationSpec('DELETE', '/mailcow/orders/{id}', 'DeleteOrder', [
+                new ParameterSpec('id', ParameterLocation::Path, true, 'integer'),
+            ]),
+            'GetMailboxPassword' => new OperationSpec('GET', '/mailcow/orders/{id}/password', 'GetMailboxPassword', [
+                new ParameterSpec('id', ParameterLocation::Path, true, 'integer'),
+            ]),
+            'GetMailcowStatistics' => new OperationSpec('GET', '/mailcow/statistics', 'GetMailcowStatistics', []),
+            'GetTimeLimitedAlias' => new OperationSpec('GET', '/mailcow/time-limited/alias', 'GetTimeLimitedAlias', [
+                new ParameterSpec('domain.name', ParameterLocation::Query, false, 'string'),
+                new ParameterSpec('domain.extension', ParameterLocation::Query, false, 'string'),
+                new ParameterSpec('mailbox', ParameterLocation::Query, false, 'string'),
+            ]),
+            'AddTimeLimitedAlias' => new OperationSpec('POST', '/mailcow/time-limted/alias', 'AddTimeLimitedAlias', [
+                new ParameterSpec('body', ParameterLocation::Body, true),
+            ]),
+            'RetrieveWhiteLabelDomain' => new OperationSpec('POST', '/mailcow/white-labels/domain', 'RetrieveWhiteLabelDomain', [
+                new ParameterSpec('body', ParameterLocation::Body, true),
+            ]),
+            'UpsertWhiteLabelDomain' => new OperationSpec('POST', '/mailcow/white-labels/domain/upsert', 'UpsertWhiteLabelDomain', [
+                new ParameterSpec('body', ParameterLocation::Body, true),
+            ]),
+            'RetrieveWhiteLabelLogo' => new OperationSpec('POST', '/mailcow/white-labels/logo', 'RetrieveWhiteLabelLogo', [
+                new ParameterSpec('body', ParameterLocation::Body, true),
+            ]),
+            'ModifyWhiteLabelLogo' => new OperationSpec('POST', '/mailcow/white-labels/logo/modify', 'ModifyWhiteLabelLogo', [
+                new ParameterSpec('body', ParameterLocation::Body, true),
             ]),
             'ListPayments' => new OperationSpec('GET', '/payments', 'ListPayments', [
                 new ParameterSpec('limit', ParameterLocation::Query, false, 'integer'),

@@ -25,6 +25,9 @@ final class AuditorTest extends TestCase
 {
     private const LOGIN = ['POST /auth/login'];
 
+    /** No group is deferred any more; the broken run defers one to keep the pending path covered. */
+    private const DEFERRED = ['Mailcow' => 'deferred by this test'];
+
     private static ?Report $broken = null;
 
     public function testTheSdkHasNoDivergence(): void
@@ -33,9 +36,8 @@ final class AuditorTest extends TestCase
 
         self::assertSame([], array_map('strval', $report->divergences));
         self::assertTrue($report->isClean());
-        self::assertCount(112, $report->conform);
-        self::assertCount(28, $report->pending);
-        self::assertSame(array_keys(SpecOperations::deferred()), array_keys($report->pending));
+        self::assertCount(140, $report->conform);
+        self::assertSame([], $report->pending);
     }
 
     public function testTheCommandExitsZeroOnTheSdkAndPrintsTheCounts(): void
@@ -50,7 +52,7 @@ final class AuditorTest extends TestCase
         rewind($out);
         rewind($err);
         self::assertSame(0, $code, (string) stream_get_contents($err));
-        self::assertStringContainsString('112 operations audited: 112 conform, 0 MAJOR, 0 MINOR; 28 pending', (string) stream_get_contents($out));
+        self::assertStringContainsString('140 operations audited: 140 conform, 0 MAJOR, 0 MINOR; 0 pending', (string) stream_get_contents($out));
     }
 
     public function testTheCommandExitsTwoOnBadUsageOrAnUnreadableSpec(): void
@@ -125,7 +127,7 @@ final class AuditorTest extends TestCase
                 $spec,
                 [BrokenAuthService::class, BrokenDnsService::class, BrokenResellerService::class],
                 ModelMap::MODELS,
-                OperationGenerator::DEFERRED_GROUPS,
+                self::DEFERRED,
                 self::LOGIN,
             ))->run();
         }

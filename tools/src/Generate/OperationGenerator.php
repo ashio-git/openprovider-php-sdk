@@ -25,11 +25,11 @@ final class OperationGenerator
 
     /**
      * Tag groups left for a later step, with the reason. Their operations get no method yet; the
-     * registry test and the conformance audit report them as pending, not as missing.
+     * registry test and the conformance audit report them as pending, not as missing. None today.
+     *
+     * @var array<string, string>
      */
-    public const DEFERRED_GROUPS = [
-        'Mailcow' => 'its 28 operations land in their own pull request (plan F5)',
-    ];
+    public const DEFERRED_GROUPS = [];
 
     private const GENERATED = ' * ' . self::MARKER . ' from spec/openprovider.json. Do not edit.';
     private const HTTP_METHODS = ['get', 'post', 'put', 'delete', 'patch'];
@@ -47,9 +47,11 @@ final class OperationGenerator
     private const MAX_LINE = 120;
 
     /**
+     * @param array<string, string> $deferred tag group => why its operations get no method yet
+     *
      * @return array<string, string> path relative to src => source, sorted by path
      */
-    public static function generate(string $specJson, string $behaviorJson): array
+    public static function generate(string $specJson, string $behaviorJson, array $deferred = self::DEFERRED_GROUPS): array
     {
         $spec = Json::object(self::decode($specJson, 'spec/openprovider.json'), 'spec/openprovider.json');
         $public = self::publicOperations(Json::object(self::decode($behaviorJson, 'spec/behavior.json'), 'spec/behavior.json'));
@@ -68,7 +70,7 @@ final class OperationGenerator
                 }
                 $operation = Json::object($operation, "$method $path");
                 $entry = self::operation((string) $method, (string) $path, $operation, $groupOf, $public, $classes, $definitions);
-                if (isset(self::DEFERRED_GROUPS[$entry['group']])) {
+                if (isset($deferred[$entry['group']])) {
                     continue;
                 }
                 $byGroup[$entry['group']][] = $entry;

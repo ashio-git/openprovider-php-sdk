@@ -19,22 +19,21 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * S1: every operation of spec/openprovider.json maps to exactly one method with its
- * #[Operation], and no public method of a service is anything else. The operations of a
- * deferred tag group (OperationGenerator::DEFERRED_GROUPS) are the only ones allowed to be
- * missing, and only while they are deferred.
+ * #[Operation], and no public method of a service is anything else. No tag group is deferred
+ * (OperationGenerator::DEFERRED_GROUPS), so none of the 140 may be missing.
  */
 final class OperationRegistryTest extends TestCase
 {
-    public function testEveryImplementedOperationHasExactlyOneMethod(): void
+    public function testEveryOperationHasExactlyOneMethod(): void
     {
         $methods = SpecOperations::methods();
-        foreach (SpecOperations::implemented() as $id => $operation) {
+        foreach (SpecOperations::all() as $id => $operation) {
             self::assertArrayHasKey($id, $methods, "$id has no method");
             self::assertCount(1, $methods[$id], "$id has more than one method");
             [$class, $method, $attribute] = $methods[$id][0];
             self::assertSame([$operation['method'], $operation['path']], [$attribute->method, $attribute->path], "$class::$method()");
         }
-        self::assertSame([], array_keys(array_diff_key($methods, SpecOperations::implemented())), 'methods for operations that are not implemented in the spec');
+        self::assertSame([], array_keys(array_diff_key($methods, SpecOperations::all())), 'methods for operations that are not in the spec');
     }
 
     public function testEveryPublicMethodOfAServiceIsAnOperation(): void
@@ -62,19 +61,48 @@ final class OperationRegistryTest extends TestCase
         }
     }
 
-    public function testOnlyTheMailcowGroupIsDeferredAndNoneOfItIsHalfDone(): void
+    public function testNoGroupIsDeferredAndAllOperationsAreImplemented(): void
     {
-        self::assertSame(['Mailcow'], array_keys(OperationGenerator::DEFERRED_GROUPS));
+        self::assertSame([], OperationGenerator::DEFERRED_GROUPS);
         self::assertCount(140, SpecOperations::all());
-        self::assertCount(28, SpecOperations::deferred());
-        self::assertCount(112, SpecOperations::implemented());
-        self::assertSame([], array_intersect_key(SpecOperations::methods(), SpecOperations::deferred()));
+        self::assertCount(140, SpecOperations::methods());
+        self::assertCount(28, array_filter(SpecOperations::all(), static fn (array $o): bool => $o['group'] === 'Mailcow'));
+    }
+
+    /**
+     * Plan §4.2: what only the developer portal documents (Mailcow's white-label and the reseller
+     * signup) says @experimental, and nothing else does.
+     */
+    public function testExactlyThePortalOnlyOperationsSayExperimental(): void
+    {
+        $methods = SpecOperations::methods();
+        $experimental = [];
+        $documented = [];
+        foreach (SpecOperations::all() as $id => $operation) {
+            if (($operation['operation']['x-experimental'] ?? false) === true) {
+                $experimental[] = $id;
+            }
+            self::assertArrayHasKey($id, $methods, "$id has no method");
+            [[$class, $method]] = $methods[$id];
+            if (str_contains((string) (new \ReflectionMethod($class, $method))->getDocComment(), '@experimental')) {
+                $documented[] = $id;
+            }
+        }
+
+        self::assertSame([
+            'RetrieveWhiteLabelDomain',
+            'UpsertWhiteLabelDomain',
+            'RetrieveWhiteLabelLogo',
+            'ModifyWhiteLabelLogo',
+            'CreateResellerPublic',
+        ], $experimental);
+        self::assertSame($experimental, $documented);
     }
 
     public function testTheRegistryEncodesEachOperationAsTheSpecDeclaresIt(): void
     {
-        self::assertSame(array_keys(SpecOperations::implemented()), Operations::IDS);
-        foreach (SpecOperations::implemented() as $id => $operation) {
+        self::assertSame(array_keys(SpecOperations::all()), Operations::IDS);
+        foreach (SpecOperations::all() as $id => $operation) {
             $expected = OperationSpec::fromSwagger($operation['method'], $operation['path'], $operation['operation']);
             if ($id === 'Login') {
                 // spec/behavior.json: the Swagger files do not mark the login public, but it is.

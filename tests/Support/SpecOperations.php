@@ -6,7 +6,6 @@ namespace Ashio\OpenProvider\Tests\Support;
 
 use Ashio\OpenProvider\Client\AbstractService;
 use Ashio\OpenProvider\Spec\Operation;
-use Ashio\OpenProvider\Tools\Generate\OperationGenerator;
 
 /**
  * The operations of spec/openprovider.json read straight from the JSON, and the methods that
@@ -75,24 +74,6 @@ final class SpecOperations
         }
 
         return $all;
-    }
-
-    /**
-     * The operations the SDK implements: all but those of OperationGenerator::DEFERRED_GROUPS.
-     *
-     * @return array<string, array{method: string, path: string, group: string, operation: array<array-key, mixed>}>
-     */
-    public static function implemented(): array
-    {
-        return array_filter(self::all(), static fn (array $o): bool => !isset(OperationGenerator::DEFERRED_GROUPS[$o['group']]));
-    }
-
-    /**
-     * @return array<string, array{method: string, path: string, group: string, operation: array<array-key, mixed>}>
-     */
-    public static function deferred(): array
-    {
-        return array_diff_key(self::all(), self::implemented());
     }
 
     /**

@@ -16,9 +16,27 @@ use PHPUnit\Framework\TestCase;
  */
 final class OperationGeneratorTest extends TestCase
 {
-    public function testOneServicePerTagGroupWithOperationsAndTheDeferredGroupLeftOut(): void
+    public function testOneServicePerTagGroupWithOperations(): void
     {
         $files = self::generate();
+
+        self::assertSame([], OperationGenerator::DEFERRED_GROUPS);
+        self::assertSame([
+            'OpenProvider.php',
+            'Service/AuthService.php',
+            'Service/DnsService.php',
+            'Service/MailcowService.php',
+            'Service/Operations.php',
+            'Service/ResellerCustomerService.php',
+        ], array_keys($files));
+        self::assertStringContainsString("#[Operation('POST', '/mailcow/orders', 'CreateMailcowOrder')]", $files['Service/MailcowService.php']);
+        self::assertStringContainsString("'CreateMailcowOrder' => new OperationSpec(", $files['Service/Operations.php']);
+        self::assertStringContainsString('public function mailcow(): MailcowService', $files['OpenProvider.php']);
+    }
+
+    public function testADeferredGroupGetsNoServiceNoRegistryEntryAndNoAccessor(): void
+    {
+        $files = OperationGenerator::generate(self::json(self::spec()), self::behavior(), ['Mailcow' => 'not yet']);
 
         self::assertSame([
             'OpenProvider.php',
@@ -27,8 +45,8 @@ final class OperationGeneratorTest extends TestCase
             'Service/Operations.php',
             'Service/ResellerCustomerService.php',
         ], array_keys($files));
-        self::assertArrayHasKey('Mailcow', OperationGenerator::DEFERRED_GROUPS);
         self::assertStringNotContainsString('CreateMailcowOrder', implode('', $files));
+        self::assertStringNotContainsString('mailcow', strtolower($files['OpenProvider.php']));
     }
 
     public function testAMethodCarriesItsOperationAndTakesPathThenBodyThenOptionalQuery(): void
@@ -154,7 +172,6 @@ final class OperationGeneratorTest extends TestCase
             PHP, $facade);
         self::assertStringContainsString('public function dns(): DnsService', $facade);
         self::assertStringContainsString('public function auth(): AuthService', $facade);
-        self::assertStringNotContainsString('mailcow', strtolower($facade));
     }
 
     public function testTheOutputIsAPureFunctionOfTheInputs(): void

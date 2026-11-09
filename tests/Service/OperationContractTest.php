@@ -39,7 +39,7 @@ final class OperationContractTest extends TestCase
      */
     public static function operations(): iterable
     {
-        foreach (array_keys(SpecOperations::implemented()) as $id) {
+        foreach (array_keys(SpecOperations::all()) as $id) {
             yield $id => [$id];
         }
     }
@@ -47,7 +47,7 @@ final class OperationContractTest extends TestCase
     #[DataProvider('operations')]
     public function testTheMethodSendsTheOperationAndReadsItsData(string $operationId): void
     {
-        $spec = SpecOperations::implemented()[$operationId];
+        $spec = SpecOperations::all()[$operationId];
         $operation = $spec['operation'];
         $methods = SpecOperations::methods()[$operationId] ?? [];
         self::assertCount(1, $methods, "$operationId has no method");
