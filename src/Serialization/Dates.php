@@ -24,20 +24,24 @@ final class Dates
      */
     private const FORMATS = ['!Y-m-d G:i:s', '!Y-m-d', \DateTimeInterface::ATOM];
 
+    /** The API's "not set", which its examples send for deleted_at and similar fields. */
+    private const ZERO_DATES = ['0000-00-00 00:00:00', '0000-00-00'];
+
     private function __construct()
     {
     }
 
     /**
      * An API date as an immutable date: in Europe/Amsterdam, or in the offset the value carries.
-     * Null and '' (absent) give null.
+     * Null, '' and the zero date (0000-00-00, the API's "not set") give null.
      *
      * @throws InvalidArgumentException when the value is none of the API's formats, or not a real
-     *                                  date (2026-02-30)
+     *                                  date (2026-02-30, or 02:30 on the night Amsterdam's clocks
+     *                                  skip from 02:00 to 03:00)
      */
     public static function parse(?string $value): ?\DateTimeImmutable
     {
-        if ($value === null || $value === '') {
+        if ($value === null || $value === '' || in_array($value, self::ZERO_DATES, true)) {
             return null;
         }
         $zone = new \DateTimeZone(self::TIMEZONE);
@@ -45,9 +49,17 @@ final class Dates
             $date = \DateTimeImmutable::createFromFormat($format, $value, $zone);
             // Since PHP 8.2 getLastErrors() is false when the parse had no warning (a day that
             // does not exist, such as 2026-02-30, is a warning) and no error.
-            if ($date !== false && \DateTimeImmutable::getLastErrors() === false) {
-                return $date;
+            if ($date === false || \DateTimeImmutable::getLastErrors() !== false) {
+                continue;
             }
+            // A local time the clocks skip is moved an hour on without a warning: it no longer
+            // reads back as written. A value with its own offset has no such gap.
+            $readBack = [$date->format('Y-m-d H:i:s'), $date->format('Y-m-d G:i:s'), $date->format('Y-m-d')];
+            if ($format !== \DateTimeInterface::ATOM && !in_array($value, $readBack, true)) {
+                throw new InvalidArgumentException(sprintf('"%s" does not exist in %s: the clocks skip that hour', $value, self::TIMEZONE));
+            }
+
+            return $date;
         }
 
         throw new InvalidArgumentException(sprintf('"%s" is not a date the API sends (Y-m-d H:i:s, Y-m-d or ISO 8601)', $value));

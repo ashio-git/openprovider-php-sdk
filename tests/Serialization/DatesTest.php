@@ -44,6 +44,22 @@ final class DatesTest extends TestCase
         self::assertNull(Dates::parse(''));
     }
 
+    public function testTheZeroDateMeansNotSet(): void
+    {
+        // The specification's examples send it for deleted_at and verification_email_exp_date.
+        self::assertNull(Dates::parse('0000-00-00 00:00:00'));
+        self::assertNull(Dates::parse('0000-00-00'));
+    }
+
+    public function testATimeTheAmsterdamClockSkipsIsRefused(): void
+    {
+        // On 2026-03-29 the clocks go from 02:00 to 03:00 CEST: 02:30 never happens there.
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('"2026-03-29 02:30:00" does not exist in Europe/Amsterdam: the clocks skip that hour');
+
+        Dates::parse('2026-03-29 02:30:00');
+    }
+
     public function testDatesWithoutAnOffsetAreInAmsterdam(): void
     {
         self::assertSame('Europe/Amsterdam', Dates::parse('2026-07-01 12:00:00')?->getTimezone()->getName());
@@ -83,7 +99,8 @@ final class DatesTest extends TestCase
 
     public function testParseAndFormatRoundTrip(): void
     {
-        foreach (['2006-09-15 14:19:30', '2026-01-15 09:05:00', '2026-10-25 02:30:00'] as $value) {
+        // 2026-10-25 02:30 happens twice (the clocks go back); the first, CEST, is the one read.
+        foreach (['2006-09-15 14:19:30', '2026-01-15 09:05:00', '2026-10-25 02:30:00', '2026-03-29 03:30:00'] as $value) {
             self::assertSame($value, Dates::format(Dates::parse($value) ?? throw new \LogicException($value)));
         }
     }
