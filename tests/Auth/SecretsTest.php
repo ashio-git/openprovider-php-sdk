@@ -85,6 +85,8 @@ final class SecretsTest extends TestCase
                 (new FakeHttpClient())->replyRaw('<html>bad gateway</html>', 502),
                 (new FakeHttpClient())->fail(new ConnectException('cURL error 7', new Request('POST', 'https://api.sandbox.openprovider.nl/v1/auth/login'))),
                 (new FakeHttpClient())->login(self::TOKEN)->replyRaw('{"code":', 200, 'application/json'),
+                // A login answer cut short: the body holds the token but is not JSON.
+                (new FakeHttpClient())->replyRaw('{"code":0,"data":{"token":"' . self::TOKEN . '"', 200, 'application/json'),
             ];
             foreach ($failures as $http) {
                 $client = ApiClient::create(ClientConfig::sandbox(), new Credentials('u', self::PASSWORD), new InMemoryTokenStore(), $http);
@@ -93,15 +95,51 @@ final class SecretsTest extends TestCase
                     $client->call(new OperationSpec('POST', '/domains', 'CreateDomain', []));
                     self::fail('expected a failure');
                 } catch (OpenProviderException $e) {
-                    self::assertNoSecret($e->getMessage());
-                    self::assertNoSecret($e->getTraceAsString());
-                    self::assertNoSecret(print_r($e->getTrace(), true));
-                    self::assertNoSecret((string) $e);
-                    self::assertNoSecret(var_export($e, true));
+                    self::assertNoSecretInTheChain($e);
                 }
             }
         } finally {
             ini_set('zend.exception_ignore_args', (string) $previous);
+        }
+    }
+
+    /**
+     * Credentials that cannot be sent as JSON are refused when they are built, as an
+     * OpenProviderException that carries neither the password nor its bytes.
+     */
+    public function testCredentialsThatAreNotUtf8AreRefusedWithoutTheSecret(): void
+    {
+        $previous = ini_get('zend.exception_ignore_args');
+        ini_set('zend.exception_ignore_args', '0');
+
+        try {
+            foreach ([['u', "\xE4" . self::PASSWORD, 'The password is not valid UTF-8'], ["us\xE4r", self::PASSWORD, 'The username is not valid UTF-8']] as [$username, $password, $message]) {
+                try {
+                    new Credentials($username, $password);
+                    self::fail('accepted credentials the login cannot encode');
+                } catch (OpenProviderException $e) {
+                    self::assertStringStartsWith($message, $e->getMessage());
+                    self::assertNoSecretInTheChain($e);
+                }
+            }
+            $this->expectException(OpenProviderException::class);
+            new Credentials('u', new Secret("\xE4" . self::PASSWORD));
+        } finally {
+            ini_set('zend.exception_ignore_args', (string) $previous);
+        }
+    }
+
+    /**
+     * The exception, and every exception it wraps, in each form it can be logged in.
+     */
+    private static function assertNoSecretInTheChain(\Throwable $e): void
+    {
+        for ($current = $e; $current !== null; $current = $current->getPrevious()) {
+            self::assertNoSecret($current->getMessage());
+            self::assertNoSecret($current->getTraceAsString());
+            self::assertNoSecret(print_r($current->getTrace(), true));
+            self::assertNoSecret((string) $current);
+            self::assertNoSecret(var_export($current, true));
         }
     }
 

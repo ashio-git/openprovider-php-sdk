@@ -17,7 +17,9 @@ use Ashio\OpenProvider\Spec\ParameterSpec;
  * - names are sent as declared, dotted ones included (`domain.name=…`); unknown names are
  *   refused, so a camelCase filter cannot be silently ignored by the API;
  * - arrays follow `collectionFormat` (`multi` repeats the key); booleans are `true`/`false`;
- * - only null means "absent": 0, false, '' and empty lists are sent.
+ * - only null means "absent": 0, false and '' are sent, and so is an empty list in a body. A
+ *   query cannot carry an empty list (there is no key to repeat), so it is left out there;
+ * - a path parameter is one segment: `/` is encoded, and '', '.' and '..' are refused.
  */
 final class RequestEncoder
 {
@@ -53,6 +55,9 @@ final class RequestEncoder
                     $segment = self::scalar($parameter, (string) $parameter->type, $arguments[$parameter->name] ?? null);
                     if ($segment === '') {
                         throw new InvalidArgumentException(sprintf('%s: path parameter "%s" cannot be empty', $operation->operationId, $parameter->name));
+                    }
+                    if ($segment === '.' || $segment === '..') {
+                        throw new InvalidArgumentException(sprintf('%s: path parameter "%s" cannot be "." or "..", which the HTTP client would resolve to another path', $operation->operationId, $parameter->name));
                     }
                     $path = str_replace('{' . $parameter->name . '}', rawurlencode($segment), $path);
 

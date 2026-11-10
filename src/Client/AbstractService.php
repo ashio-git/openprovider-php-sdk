@@ -51,6 +51,10 @@ abstract class AbstractService
         if (!is_array($data)) {
             throw self::unreadable($response, $class, 'an object');
         }
+        // A non-empty JSON list is not an object; [] is, because PHP decodes {} and [] alike.
+        if ($data !== [] && array_is_list($data)) {
+            throw self::unreadable($response, $class, 'an object');
+        }
 
         return $response->withData($class::fromArray($data));
     }

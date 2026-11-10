@@ -7,7 +7,9 @@ namespace Ashio\OpenProvider\Tests\Support;
 use Psr\SimpleCache\CacheInterface;
 
 /**
- * Minimal PSR-16 cache that records the TTL of each write.
+ * Minimal PSR-16 cache that records the TTL of each write. It is strict about keys: it refuses
+ * any key outside what PSR-16 guarantees every cache accepts (up to 64 characters of A-Z, a-z,
+ * 0-9, _ and .), as some implementations do.
  */
 final class ArrayCache implements CacheInterface
 {
@@ -19,11 +21,14 @@ final class ArrayCache implements CacheInterface
 
     public function get(string $key, mixed $default = null): mixed
     {
+        self::guaranteed($key);
+
         return array_key_exists($key, $this->values) ? $this->values[$key] : $default;
     }
 
     public function set(string $key, mixed $value, \DateInterval|int|null $ttl = null): bool
     {
+        self::guaranteed($key);
         $this->values[$key] = $value;
         $this->ttls[$key] = $ttl;
 
@@ -32,6 +37,7 @@ final class ArrayCache implements CacheInterface
 
     public function delete(string $key): bool
     {
+        self::guaranteed($key);
         unset($this->values[$key], $this->ttls[$key]);
 
         return true;
@@ -86,6 +92,15 @@ final class ArrayCache implements CacheInterface
 
     public function has(string $key): bool
     {
+        self::guaranteed($key);
+
         return array_key_exists($key, $this->values);
+    }
+
+    private static function guaranteed(string $key): void
+    {
+        if (preg_match('/^[A-Za-z0-9_.]{1,64}$/', $key) !== 1) {
+            throw new \LogicException(sprintf('"%s" (%d characters) is not a key every PSR-16 cache accepts', $key, strlen($key)));
+        }
     }
 }
