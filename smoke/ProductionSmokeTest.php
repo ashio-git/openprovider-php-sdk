@@ -18,6 +18,7 @@ use Ashio\OpenProvider\Response\ApiResponse;
 use Ashio\OpenProvider\Serialization\Model;
 use Ashio\OpenProvider\Smoke\Support\PacedHttpClient;
 use Ashio\OpenProvider\Smoke\Support\ReadOnlyHttpClient;
+use Ashio\OpenProvider\Smoke\Support\SingleLoginHttpClient;
 use Ashio\OpenProvider\Support\SystemSleeper;
 use GuzzleHttp\Client;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -33,8 +34,9 @@ use PHPUnit\Framework\TestCase;
  * nothing, so an account without balance can run it. Like the sandbox suite it fails without
  * credentials, and its calls are one second apart, at most 40 per run.
  *
- * A refused login is never repeated: the first one fails the test that made it, and every later
- * test fails without sending anything, because repeated failed logins get an account blocked.
+ * A refused login is never repeated, because repeated failed logins get an account blocked:
+ * SingleLoginHttpClient refuses a second login before it is sent, whatever the first answered,
+ * and after a refused login every later test fails without sending anything.
  * Fields the typed models could not hold are listed at the end of the run, as a report on how
  * far the published specification is from what the API sends.
  */
@@ -126,6 +128,8 @@ final class ProductionSmokeTest extends TestCase
 
     public function testWritesNeverLeaveTheProcess(): void
     {
+        // Logged in first (or already), so the count below can only move if the write went out.
+        self::read(static fn (OpenProvider $op): ApiResponse => $op->resellerCustomer()->getReseller());
         $sent = self::$http?->sent();
 
         try {
@@ -214,9 +218,10 @@ final class ProductionSmokeTest extends TestCase
             if (!is_string($username) || $username === '' || !is_string($password) || $password === '') {
                 self::fail('Set OPENPROVIDER_PRODUCTION_USERNAME and OPENPROVIDER_PRODUCTION_PASSWORD to run the production smoke suite. It only reads.');
             }
-            // The guard is outermost: a refused write is neither paced nor counted.
+            // The guards are outermost: a refused request is neither paced nor counted.
             self::$http = new PacedHttpClient(new Client(), new SystemSleeper(), static fn (): float => hrtime(true) / 1e9);
-            self::$openProvider = new OpenProvider(ApiClient::create(ClientConfig::production(), new Credentials($username, $password), null, new ReadOnlyHttpClient(self::$http)));
+            $guarded = new ReadOnlyHttpClient(new SingleLoginHttpClient(self::$http));
+            self::$openProvider = new OpenProvider(ApiClient::create(ClientConfig::production(), new Credentials($username, $password), null, $guarded));
         }
 
         return self::$openProvider;
