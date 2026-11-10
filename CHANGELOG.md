@@ -10,10 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `Pagination\Listing`: the `data` of every paged listing (and of ListTags) implements it, with `items()` (never null) and `total()`, typed by item for PHPStan and Psalm.
 - `Paginator::all(..., of: Item::class)`: the items come typed as `Item` for static analysis and IDEs, and each one is checked against it.
-- `Serialization\Dates`: `parse()` reads the API's date strings (`Y-m-d H:i:s`, `Y-m-d`, ISO 8601) as `DateTimeImmutable` in `Europe/Amsterdam` and refuses dates that do not exist; `format()` writes any date as the API expects it.
-- `composer smoke:production`: a read-only smoke suite against a production account. Its transport refuses every write before it is sent, it never repeats a refused login, and it reports the fields the models could not type.
+- `Serialization\Dates`: `parse()` reads the API's date strings (`Y-m-d H:i:s`, `Y-m-d`, ISO 8601) as `DateTimeImmutable` in `Europe/Amsterdam`. The zero date `0000-00-00 00:00:00` (the API's "not set") gives `null`, and dates that do not exist are refused: 2026-02-30, or 02:30 on the night the clocks skip from 02:00 to 03:00. `format()` writes any date as the API expects it.
+- `composer smoke:production`: a read-only smoke suite against a production account. Its transport refuses every write and any second login before they are sent, so a refused login is never repeated. The run reports the fields the models could not type.
 
 ### Changed
+- `Paginator::all()` reads each page through `Listing`. A hand-written `AbstractService` method whose `data` is not a `Listing` is a `LogicException`; every generated list method returns one.
 - `Psr16TokenStore` keys are now 64 characters (the prefix and a hash), the longest PSR-16 guarantees every cache accepts; they were 83. Tokens cached under the old keys are not read: each process logs in once more.
 
 ### Fixed

@@ -418,9 +418,10 @@ $renewBy = Dates::format($expires?->modify('-30 days') ?? new DateTimeImmutable(
 ```
 
 `Dates::parse()` reads every format the API uses (`Y-m-d H:i:s`, `Y-m-d`, and ISO 8601 with an
-offset), gives `null` for an absent date and throws `InvalidArgumentException` for anything else,
-2026-02-30 included. `Dates::format()` converts to Amsterdam first, so a date from any time zone
-is sent as the API reads it.
+offset). It gives `null` for an absent date and for the zero date `0000-00-00 00:00:00`, the API's
+"not set". Anything else throws `InvalidArgumentException`, including dates that do not exist:
+2026-02-30, or 02:30 on the night Amsterdam's clocks skip that hour. `Dates::format()` converts
+to Amsterdam first, so a date from any time zone is sent as the API reads it.
 
 ### Experimental operations
 
