@@ -3,6 +3,8 @@
 Thanks for helping. This SDK makes one promise: it does what Openprovider's specification says,
 and a test proves it. The rules below exist to keep that promise.
 
+Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md).
+
 ## Setup
 
 ```bash
