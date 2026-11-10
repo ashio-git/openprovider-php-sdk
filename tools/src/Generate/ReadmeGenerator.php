@@ -175,7 +175,7 @@ final class ReadmeGenerator
             sprintf('| **S4** tests | Line coverage of at least %s%% and a mutation score (MSI) of at least %s%% | `composer test:coverage`, Infection |', self::number($inventory->minCoverage), self::number($inventory->minMsi)),
             sprintf('| **S5** types | PHPStan at level %s and Psalm at level %d, both with no baseline | `composer quality` |', $inventory->phpstanLevel, $inventory->psalmLevel),
             sprintf('| **S6** compatibility | PHP %s, each with the lowest and the highest dependencies | CI matrix |', implode(', ', $php)),
-            '| **S7** reality | The SDK against the real sandbox | `composer smoke`, run manually |',
+            '| **S7** reality | The SDK against the real sandbox, and read-only against a production account | `composer smoke`, `composer smoke:production`, run manually |',
             '| **S8** honesty | The badges, the counts, the API reference and the error and gate tables of this README are generated, and every example in it is executed | `composer spec:verify`, `tests/Readme` |',
         ]) . "\n";
     }

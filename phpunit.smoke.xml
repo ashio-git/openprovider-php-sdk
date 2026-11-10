@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- S7: the sandbox smoke suite. Run with `composer smoke`; it needs OPENPROVIDER_SANDBOX_USERNAME and
-     OPENPROVIDER_SANDBOX_PASSWORD and reaches https://api.sandbox.openprovider.nl. Never part of `composer test`. -->
+<!-- S7: the smoke suites, never part of `composer test`.
+     sandbox:    `composer smoke`, needs OPENPROVIDER_SANDBOX_USERNAME and OPENPROVIDER_SANDBOX_PASSWORD and
+                 reaches https://api.sandbox.openprovider.nl.
+     production: `composer smoke:production`, needs OPENPROVIDER_PRODUCTION_USERNAME and
+                 OPENPROVIDER_PRODUCTION_PASSWORD and reaches https://api.openprovider.eu, read-only. -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
@@ -20,8 +23,11 @@
          displayDetailsOnTestsThatTriggerNotices="true"
          displayDetailsOnTestsThatTriggerWarnings="true">
     <testsuites>
-        <testsuite name="smoke">
-            <directory>smoke</directory>
+        <testsuite name="sandbox">
+            <file>smoke/SandboxSmokeTest.php</file>
+        </testsuite>
+        <testsuite name="production">
+            <file>smoke/ProductionSmokeTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
