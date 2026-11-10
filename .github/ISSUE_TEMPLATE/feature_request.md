@@ -1,43 +1,23 @@
 ---
-name: Feature Request
-about: Suggest an idea for this project
-title: '[FEATURE] '
+name: Feature request
+about: An improvement to the SDK, or something the API offers that the SDK makes hard to use
+title: '[Feature] '
 labels: enhancement
 assignees: ''
 ---
 
-## 🚀 Feature Description
+## What you want to do
 
-A clear and concise description of the feature you'd like to see.
+The task, in terms of your application.
 
-## 💡 Motivation
+## What gets in the way today
 
-Why is this feature important? What problem does it solve?
+What the SDK does now, or what it is missing.
 
-## 📝 Proposed Solution
+## What you propose
 
-Describe how you envision this feature working.
+How it could look in PHP, if you have an idea.
 
-## 🔄 Alternatives Considered
+## Openprovider documentation
 
-Describe any alternative solutions or features you've considered.
-
-## 📋 Additional Context
-
-Add any other context, screenshots, or examples about the feature request here.
-
-## ✅ Acceptance Criteria
-
-- [ ] Criterion 1
-- [ ] Criterion 2
-- [ ] Criterion 3
-
-## 🎯 Priority
-
-- [ ] High
-- [ ] Medium
-- [ ] Low
-
-## 📚 Related Issues
-
-Link any related issues here.
+A link to the operation or field in the API reference, if the request concerns the API.

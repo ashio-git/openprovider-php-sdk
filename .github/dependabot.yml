@@ -1,0 +1,13 @@
+# Keeps the pinned GitHub Actions current. Composer dependencies need no bot here: a library ships
+# no lock file, and CI already tests both the lowest and the highest versions composer.json allows.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns: ['*']
