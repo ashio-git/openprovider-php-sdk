@@ -252,10 +252,17 @@ or the API's default of 100 where no maximum is documented. Fewer, larger pages 
 clear of the rate limits.
 
 ```php
+use Ashio\OpenProvider\Model\Domain\DomainGetDomainResponseData;
 use Ashio\OpenProvider\Pagination\Paginator;
 
+$domains = Paginator::all(
+    $openProvider->domain()->listDomains(...),
+    ['status' => 'ACT'],
+    of: DomainGetDomainResponseData::class,
+);
+
 $expiring = [];
-foreach (Paginator::all($openProvider->domain()->listDomains(...), ['status' => 'ACT']) as $domain) {
+foreach ($domains as $domain) { // a DomainGetDomainResponseData, for PHPStan, Psalm and your IDE
     if ($domain->expirationDate !== null && $domain->expirationDate < '2027-01-01') {
         $expiring[] = $domain->domain?->name . '.' . $domain->domain?->extension;
     }
@@ -263,8 +270,21 @@ foreach (Paginator::all($openProvider->domain()->listDomains(...), ['status' => 
 ```
 
 The second argument carries the method's other arguments, which are sent with every page.
-`pageSize:` lowers the page size, but never raises it above the endpoint's maximum. A method that is
-not a paged listing is refused before anything is sent.
+`pageSize:` lowers the page size, but never raises it above the endpoint's maximum. `of:` names
+the items' class, so static analysis knows what each item is, and every item is checked against
+it. A method that is not a paged listing is refused before anything is sent. The walk ends at an
+empty page or once the listing's `total` is reached; when the API sends no total, it ends at a page
+shorter than the limit.
+
+To read one page yourself, use the `data` of any listing: it implements `Listing`, with `items()`
+(never null) and `total()`.
+
+```php
+$page = $openProvider->dns()->listZones(limit: 50)->data;
+
+$names = array_map(static fn ($zone) => $zone->name, $page->items());
+$more = ($page->total() ?? 0) > count($names);
+```
 
 ### Handling errors
 
@@ -386,17 +406,21 @@ different accounts or environments can run side by side.
 
 The API sends dates as strings without an offset, in the `Europe/Amsterdam` time zone. Models
 keep them exactly as received, so nothing is converted behind your back and `toArray()` returns
-the original. To work with them as dates, convert them where you need to:
+the original. `Dates` converts them where you need a date, and back:
 
 ```php
+use Ashio\OpenProvider\Serialization\Dates;
+
 $domain = $openProvider->domain()->getDomain(123)->data;
 
-$expires = DateTimeImmutable::createFromFormat(
-    'Y-m-d H:i:s',
-    (string) $domain->expirationDate,
-    new DateTimeZone('Europe/Amsterdam'),
-);
+$expires = Dates::parse($domain->expirationDate);     // ?DateTimeImmutable in Europe/Amsterdam
+$renewBy = Dates::format($expires?->modify('-30 days') ?? new DateTimeImmutable());
 ```
+
+`Dates::parse()` reads every format the API uses (`Y-m-d H:i:s`, `Y-m-d`, and ISO 8601 with an
+offset), gives `null` for an absent date and throws `InvalidArgumentException` for anything else,
+2026-02-30 included. `Dates::format()` converts to Amsterdam first, so a date from any time zone
+is sent as the API reads it.
 
 ### Experimental operations
 
@@ -706,7 +730,7 @@ Each gate runs in CI on every pull request and can fail it.
 | **S4** tests | Line coverage of at least 95% and a mutation score (MSI) of at least 85% | `composer test:coverage`, Infection |
 | **S5** types | PHPStan at level max and Psalm at level 1, both with no baseline | `composer quality` |
 | **S6** compatibility | PHP 8.2, 8.3, 8.4, 8.5, each with the lowest and the highest dependencies | CI matrix |
-| **S7** reality | The SDK against the real sandbox | `composer smoke`, run manually |
+| **S7** reality | The SDK against the real sandbox, and read-only against a production account | `composer smoke`, `composer smoke:production`, run manually |
 | **S8** honesty | The badges, the counts, the API reference and the error and gate tables of this README are generated, and every example in it is executed | `composer spec:verify`, `tests/Readme` |
 <!-- /generated:gates -->
 
@@ -720,6 +744,7 @@ composer spec:verify      # pinned inputs, reproducible merge, every generated f
 composer conformance      # the S2 audit
 composer test:coverage    # PHPUnit with coverage, then the 95% line gate
 composer smoke            # the sandbox suite; needs OPENPROVIDER_SANDBOX_USERNAME and _PASSWORD
+composer smoke:production # read-only, against your account; needs OPENPROVIDER_PRODUCTION_USERNAME and _PASSWORD
 ```
 
 Never edit generated code by hand (`src/Model`, `src/Service`, `src/OpenProvider.php`,

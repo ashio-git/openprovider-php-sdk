@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `Pagination\Listing`: the `data` of every paged listing (and of ListTags) implements it, with `items()` (never null) and `total()`, typed by item for PHPStan and Psalm.
+- `Paginator::all(..., of: Item::class)`: the items come typed as `Item` for static analysis and IDEs, and each one is checked against it.
+- `Serialization\Dates`: `parse()` reads the API's date strings (`Y-m-d H:i:s`, `Y-m-d`, ISO 8601) as `DateTimeImmutable` in `Europe/Amsterdam` and refuses dates that do not exist; `format()` writes any date as the API expects it.
+- `composer smoke:production`: a read-only smoke suite against a production account. Its transport refuses every write before it is sent, it never repeats a refused login, and it reports the fields the models could not type.
+
+### Changed
+- `Psr16TokenStore` keys are now 64 characters (the prefix and a hash), the longest PSR-16 guarantees every cache accepts; they were 83. Tokens cached under the old keys are not read: each process logs in once more.
+
+### Fixed
+- `Paginator` no longer ends a listing at a page shorter than the limit while `total` says more items remain, so an endpoint that caps its pages cannot cut a listing short.
+- A JSON list where the specification declares an object is now an `UnexpectedResponseException`. It was read as an empty model, and `Paginator` then ended the listing at once.
+- A path parameter of `.` or `..` is refused. The HTTP client resolved it as a dot segment, which sent the request to another endpoint (`deleteCustomer('..')` became `DELETE /v1/`).
+- Credentials that are not valid UTF-8 are refused when they are built, with an `InvalidArgumentException`. They used to reach the login as a raw `JsonException` whose trace held the password.
+- A response body that is not JSON no longer appears in exception traces: `ApiResponse::fromHttp()` marks it `#[\SensitiveParameter]` and no longer chains the `JsonException`. A truncated login answer could otherwise show the token when `zend.exception_ignore_args` is off.
+- The `RequestEncoder` docblock now says that an empty list is left out of a query, where it cannot be expressed; a body still carries it.
+
 ## [3.0.0] - 2026-11-09
 
 3.0 is a rewrite for Openprovider's `/v1` API; `/v1beta` closes on 2027-06-30. It shares no code with 2.x and has no compatibility layer. The namespace is `Ashio\OpenProvider\`.
