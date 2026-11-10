@@ -221,6 +221,8 @@ final class AuthenticatorTest extends TestCase
             self::assertStringStartsWith(Psr16TokenStore::PREFIX, Psr16TokenStore::cacheKey($key));
         }
         self::assertCount(4, $cache->values, 'one entry per key');
+        // Pinned: a new key format orphans every token already cached, so it changes only on purpose.
+        self::assertSame('openprovider.token.8254c329a92850f6d539dd376f4816ee2764517da5e02', Psr16TokenStore::cacheKey('k'));
     }
 
     public function testThePsr16StoreDoesNotSaveAnExpiredToken(): void

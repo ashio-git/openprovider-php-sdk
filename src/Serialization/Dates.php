@@ -43,8 +43,9 @@ final class Dates
         $zone = new \DateTimeZone(self::TIMEZONE);
         foreach (self::FORMATS as $format) {
             $date = \DateTimeImmutable::createFromFormat($format, $value, $zone);
-            $errors = \DateTimeImmutable::getLastErrors();
-            if ($date !== false && ($errors === false || ($errors['warning_count'] === 0 && $errors['error_count'] === 0))) {
+            // Since PHP 8.2 getLastErrors() is false when the parse had no warning (a day that
+            // does not exist, such as 2026-02-30, is a warning) and no error.
+            if ($date !== false && \DateTimeImmutable::getLastErrors() === false) {
                 return $date;
             }
         }
