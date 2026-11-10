@@ -8,7 +8,9 @@ use Ashio\OpenProvider\Auth\Credentials;
 use Ashio\OpenProvider\Client\AbstractService;
 use Ashio\OpenProvider\Client\ApiClient;
 use Ashio\OpenProvider\Client\ClientConfig;
+use Ashio\OpenProvider\Model\ModelMap;
 use Ashio\OpenProvider\OpenProvider;
+use Ashio\OpenProvider\Pagination\Listing;
 use Ashio\OpenProvider\Service\Operations;
 use Ashio\OpenProvider\Spec\Operation;
 use Ashio\OpenProvider\Spec\OperationSpec;
@@ -141,6 +143,32 @@ final class OperationRegistryTest extends TestCase
         self::assertCount(24, $paged);
         self::assertNotContains('GetTld', $paged, 'GetTld takes limit and offset but returns no results');
         self::assertSame(['ListDomains' => 1000, 'ListOrders' => 1000, 'ListZoneRecords' => 500, 'ListZones' => 500], $maxima);
+    }
+
+    /**
+     * The `data` of every paged listing implements Listing, so Paginator::all() reads each page
+     * through the interface. The one other Listing is ListTags: results and a total, but no
+     * limit or offset, so every tag comes in one page.
+     */
+    public function testExactlyThePagedListingsReturnAListing(): void
+    {
+        $listings = [];
+        $paged = [];
+        foreach (SpecOperations::all() as $id => $entry) {
+            $envelope = SpecOperations::refName(ArrayPath::entries($entry['operation'], 'responses', '200', 'schema'));
+            $data = ArrayPath::entries(SpecOperations::definitions(), $envelope, 'properties', 'data');
+            $class = isset($data['$ref']) ? (ModelMap::MODELS[SpecOperations::refName($data)] ?? null) : null;
+            if ($class !== null && is_subclass_of($class, Listing::class)) {
+                $listings[] = $id;
+            }
+            if (Operations::get($id)->paged) {
+                $paged[] = $id;
+            }
+        }
+
+        self::assertCount(24, $paged);
+        self::assertSame([], array_values(array_diff($paged, $listings)), 'a paged listing whose data is not a Listing');
+        self::assertSame(['ListTags'], array_values(array_diff($listings, $paged)));
     }
 
     /**
