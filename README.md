@@ -6,6 +6,7 @@
 
 <!-- generated:badges -->
 [![CI](https://github.com/ashio-git/openprovider-php-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/ashio-git/openprovider-php-sdk/actions/workflows/ci.yml)
+[![Packagist](https://img.shields.io/packagist/v/ashio/openprovider-php-sdk?label=packagist)](https://packagist.org/packages/ashio/openprovider-php-sdk)
 ![PHP: 8.2 – 8.5](https://img.shields.io/badge/PHP-8.2%20%E2%80%93%208.5-777BB4?logo=php&logoColor=white)
 ![API operations: 140/140](https://img.shields.io/badge/API%20operations-140%2F140-2EA44F)
 ![PHPStan: level max](https://img.shields.io/badge/PHPStan-level%20max-2EA44F)
@@ -112,18 +113,8 @@ foreach (Paginator::all($openProvider->domain()->listDomains(...), ['status' => 
 
 ## Installation
 
-The package is not on Packagist yet. Add the repository to your `composer.json`, then require it:
-
-```json
-{
-    "repositories": [
-        { "type": "vcs", "url": "https://github.com/ashio-git/openprovider-php-sdk" }
-    ]
-}
-```
-
 ```bash
-composer require ashio/openprovider-php-sdk:^3.0
+composer require ashio/openprovider-php-sdk
 ```
 
 ## Quick start

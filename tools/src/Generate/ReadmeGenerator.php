@@ -70,6 +70,7 @@ final class ReadmeGenerator
 
         return implode("\n", [
             sprintf('[![CI](%1$s/actions/workflows/ci.yml/badge.svg)](%1$s/actions/workflows/ci.yml)', self::REPOSITORY),
+            sprintf('[![Packagist](https://img.shields.io/packagist/v/%1$s?label=packagist)](https://packagist.org/packages/%1$s)', $inventory->package),
             self::badge('PHP', $php[0] . ' – ' . $php[array_key_last($php)], '777BB4', 'php'),
             self::badge('API operations', sprintf('%d/%d', $operations, $inventory->specOperations), $operations === $inventory->specOperations ? '2EA44F' : 'D73A49'),
             self::badge('PHPStan', 'level ' . $inventory->phpstanLevel, '2EA44F'),

@@ -25,6 +25,7 @@ final class ReadmeGeneratorTest extends TestCase
         self::assertStringStartsWith("# Title\n\nIntro.\n", $readme);
         self::assertStringEndsWith("\nOutro.\n", $readme);
         self::assertStringContainsString("<!-- generated:badges -->\n[![CI](https://github.com/ashio-git/openprovider-php-sdk/actions/workflows/ci.yml/badge.svg)]", $readme);
+        self::assertStringContainsString('[![Packagist](https://img.shields.io/packagist/v/vendor/package?label=packagist)](https://packagist.org/packages/vendor/package)', $readme);
         self::assertStringContainsString('![PHP: 8.2 – 8.5](https://img.shields.io/badge/PHP-8.2%20%E2%80%93%208.5-777BB4?logo=php&logoColor=white)', $readme);
         self::assertStringContainsString('![API operations: 3/3](https://img.shields.io/badge/API%20operations-3%2F3-2EA44F)', $readme);
         self::assertStringContainsString('![line coverage: ≥ 95% gate](https://img.shields.io/badge/line%20coverage-%E2%89%A5%2095%25%20gate-2EA44F)', $readme);
@@ -194,6 +195,7 @@ final class ReadmeGeneratorTest extends TestCase
             85.5,
             1,
             'max',
+            'vendor/package',
         ));
     }
 

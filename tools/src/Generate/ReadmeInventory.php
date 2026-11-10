@@ -41,6 +41,7 @@ final class ReadmeInventory
         public readonly float $minMsi,
         public readonly int $psalmLevel,
         public readonly string $phpstanLevel,
+        public readonly string $package,
     ) {
     }
 
@@ -118,6 +119,7 @@ final class ReadmeInventory
             self::minMsi(self::read($root . '/infection.json5')),
             self::psalmLevel(self::read($root . '/psalm.xml')),
             self::phpstanLevel(self::read($root . '/phpstan.neon')),
+            Json::string(Json::object(Json::decode(self::read($root . '/composer.json'), 'composer.json'), 'composer.json')['name'] ?? null, 'composer.json name'),
         );
     }
 

@@ -272,4 +272,4 @@ Entries recorded before 2.1.0 was released, kept as they were written. Some of t
 [3.0.0]: https://github.com/ashio-git/openprovider-php-sdk/compare/v2.1.1...v3.0.0
 [2.1.1]: https://github.com/ashio-git/openprovider-php-sdk/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/ashio-git/openprovider-php-sdk/releases/tag/v2.1.0
-[2.0.0]: https://github.com/ashio-git/openprovider-php-sdk/tree/f1ce0888e6ca606b98accc7e70603830ba31b704
+[2.0.0]: https://github.com/ashio-git/openprovider-php-sdk/tree/877f5cbfa4dab079e978b2c88d7ffa6168c7a29c
