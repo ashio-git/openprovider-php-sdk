@@ -14,7 +14,8 @@ composer update
 composer quality
 ```
 
-PHP 8.2 or newer. No network access is needed: no test reaches it, except the opt-in sandbox suite.
+PHP 8.2 or newer. No network access is needed: no test reaches it, except the opt-in smoke suites
+(`composer smoke` for the sandbox, `composer smoke:production` read-only against your account).
 
 ## Before you open a pull request
 

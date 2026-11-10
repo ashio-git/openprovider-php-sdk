@@ -60,6 +60,23 @@ final class PaginatorTest extends TestCase
         self::assertSame([500], $limits);
     }
 
+    public function testAShortPageDoesNotEndTheWalkWhileTheTotalSaysMoreRemain(): void
+    {
+        // An endpoint that caps pages below the limit sent must not cut the listing short.
+        $offsets = [];
+        $items = iterator_to_array(Paginator::iterate(
+            static function (int $limit, int $offset) use (&$offsets): Page {
+                $offsets[] = $offset;
+
+                return new Page(array_slice(range(1, 250), $offset, min($limit, 100)), 250);
+            },
+            pageSize: 1000,
+        ), false);
+
+        self::assertCount(250, $items);
+        self::assertSame([0, 100, 200], $offsets);
+    }
+
     public function testAnEmptyPageEndsTheWalkEvenIfTheTotalSaysOtherwise(): void
     {
         $calls = 0;

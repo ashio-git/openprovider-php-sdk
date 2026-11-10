@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ashio\OpenProvider\Tests\Http;
 
+use Ashio\OpenProvider\Exception\InvalidArgumentException;
 use Ashio\OpenProvider\Http\RequestEncoder;
 use Ashio\OpenProvider\Spec\OperationSpec;
 use PHPUnit\Framework\TestCase;
@@ -62,7 +63,8 @@ final class RequestEncoderPropertyTest extends TestCase
     }
 
     /**
-     * Any string survives as exactly one path segment.
+     * Any string survives as exactly one path segment, except the dot segments '.' and '..',
+     * which are refused.
      */
     public function testPathValuesStayOneSegmentAndDecodeBack(): void
     {
@@ -73,17 +75,28 @@ final class RequestEncoderPropertyTest extends TestCase
             'parameters' => [['name' => 'name', 'in' => 'path', 'required' => true, 'type' => 'string']],
         ]);
         $characters = mb_str_split($alphabet);
+        $refused = 0;
         for ($case = 0; $case < self::CASES; ++$case) {
-            $value = '';
-            for ($i = $random->getInt(1, 12); $i > 0; --$i) {
+            // The first cases are the dot segments, which the HTTP client would resolve away.
+            $value = ['.', '..'][$case] ?? '';
+            for ($i = $value === '' ? $random->getInt(1, 12) : 0; $i > 0; --$i) {
                 $value .= $characters[$random->getInt(0, count($characters) - 1)];
             }
 
-            $target = (new RequestEncoder())->encode($operation, ['name' => $value])->target;
+            try {
+                $target = (new RequestEncoder())->encode($operation, ['name' => $value])->target;
+            } catch (InvalidArgumentException) {
+                self::assertContains($value, ['.', '..'], "case $case was refused");
+                ++$refused;
+
+                continue;
+            }
 
             self::assertMatchesRegularExpression('#^/zones/[^/?\#]+/records$#', $target, "case $case");
+            self::assertNotContains(explode('/', $target)[2], ['.', '..'], "case $case");
             self::assertSame($value, rawurldecode(explode('/', $target)[2]), "case $case");
         }
+        self::assertGreaterThanOrEqual(2, $refused);
     }
 
     /**

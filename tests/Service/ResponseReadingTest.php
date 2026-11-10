@@ -60,6 +60,18 @@ final class ResponseReadingTest extends TestCase
         yield 'boolean' => [true];
         yield 'string' => ['done'];
         yield 'number' => [3];
+        yield 'a list of strings' => [['x', 'y']];
+        // A listing's results sent without their {results, total} object: reading it as an empty
+        // object would end a Paginator walk at once, as if there were nothing to list.
+        yield 'a list of objects' => [[['id' => 1], ['id' => 2]]];
+    }
+
+    public function testAnEmptyArrayIsAnEmptyObject(): void
+    {
+        // PHP decodes {} and [] alike; an empty answer is an empty model, not an error.
+        $this->http->reply(['code' => 0, 'data' => []]);
+
+        self::assertSame([], $this->openProvider->resellerCustomer()->getReseller()->data->toArray());
     }
 
     #[DataProvider('dataThatIsNotAnObject')]

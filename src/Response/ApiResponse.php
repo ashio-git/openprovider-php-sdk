@@ -32,19 +32,21 @@ final class ApiResponse
     }
 
     /**
+     * The body is a #[\SensitiveParameter] and the JsonException is not chained: a login answer
+     * holds the token, and a trace (with zend.exception_ignore_args off) would show it.
+     *
      * @return self<mixed>
      *
      * @throws UnexpectedResponseException when the body is not a JSON envelope with an integer code
      */
-    public static function fromHttp(int $status, string $body): self
+    public static function fromHttp(int $status, #[\SensitiveParameter] string $body): self
     {
         try {
             $envelope = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
             throw new UnexpectedResponseException(
-                sprintf('HTTP %d response is not JSON (%d bytes)', $status, strlen($body)),
+                sprintf('HTTP %d response is not JSON (%d bytes): %s', $status, strlen($body), $e->getMessage()),
                 $status,
-                $e,
             );
         }
         if (!is_array($envelope) || array_is_list($envelope) || !isset($envelope['code']) || !is_int($envelope['code'])) {

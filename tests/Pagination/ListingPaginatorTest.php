@@ -87,6 +87,44 @@ final class ListingPaginatorTest extends TestCase
         self::assertSame(['GET /v1/dns/zones?limit=1&offset=0', 'GET /v1/dns/zones?limit=1&offset=1'], array_slice($this->http->targets(), 1));
     }
 
+    public function testOfTypesTheItemsAndChecksEachOne(): void
+    {
+        $this->page(self::zones(1, 2), 2);
+
+        $names = [];
+        foreach (Paginator::all($this->openProvider->dns()->listZones(...), of: ZoneZone::class) as $zone) {
+            $names[] = $zone->name; // typed as ZoneZone, no instanceof needed
+        }
+
+        self::assertSame(['z1', 'z2'], $names);
+    }
+
+    public function testItemsOfAnotherClassThanOfAreRefusedBeforeAnyIsYielded(): void
+    {
+        $this->page(self::zones(1, 2), 2);
+        $yielded = 0;
+
+        try {
+            foreach (Paginator::all($this->openProvider->dns()->listZones(...), of: PersoncontactContact::class) as $ignored) {
+                ++$yielded;
+            }
+            self::fail('no exception');
+        } catch (InvalidArgumentException $e) {
+            self::assertSame(sprintf('ListZones lists %s, not %s', ZoneZone::class, PersoncontactContact::class), $e->getMessage());
+        }
+        self::assertSame(0, $yielded);
+    }
+
+    public function testAPageThatTheTotalSaysIsNotTheLastIsFollowedEvenWhenShort(): void
+    {
+        $this->page(self::zones(1, 100), 150)->page(self::zones(101, 50), 150);
+
+        $zones = iterator_to_array(Paginator::all($this->openProvider->dns()->listZones(...)), false);
+
+        self::assertCount(150, $zones);
+        self::assertSame(['GET /v1/dns/zones?limit=500&offset=0', 'GET /v1/dns/zones?limit=500&offset=100'], array_slice($this->http->targets(), 1));
+    }
+
     public function testAServiceMethodWithoutAnOperationIsRefused(): void
     {
         $service = new class ($this->openProvider->client()) extends AbstractService {
@@ -133,7 +171,7 @@ final class ListingPaginatorTest extends TestCase
         };
 
         $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('ListZones did not return an ApiResponse holding a model');
+        $this->expectExceptionMessage('ListZones did not return an ApiResponse holding a Listing');
 
         iterator_to_array(Paginator::all($service->listZones(...)));
     }
@@ -166,6 +204,13 @@ final class ListingPaginatorTest extends TestCase
                 Paginator::all($op->dns()->listZones(...), ['name_pattern' => 'x']);
             },
             'listZones() has no parameter $name_pattern',
+        ];
+        yield 'an item class that is not a model' => [
+            static function (OpenProvider $op): void {
+                // Static analysis refuses this call; the check is for code that runs without it.
+                (new \ReflectionMethod(Paginator::class, 'all'))->invoke(null, $op->dns()->listZones(...), [], null, \stdClass::class);
+            },
+            'of must name a model class; stdClass is not one',
         ];
         yield 'a page size below one' => [
             static function (OpenProvider $op): void {

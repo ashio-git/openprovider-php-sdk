@@ -84,7 +84,8 @@
             "php tools/generate readme --check"
         ],
         "conformance": "php tools/conformance",
-        "smoke": "phpunit --configuration phpunit.smoke.xml"
+        "smoke": "phpunit --configuration phpunit.smoke.xml --testsuite sandbox",
+        "smoke:production": "phpunit --configuration phpunit.smoke.xml --testsuite production"
     },
     "suggest": {
         "psr/simple-cache": "Share the API token between processes with Psr16TokenStore"

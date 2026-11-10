@@ -66,9 +66,11 @@ final class ModelGenerator
         $readers = [];
         $fields = [];
         $maps = [];
+        $types = [];
         foreach ($properties as $key => $property) {
             $schema = Json::object($schemas[$key], "$name.$key");
             $type = FieldType::resolve($schema, $definitions, $classes, "$name.$key");
+            $types[$key] = $type;
             $params[] = rtrim(sprintf('     * @param %s $%s %s', $type->docType($namespace), $property, self::fieldDoc($key, $property, $schema, $type, $namespace)));
             $promoted[] = sprintf('        public %s $%s = null,', $type->phpType($namespace), $property);
             $readers[] = sprintf('            %s: %s,', $property, $type->reader($key, $namespace));
@@ -78,6 +80,18 @@ final class ModelGenerator
             }
         }
 
+        $results = $types['results'] ?? null;
+        $total = $types['total'] ?? null;
+        // A page of a limit/offset listing: `results` holds models and `total` counts them all.
+        $item = $results !== null && $results->container === 'list' && $results->kind === 'object'
+            && $total !== null && $total->container === 'one' && $total->kind === 'int'
+            ? FieldType::reference((string) $results->class, $namespace)
+            : null;
+        $doc = self::classDoc($definition, ["Spec definition `$name`."], $portal);
+        if ($item !== null) {
+            array_splice($doc, -1, 0, [' *', " * @implements Listing<$item>"]);
+        }
+
         $lines = [
             '<?php',
             '',
@@ -85,11 +99,12 @@ final class ModelGenerator
             '',
             "namespace $namespace;",
             '',
+            ...($item === null ? [] : ['use Ashio\OpenProvider\Pagination\Listing;']),
             'use Ashio\OpenProvider\Serialization\Fields;',
-            'use Ashio\OpenProvider\Serialization\Model;',
+            ...($item === null ? ['use Ashio\OpenProvider\Serialization\Model;'] : []),
             '',
-            ...self::classDoc($definition, ["Spec definition `$name`."], $portal),
-            "final readonly class $short implements Model",
+            ...$doc,
+            "final readonly class $short implements " . ($item === null ? 'Model' : 'Listing'),
             '{',
             '    /**',
             ...$params,
@@ -134,6 +149,28 @@ final class ModelGenerator
             '        return Fields::toJson($this->fields(), $this->extra' . ($maps === [] ? '' : ', [' . implode(', ', $maps) . ']') . ');',
             '    }',
             '',
+            ...($item === null ? [] : [
+                '    /**',
+                "     * This page's items; a page without `results` is empty.",
+                '     *',
+                "     * @return list<$item>",
+                '     */',
+                '    #[\Override]',
+                '    public function items(): array',
+                '    {',
+                '        return $this->' . $properties['results'] . ' ?? [];',
+                '    }',
+                '',
+                '    /**',
+                '     * The number of items across all pages, or null when the API does not send it.',
+                '     */',
+                '    #[\Override]',
+                '    public function total(): ?int',
+                '    {',
+                '        return $this->' . $properties['total'] . ';',
+                '    }',
+                '',
+            ]),
             '    /**',
             '     * @return array<string, mixed>',
             '     */',

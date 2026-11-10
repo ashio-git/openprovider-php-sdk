@@ -63,6 +63,7 @@ final class RequestEncoderTest extends TestCase
         $get = self::operation('get', '/dns/zones/{name}/records', [['name' => 'name', 'in' => 'path', 'required' => true, 'type' => 'string']]);
 
         self::assertSame('/dns/zones/a%2Fb%3Fc%23d%20e/records', (new RequestEncoder())->encode($get, ['name' => 'a/b?c#d e'])->target);
+        self::assertSame('/dns/zones/...%2F..%2F/records', (new RequestEncoder())->encode($get, ['name' => '.../../'])->target, 'dots inside a segment stay');
     }
 
     public function testTheBodyKeepsZeroFalseAndEmptyStringAndDropsNull(): void
@@ -155,6 +156,10 @@ final class RequestEncoderTest extends TestCase
         yield 'nested array item' => [$query, ['status' => [['ACT']]], 'status'];
         yield 'missing path parameter' => [$path, [], 'id'];
         yield 'empty path parameter' => [self::operation('get', '/zones/{name}', [['name' => 'name', 'in' => 'path', 'required' => true, 'type' => 'string']]), ['name' => ''], 'name'];
+        // A dot segment is removed by the HTTP client (RFC 3986), which would send the request to
+        // another endpoint: DELETE /customers/.. is DELETE /.
+        yield 'dot path parameter' => [self::operation('delete', '/customers/{handle}', [['name' => 'handle', 'in' => 'path', 'required' => true, 'type' => 'string']]), ['handle' => '.'], 'Op: path parameter "handle" cannot be "." or "..", which the HTTP client would resolve to another path'];
+        yield 'dot-dot path parameter' => [self::operation('get', '/dns/zones/{name}/records', [['name' => 'name', 'in' => 'path', 'required' => true, 'type' => 'string']]), ['name' => '..'], 'Op: path parameter "name" cannot be "." or ".."'];
         yield 'missing required body' => [$body, [], 'body'];
         yield 'scalar body' => [$body, ['body' => 'x'], 'body'];
         yield 'invalid utf-8 in body' => [$body, ['body' => ['a' => "\xB1\x31"]], 'body'];

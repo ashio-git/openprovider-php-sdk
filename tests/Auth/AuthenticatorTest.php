@@ -165,7 +165,7 @@ final class AuthenticatorTest extends TestCase
         self::assertSame('tok-a', $loaded->token->reveal());
         self::assertSame(9, $loaded->resellerId);
         self::assertEquals($token->expiresAt, $loaded->expiresAt);
-        self::assertSame([Psr16TokenStore::PREFIX . 'k' => 100], $cache->ttls);
+        self::assertSame([Psr16TokenStore::cacheKey('k') => 100], $cache->ttls);
 
         $store->delete('k');
         self::assertNull($store->get('k'));
@@ -189,22 +189,40 @@ final class AuthenticatorTest extends TestCase
     public function testThePsr16StoreIgnoresAndDropsMalformedEntries(mixed $entry): void
     {
         $cache = new ArrayCache();
-        $cache->set(Psr16TokenStore::PREFIX . 'k', $entry);
+        $cache->set(Psr16TokenStore::cacheKey('k'), $entry);
         $store = new Psr16TokenStore($cache, $this->clock);
 
         self::assertNull($store->get('k'));
-        self::assertFalse($cache->has(Psr16TokenStore::PREFIX . 'k'));
+        self::assertFalse($cache->has(Psr16TokenStore::cacheKey('k')));
     }
 
     public function testThePsr16StoreReadsAnEntryWithoutAResellerId(): void
     {
         $cache = new ArrayCache();
-        $cache->set(Psr16TokenStore::PREFIX . 'k', ['token' => 't', 'expires_at' => '2030-01-01T00:00:00+00:00', 'reseller_id' => null]);
+        $cache->set(Psr16TokenStore::cacheKey('k'), ['token' => 't', 'expires_at' => '2030-01-01T00:00:00+00:00', 'reseller_id' => null]);
 
         $token = (new Psr16TokenStore($cache, $this->clock))->get('k');
 
         self::assertSame('t', $token?->token->reveal());
         self::assertNull($token->resellerId);
+    }
+
+    public function testThePsr16StoreUsesKeysEveryCacheAccepts(): void
+    {
+        $cache = new ArrayCache(); // refuses keys PSR-16 does not guarantee
+        $store = new Psr16TokenStore($cache, $this->clock);
+        $token = new AccessToken(new Secret('tok-a'), 9, $this->clock->now()->modify('+100 seconds'));
+        $keys = [hash('sha256', "production\0reseller@example.com"), 'k', str_repeat('é', 40), ''];
+
+        foreach ($keys as $key) {
+            $store->save($key, $token);
+            self::assertSame('tok-a', $store->get($key)?->token->reveal());
+            self::assertSame(64, strlen(Psr16TokenStore::cacheKey($key)));
+            self::assertStringStartsWith(Psr16TokenStore::PREFIX, Psr16TokenStore::cacheKey($key));
+        }
+        self::assertCount(4, $cache->values, 'one entry per key');
+        // Pinned: a new key format orphans every token already cached, so it changes only on purpose.
+        self::assertSame('openprovider.token.8254c329a92850f6d539dd376f4816ee2764517da5e02', Psr16TokenStore::cacheKey('k'));
     }
 
     public function testThePsr16StoreDoesNotSaveAnExpiredToken(): void

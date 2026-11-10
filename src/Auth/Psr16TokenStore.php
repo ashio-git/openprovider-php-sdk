@@ -10,11 +10,15 @@ use Psr\SimpleCache\CacheInterface;
 
 /**
  * Shares tokens between processes through any PSR-16 cache (requires psr/simple-cache).
- * The cache holds the raw token: protect it like the password.
+ * The cache holds the raw token: protect it like the password. The cache's own exceptions (a
+ * cache server that is down) reach the caller unchanged.
  */
 final class Psr16TokenStore implements TokenStore
 {
     public const PREFIX = 'openprovider.token.';
+
+    /** The longest key PSR-16 guarantees every cache accepts. */
+    private const KEY_LENGTH = 64;
 
     private readonly Clock $clock;
 
@@ -23,10 +27,19 @@ final class Psr16TokenStore implements TokenStore
         $this->clock = $clock ?? new SystemClock();
     }
 
+    /**
+     * The cache key for a store key: the prefix and a hash, 64 characters from the set every
+     * PSR-16 cache accepts (A-Z, a-z, 0-9, _ and .), whatever the store key holds.
+     */
+    public static function cacheKey(string $key): string
+    {
+        return self::PREFIX . substr(hash('sha256', $key), 0, self::KEY_LENGTH - strlen(self::PREFIX));
+    }
+
     #[\Override]
     public function get(string $key): ?AccessToken
     {
-        return $this->read($key, $this->cache->get(self::PREFIX . $key));
+        return $this->read($key, $this->cache->get(self::cacheKey($key)));
     }
 
     #[\Override]
@@ -36,7 +49,7 @@ final class Psr16TokenStore implements TokenStore
         if ($ttl <= 0) {
             return;
         }
-        $this->cache->set(self::PREFIX . $key, [
+        $this->cache->set(self::cacheKey($key), [
             'token' => $token->token->reveal(),
             'reseller_id' => $token->resellerId,
             'expires_at' => $token->expiresAt->format(\DateTimeInterface::ATOM),
@@ -46,7 +59,7 @@ final class Psr16TokenStore implements TokenStore
     #[\Override]
     public function delete(string $key): void
     {
-        $this->cache->delete(self::PREFIX . $key);
+        $this->cache->delete(self::cacheKey($key));
     }
 
     /**
@@ -60,7 +73,7 @@ final class Psr16TokenStore implements TokenStore
         }
         $token = is_array($entry) ? self::fromEntry($entry) : null;
         if ($token === null) {
-            $this->cache->delete(self::PREFIX . $key);
+            $this->cache->delete(self::cacheKey($key));
         }
 
         return $token;
