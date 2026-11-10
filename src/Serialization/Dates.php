@@ -19,10 +19,15 @@ final class Dates
     public const TIMEZONE = 'Europe/Amsterdam';
 
     /**
-     * The formats the specification's examples use: date and time (the hour with or without a
-     * leading zero), a date alone, and ISO 8601 with an explicit offset.
+     * The formats the specification's examples use, each with the exact shape it accepts
+     * (createFromFormat alone also takes 2026-7-1): date and time, the hour with or without a
+     * leading zero; a date alone; and ISO 8601 with an explicit offset.
      */
-    private const FORMATS = ['!Y-m-d G:i:s', '!Y-m-d', \DateTimeInterface::ATOM];
+    private const FORMATS = [
+        '!Y-m-d G:i:s' => '/^\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}$/',
+        '!Y-m-d' => '/^\d{4}-\d{2}-\d{2}$/',
+        \DateTimeInterface::ATOM => '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})$/',
+    ];
 
     /** The API's "not set", which its examples send for deleted_at and similar fields. */
     private const ZERO_DATES = ['0000-00-00 00:00:00', '0000-00-00'];
@@ -45,15 +50,20 @@ final class Dates
             return null;
         }
         $zone = new \DateTimeZone(self::TIMEZONE);
-        foreach (self::FORMATS as $format) {
-            $date = \DateTimeImmutable::createFromFormat($format, $value, $zone);
-            // Since PHP 8.2 getLastErrors() is false when the parse had no warning (a day that
-            // does not exist, such as 2026-02-30, is a warning) and no error.
-            if ($date === false || \DateTimeImmutable::getLastErrors() !== false) {
+        foreach (self::FORMATS as $format => $shape) {
+            if (preg_match($shape, $value) !== 1) {
                 continue;
             }
-            // A local time the clocks skip is moved an hour on without a warning: it no longer
-            // reads back as written. A value with its own offset has no such gap.
+            $date = \DateTimeImmutable::createFromFormat($format, $value, $zone);
+            // Since PHP 8.2 getLastErrors() is false when the parse had no warning (a day that
+            // does not exist, such as 2026-02-30, is a warning) and no error. The shapes do not
+            // overlap, so no other format can read the value either.
+            if ($date === false || \DateTimeImmutable::getLastErrors() !== false) {
+                throw self::notAnApiDate($value);
+            }
+            // The shape is right, so a value that does not read back as written is a local time
+            // the clocks skip, moved an hour on without a warning. A value with its own offset
+            // has no such gap.
             $readBack = [$date->format('Y-m-d H:i:s'), $date->format('Y-m-d G:i:s'), $date->format('Y-m-d')];
             if ($format !== \DateTimeInterface::ATOM && !in_array($value, $readBack, true)) {
                 throw new InvalidArgumentException(sprintf('"%s" does not exist in %s: the clocks skip that hour', $value, self::TIMEZONE));
@@ -62,7 +72,12 @@ final class Dates
             return $date;
         }
 
-        throw new InvalidArgumentException(sprintf('"%s" is not a date the API sends (Y-m-d H:i:s, Y-m-d or ISO 8601)', $value));
+        throw self::notAnApiDate($value);
+    }
+
+    private static function notAnApiDate(string $value): InvalidArgumentException
+    {
+        return new InvalidArgumentException(sprintf('"%s" is not a date the API sends (Y-m-d H:i:s, Y-m-d or ISO 8601)', $value));
     }
 
     /**

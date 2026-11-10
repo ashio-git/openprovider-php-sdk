@@ -77,6 +77,8 @@ final class DatesTest extends TestCase
         yield 'text' => ['soon'];
         yield 'trailing text' => ['2026-01-01 10:00:00 tomorrow'];
         yield 'a time without a date' => ['10:00:00'];
+        yield 'a month and day without leading zeros' => ['2026-7-1 12:00:00'];
+        yield 'a date without leading zeros' => ['2026-7-1'];
     }
 
     #[DataProvider('notDates')]
@@ -99,7 +101,7 @@ final class DatesTest extends TestCase
 
     public function testParseAndFormatRoundTrip(): void
     {
-        // 2026-10-25 02:30 happens twice (the clocks go back); the first, CEST, is the one read.
+        // 2026-10-25 02:30 happens twice (the clocks go back); PHP reads the second, CET (+01:00).
         foreach (['2006-09-15 14:19:30', '2026-01-15 09:05:00', '2026-10-25 02:30:00', '2026-03-29 03:30:00'] as $value) {
             self::assertSame($value, Dates::format(Dates::parse($value) ?? throw new \LogicException($value)));
         }
